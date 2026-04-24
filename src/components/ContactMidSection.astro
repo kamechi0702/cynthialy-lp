@@ -1,0 +1,218 @@
+---
+/**
+ * ContactMidSection.astro
+ * ---------------------------------------------------------------
+ * ミラーのミドル位置にある CONTACT (資料請求 / まずは相談したい) 2カード。
+ * 末尾の CTABlock とは役割が異なり、本文の中間でコンバージョンを集約する。
+ */
+---
+
+<section class="contactmid">
+  <div class="contactmid__inner container-page">
+    <div class="contactmid__head">
+      <p class="contactmid__eyebrow">CONTACT</p>
+      <h2 class="contactmid__title">資料請求・<br />お問い合わせ</h2>
+      <p class="contactmid__lead">
+        生成AIを単なる導入で終わらせず、組織全体に根付かせることで、<br />
+        企業変革と事業成長を実現する生成AIの成果創出サービスです。
+      </p>
+      <span class="contactmid__watermark" aria-hidden="true">CONTACT</span>
+    </div>
+
+    <ul class="contactmid__grid">
+      <li class="contactmid__card contactmid__card--doc">
+        <a class="contactmid__card-link" href="/download">
+          <div class="contactmid__card-label">RESOURCE</div>
+          <p class="contactmid__card-sub">サービス概要や事例集の</p>
+          <p class="contactmid__card-title">資料がほしい</p>
+          <span class="contactmid__card-arrow" aria-hidden="true">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <circle cx="18" cy="18" r="17.5" stroke="currentColor" />
+              <path
+                d="M14 12l8 6-8 6"
+                stroke="currentColor"
+                stroke-width="1.4"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
+        </a>
+      </li>
+      <li class="contactmid__card contactmid__card--meet">
+        <a
+          class="contactmid__card-link"
+          href="https://meetings-na2.hubspot.com/yoshiki-watanabe2"
+          rel="noopener"
+          target="_blank"
+        >
+          <div class="contactmid__card-label">CONSULTATION</div>
+          <p class="contactmid__card-sub">生成AIの定着に関して</p>
+          <p class="contactmid__card-title">まずは相談したい</p>
+          <span class="contactmid__card-arrow" aria-hidden="true">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <circle cx="18" cy="18" r="17.5" stroke="currentColor" />
+              <path
+                d="M14 12l8 6-8 6"
+                stroke="currentColor"
+                stroke-width="1.4"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .contactmid {
+    position: relative;
+    padding: 112px 0 128px;
+    background: #fff;
+    overflow: hidden;
+  }
+  @media (max-width: 720px) {
+    .contactmid {
+      padding: 72px 0 80px;
+    }
+  }
+
+  .contactmid__head {
+    position: relative;
+    padding-bottom: 32px;
+  }
+  .contactmid__eyebrow {
+    margin: 0 0 12px;
+    font-family: var(--font-sans-en);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--color-accent-gold-dark);
+  }
+  .contactmid__title {
+    margin: 0;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--color-deep-green);
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 1;
+  }
+  @media (max-width: 720px) {
+    .contactmid__title {
+      font-size: 28px;
+    }
+  }
+  .contactmid__lead {
+    margin: 20px 0 0;
+    font-size: 14px;
+    line-height: 2;
+    color: var(--color-neutral-80-txt);
+    position: relative;
+    z-index: 1;
+  }
+  .contactmid__watermark {
+    position: absolute;
+    right: -8px;
+    top: -16px;
+    font-family: var(--font-sans-en);
+    font-size: 140px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: rgba(13, 38, 35, 0.06);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+  @media (max-width: 720px) {
+    .contactmid__watermark {
+      font-size: 80px;
+    }
+  }
+
+  .contactmid__grid {
+    list-style: none;
+    padding: 0;
+    margin: 40px 0 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media (min-width: 820px) {
+    .contactmid__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+  }
+
+  .contactmid__card {
+    list-style: none;
+  }
+  .contactmid__card-link {
+    position: relative;
+    display: block;
+    padding: 48px 40px 44px;
+    border-radius: 20px;
+    text-decoration: none;
+    overflow: hidden;
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out);
+    min-height: 220px;
+  }
+  .contactmid__card-link:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(13, 38, 35, 0.12);
+  }
+  .contactmid__card--doc .contactmid__card-link {
+    background: linear-gradient(135deg, #eef5e8 0%, #f6f1cf 100%);
+    color: var(--color-deep-green);
+  }
+  .contactmid__card--meet .contactmid__card-link {
+    background: linear-gradient(135deg, #0d2623 0%, #1d4524 100%);
+    color: #fff;
+  }
+  .contactmid__card-label {
+    font-family: var(--font-sans-en);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    opacity: 0.85;
+  }
+  .contactmid__card-sub {
+    margin: 22px 0 6px;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    opacity: 0.85;
+  }
+  .contactmid__card-title {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+  @media (max-width: 720px) {
+    .contactmid__card-title {
+      font-size: 24px;
+    }
+  }
+  .contactmid__card-arrow {
+    position: absolute;
+    right: 32px;
+    bottom: 32px;
+    display: inline-flex;
+    opacity: 0.9;
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+  .contactmid__card-link:hover .contactmid__card-arrow {
+    transform: translateX(4px);
+  }
+</style>

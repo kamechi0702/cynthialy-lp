@@ -1,0 +1,97 @@
+---
+/**
+ * ServicesSection.astro
+ * ---------------------------------------------------------------
+ * 提供サービス俯瞰。Studio版の「ホバー連動ビジュアル切替」を継承。
+ * data-serviceの対応とdata-activeの切り替えはpure JSで実装（index側に）。
+ */
+const services = [
+  {
+    slug: "gemini",
+    title: "Gemini",
+    tag: "エージェント開発代行",
+    desc: "国内導入支援実績トップクラスのプロがGeminiエージェントの設計・構築を代行。",
+    href: "/services/training/gemini",
+    accent: "from-[#898cfd] to-[#1b7ffe]",
+  },
+  {
+    slug: "copilot",
+    title: "Copilot",
+    tag: "エージェント開発代行",
+    desc: "日本マイクロソフト認定プロフェッショナルがCopilotエージェントを代行構築。",
+    href: "/services/training/copilot",
+    accent: "from-[#4db17c] to-[#3b7fa6]",
+  },
+  {
+    slug: "training",
+    title: "Training",
+    tag: "人材変革",
+    desc: "定着率98.7%の生成AI人材育成・研修プログラム。",
+    href: "/services/training",
+    accent: "from-accent-gold-light to-accent-gold-dark",
+  },
+  {
+    slug: "consulting",
+    title: "Consulting",
+    tag: "業務変革",
+    desc: "業務プロセスをAIベースで再設計。KPIに直結するユースケースを創出。",
+    href: "/services/consulting",
+    accent: "from-[#1d4524] to-[#7b9265]",
+  },
+  {
+    slug: "transformation",
+    title: "Transformation",
+    tag: "伴走支援",
+    desc: "経営〜現場の意思決定を業務レベルで伴走し、継続的なAX／DXを実現。",
+    href: "/services/transformation",
+    accent: "from-deep-green to-[#113530]",
+  },
+];
+---
+<section class="py-24 tablet:py-32 bg-white">
+  <div class="container-page">
+    <p class="eyebrow !text-deep-green/80">SERVICE</p>
+    <h2 class="mt-4 text-3xl tablet:text-4xl font-bold text-deep-green">
+      シンシアリーが提供する<br class="tablet:hidden" />サービス
+    </h2>
+    <p class="mt-4 text-text-secondary text-sm tablet:text-base max-w-2xl">
+      人材／業務／エージェントを軸に、生成AIを「入れるだけ」で終わらせない
+      包括的なサービスラインナップを提供しています。
+    </p>
+
+    <div
+      id="services-grid"
+      class="services-grid mt-12 grid gap-6 tablet:grid-cols-2 small:grid-cols-3"
+      data-active=""
+    >
+      {services.map((s) => (
+        <a
+          href={s.href}
+          data-service={s.slug}
+          class="group relative block overflow-hidden rounded-2xl border border-border-default bg-white p-8 tablet:p-10 transition hover:border-accent-gold"
+          onmouseenter={`document.getElementById('services-grid').setAttribute('data-active','${s.slug}')`}
+          onmouseleave={`document.getElementById('services-grid').setAttribute('data-active','')`}
+        >
+          <div class={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${s.accent}`}></div>
+          <p class="text-xs tracking-wider text-accent-gold-dark">{s.tag}</p>
+          <h3 class="mt-3 font-en text-3xl tablet:text-4xl font-bold text-deep-green">
+            {s.title}
+          </h3>
+          <p class="mt-4 text-sm text-text-secondary leading-relaxed min-h-[4.5em]">
+            {s.desc}
+          </p>
+          <p class="mt-6 text-sm font-bold text-deep-green flex items-center gap-2 group-hover:text-accent-gold-dark">
+            サービスページを見る <span aria-hidden="true">→</span>
+          </p>
+        </a>
+      ))}
+
+      <div
+        class="relative block overflow-hidden rounded-2xl border border-dashed border-border-default bg-surface-bg p-8 tablet:p-10 flex flex-col justify-center items-center text-text-secondary"
+      >
+        <p class="text-xs tracking-wider text-text-secondary">COMING SOON</p>
+        <p class="mt-2 text-sm">次の商材を準備中です</p>
+      </div>
+    </div>
+  </div>
+</section>

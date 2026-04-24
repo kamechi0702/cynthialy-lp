@@ -1,0 +1,102 @@
+---
+/**
+ * BaseLayout.astro
+ * ---------------------------------------------------------------
+ * 全ページ共通のHTML骨格・SEOメタ・OGP・JSON-LD を担当。
+ * 既存Studioで致命的だった以下の課題をここで一括して解決する：
+ *   - noindex / canonical未設定 / 全ページ同一title/description
+ *   - JSON-LD（Organization/WebSite）未設定
+ *   - og:url 絶対パス不一致
+ *   - SPA由来でbodyが空 → Astro静的生成で解消
+ */
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;          // 絶対URL
+  ogImage?: string;           // 絶対URL
+  noindex?: boolean;          // 下書き時のみtrue
+  bodyClass?: string;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogImage = "https://cynthialy.co.jp/og-default.jpg",
+  noindex = false,
+  bodyClass = "",
+} = Astro.props;
+
+const siteName = "シンシアリー株式会社 | AI Work Transformation Company";
+---
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="theme-color" content="#0d2623" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+    <link rel="canonical" href={canonical} />
+
+    <!-- OGP / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="ja_JP" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Noto+Sans+JP:wght@400;500;700;800&display=swap"
+    />
+
+    <!-- Favicon（Studio既存を踏襲） -->
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://storage.googleapis.com/production-os-assets/assets/b9af0049-7576-488c-ae30-e1ea489fa77f"
+    />
+
+    <!-- JSON-LD: Organization -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "シンシアリー株式会社",
+      "alternateName": "Cynthialy",
+      "url": "https://cynthialy.co.jp/",
+      "logo": "https://cynthialy.co.jp/logo.svg",
+      "sameAs": [
+        "https://x.com/chelsea_ainee",
+        "https://x.com/ozaken_AI"
+      ],
+      "description": description
+    })} />
+
+    <!-- JSON-LD: WebSite -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": siteName,
+      "url": "https://cynthialy.co.jp/",
+      "inLanguage": "ja-JP"
+    })} />
+  </head>
+  <body class={bodyClass}>
+    <slot />
+  </body>
+</html>

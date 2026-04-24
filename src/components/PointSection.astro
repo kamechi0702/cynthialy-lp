@@ -1,0 +1,82 @@
+---
+/**
+ * PointSection.astro
+ * ---------------------------------------------------------------
+ * 「シンシアリーの強み」。Studio版の4ブロック+数値訴求を踏襲。
+ */
+const points = [
+  {
+    no: "01",
+    title: "生成AIを「事業の武器」へ昇華させる",
+    sub: "デュアル・AIグロース方式",
+    body: "「人材」と「業務」の両面からアプローチする独自手法で、現場で使われ続け、成果につながる生成AI定着の組織づくりが可能。",
+  },
+  {
+    no: "02",
+    title: "国内トップクラスの伴走支援実績",
+    sub: "大手〜新進気鋭のメガベンチャーまで",
+    body: "各業界・部門ごとのユースケースと成功パターンを多数蓄積。ゼロから試行錯誤するのではなく、再現性のある成功モデルをそのまま適用。",
+  },
+  {
+    no: "03",
+    title: "ガバナンス × 業務への組み込み設計まで支援",
+    sub: "全社展開に耐えうる",
+    body: "セキュリティ〜利用ルール整備、既存システム連携まで一括支援。業務フローの中にAIを組み込みながら安全に拡張できる状態を実現。",
+  },
+  {
+    no: "04",
+    title: "安心・安全への取り組み",
+    sub: "主要AIモデルの特徴・権利関係を熟知",
+    body: "主要モデルごとの特徴や注意点を常に把握し、最新情報を反映。企業ごとの利用環境や制約に応じて、最適なモデル選定と安全な活用をご提案。",
+  },
+];
+
+const bigStats = [
+  { label: "生成AI活用定着率", value: "98.7", unit: "%" },
+  { label: "研修後のAI活用率", value: "20→95", unit: "%" },
+  { label: "AI関連商談増加率", value: "300", unit: "%" },
+  { label: "ユースケース作成件数", value: "900", unit: "件以上" },
+  { label: "業務削減時間", value: "5,000", unit: "時間以上" },
+];
+---
+<section class="py-24 tablet:py-32 bg-deep-green text-white relative overflow-hidden">
+  <!-- 背景装飾 -->
+  <div class="absolute -top-20 -right-20 w-[420px] h-[420px] rounded-full bg-accent-gold/10 blur-3xl"></div>
+  <div class="absolute -bottom-20 -left-20 w-[360px] h-[360px] rounded-full bg-[#4db17c]/10 blur-3xl"></div>
+
+  <div class="container-page relative">
+    <p class="eyebrow">POINT</p>
+    <h2 class="mt-4 text-3xl tablet:text-4xl font-bold">
+      黎明期からAIの最前線を走り続ける<br class="tablet:hidden" />
+      <span class="text-accent-gold">シンシアリーの強み</span>
+    </h2>
+
+    <ol class="mt-12 grid gap-4 tablet:grid-cols-2">
+      {points.map((p) => (
+        <li class="bg-white/[0.04] border border-white/10 rounded-2xl p-6 tablet:p-8 backdrop-blur">
+          <div class="flex items-start gap-4">
+            <span class="font-en text-accent-gold text-2xl font-bold shrink-0">
+              {p.no}
+            </span>
+            <div>
+              <p class="text-xs text-accent-gold/90 tracking-wider">{p.sub}</p>
+              <h3 class="mt-1 text-lg tablet:text-xl font-bold">{p.title}</h3>
+              <p class="mt-3 text-sm text-white/75 leading-relaxed">{p.body}</p>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <!-- 数値訴求 -->
+    <ul class="mt-14 grid grid-cols-2 tablet:grid-cols-5 gap-4 tablet:gap-6 border-t border-white/10 pt-10">
+      {bigStats.map((s) => (
+        <li class="text-center tablet:text-left">
+          <p class="text-[11px] text-white/70 tracking-wider">{s.label}</p>
+          <p class="metric-num mt-2">{s.value}</p>
+          <p class="text-xs text-white/60 mt-1">{s.unit}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

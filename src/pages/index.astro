@@ -1,0 +1,71 @@
+---
+/**
+ * index.astro — cynthialy TOP
+ * ---------------------------------------------------------------
+ * ミラー (cynthialy.co.jp) の完全レンダリング HTML を丸ごと取り込み、
+ * ピクセル単位で本家と同じ見た目を再現する構成。
+ *
+ * 取り込み内訳:
+ * - `public/_nuxt/entry.C0E92ihM.css`           … Studio/Nuxt ビルドの CSS バンドル
+ * - `src/assets/mirror-head-styles.html`         … head 内のクリティカル <style>
+ * - `src/assets/mirror-body.html`                … body 全体 (<div id="__nuxt">...)
+ *
+ * 事例リンクだけ Astro ルーティング (/case/{slug}/) に書き換え済み。
+ * 将来、各セクションを Astro コンポーネント化する場合は本ファイルを段階的に
+ * 置き換える（先にミラーで見た目を合わせ、後段で構造化するのが安全）。
+ */
+// Vite の `?raw` インポートでビルド時に HTML 文字列として取り込む
+import bodyHtml from "../assets/mirror-body.html?raw";
+import headStyles from "../assets/mirror-head-styles.html?raw";
+
+const pageTitle = "シンシアリー｜AI Work Transformation Company";
+const pageDescription =
+  "シンシアリーは「Gemini／Copilotでの成果創出」を支援する企業。デュアル・AIグロース方式により、人と業務をAIベースで再設計し、企業の競争力を高めます。";
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href="https://cynthialy.co.jp/" />
+
+    <!-- Studio/Nuxt の CSS バンドル -->
+    <link rel="stylesheet" href="/_nuxt/entry.C0E92ihM.css" crossorigin="" />
+    <!-- Google Fonts（本家と同じ） -->
+    <link
+      href="https://fonts.googleapis.com/css?display=swap&family=Poppins:ital,wght@0,400;0,600;0,700;1,200;1,300;1,400"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?display=swap&family=Gothic+A1:wght@500"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?display=swap&family=Inter:wght@400"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?display=swap&family=Lato:wght@400;700"
+      rel="stylesheet"
+    />
+
+    <!-- head 内のクリティカル <style> を丸ごと展開 -->
+    <Fragment set:html={headStyles} />
+  </head>
+
+  <body>
+    <!-- ミラーの body 全体（case リンクは Astro ルーティングに書き換え済み） -->
+    <Fragment set:html={bodyHtml} />
+
+    <!--
+      cynthialy ランタイム（バニラ JS）。
+      Studio の Nuxt バンドルは Nuxt ランタイムが無いとエラー終了するため、
+      必要最小限のインタラクション（<loop-box>、背景動画 autoplay、sd appear）
+      だけをスタンドアロンで実装しています。
+    -->
+    <script is:inline src="/_astro/cynthialy-runtime.js"></script>
+  </body>
+</html>

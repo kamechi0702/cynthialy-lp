@@ -1,0 +1,106 @@
+---
+/**
+ * Header.astro
+ * ---------------------------------------------------------------
+ * グローバルヘッダー。スクロールで背景を濃くする（透明→deep-green）。
+ * PCは横並びナビ、モバイルはハンバーガー→スライドメニュー。
+ */
+---
+<header
+  id="site-header"
+  class="fixed top-0 left-0 right-0 z-[300] transition-colors duration-300"
+>
+  <div
+    class="container-page flex items-center justify-between py-4 tablet:py-5"
+  >
+    <a href="/" class="flex items-center gap-2 text-white" aria-label="シンシアリー株式会社 トップへ">
+      <span class="font-en font-bold tracking-wider text-lg tablet:text-xl">
+        cynthialy
+      </span>
+      <span
+        class="hidden tablet:inline-block text-[10px] tracking-[0.2em] text-accent-gold border border-accent-gold/60 rounded-full px-2 py-0.5"
+      >
+        AI WORK TRANSFORMATION
+      </span>
+    </a>
+
+    <nav class="hidden tablet:block" aria-label="グローバルナビゲーション">
+      <ul class="flex items-center gap-8 text-white text-sm">
+        <li><a class="hover:text-accent-gold transition-colors" href="/">ホーム</a></li>
+        <li><a class="hover:text-accent-gold transition-colors" href="/services">サービス</a></li>
+        <li><a class="hover:text-accent-gold transition-colors" href="/cases">事例・実績</a></li>
+        <li><a class="hover:text-accent-gold transition-colors" href="/aboutus">会社情報</a></li>
+        <li>
+          <a
+            class="btn btn-primary !py-2.5 !px-5 !text-sm"
+            href="https://share-na2.hsforms.com/1PvsmVs3nQKKkGyMSTxaqzQdk2zo"
+            rel="noopener"
+          >
+            資料請求
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <button
+      id="menu-toggle"
+      type="button"
+      class="tablet:hidden text-white p-2"
+      aria-controls="mobile-menu"
+      aria-expanded="false"
+      aria-label="メニューを開く"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          d="M4 7h16M4 12h16M4 17h16"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <div
+    id="mobile-menu"
+    class="tablet:hidden hidden bg-deep-green text-white"
+  >
+    <ul class="container-page flex flex-col gap-4 py-6 text-sm">
+      <li><a href="/">ホーム</a></li>
+      <li><a href="/services">サービス</a></li>
+      <li><a href="/cases">事例・実績</a></li>
+      <li><a href="/aboutus">会社情報</a></li>
+      <li>
+        <a
+          class="btn btn-primary w-full"
+          href="https://share-na2.hsforms.com/1PvsmVs3nQKKkGyMSTxaqzQdk2zo"
+        >
+          資料請求
+        </a>
+      </li>
+    </ul>
+  </div>
+</header>
+
+<script is:inline>
+  // ヘッダーの背景をスクロールに応じて切り替え
+  const header = document.getElementById("site-header");
+  const onScroll = () => {
+    if (!header) return;
+    if (window.scrollY > 40) {
+      header.classList.add("bg-deep-green/90", "backdrop-blur");
+    } else {
+      header.classList.remove("bg-deep-green/90", "backdrop-blur");
+    }
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  // モバイルメニュー
+  const toggle = document.getElementById("menu-toggle");
+  const menu = document.getElementById("mobile-menu");
+  toggle?.addEventListener("click", () => {
+    const isOpen = menu?.classList.toggle("hidden") === false;
+    toggle.setAttribute("aria-expanded", String(isOpen));
+  });
+</script>

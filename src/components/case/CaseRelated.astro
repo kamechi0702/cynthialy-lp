@@ -1,0 +1,180 @@
+---
+/**
+ * CaseRelated.astro
+ * ---------------------------------------------------------------
+ * 関連事例を 2 件まで並べるブロック。
+ * frontmatter.related に入っている slug 配列から、
+ * `works` Content Collection のメタ情報を引いてカード表示する。
+ *
+ * 本家 /case/X8Q6V52T は 2 カラムの会社ロゴ＋タイトルカード。
+ * slug が存在しないものはフェイルセーフで除外する。
+ */
+import { getCollection } from "astro:content";
+
+interface Props {
+  slugs: string[];
+}
+
+const { slugs } = Astro.props;
+
+// 全 works を取得して、指定 slug のものだけ抽出し元の順序を保つ
+const all = await getCollection("works");
+const map = new Map(all.map((e) => [e.slug, e]));
+const related = slugs
+  .map((s) => map.get(s))
+  .filter((e): e is NonNullable<typeof e> => !!e)
+  .slice(0, 2);
+
+const fmtDate = (d: Date) => `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
+---
+
+{
+  related.length > 0 && (
+    <section class="case-related" aria-labelledby="case-related-title">
+      <div class="case-related__inner">
+        <div class="case-related__head">
+          <p class="case-related__eyebrow">RELATED CASE</p>
+          <h2 id="case-related-title" class="case-related__title">
+            関連事例
+          </h2>
+        </div>
+        <ul class="case-related__grid">
+          {related.map((e) => (
+            <li class="case-related__item">
+              <a href={`/case/${e.slug}`} class="case-related__link">
+                <div class="case-related__thumb">
+                  <img
+                    src={e.data.heroImage}
+                    alt={e.data.heroImageAlt ?? `${e.data.company}のインタビュー`}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="case-related__body">
+                  <div class="case-related__meta">
+                    <span class="case-related__cat">{e.data.category}</span>
+                    <time datetime={e.data.publishedAt.toISOString().slice(0, 10)}>
+                      {fmtDate(e.data.publishedAt)}
+                    </time>
+                  </div>
+                  <p class="case-related__company">{e.data.company}</p>
+                  <h3 class="case-related__heading">{e.data.title}</h3>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .case-related {
+    padding: 80px 16px 48px;
+    background: var(--color-neutral-10-bg);
+  }
+  .case-related__inner {
+    max-width: 960px;
+    margin-inline: auto;
+  }
+  .case-related__head {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .case-related__eyebrow {
+    margin: 0 0 8px;
+    font-family: var(--font-sans-en);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--color-accent-gold-dark);
+    font-weight: 700;
+  }
+  .case-related__title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--color-deep-green);
+    letter-spacing: 0.06em;
+  }
+  .case-related__grid {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 540px) {
+    .case-related {
+      padding: 56px 16px 32px;
+    }
+    .case-related__grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+  .case-related__item {
+    background: #fff;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(14, 38, 35, 0.04);
+    transition: transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out);
+  }
+  .case-related__item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(14, 38, 35, 0.08);
+  }
+  .case-related__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+  .case-related__thumb {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #eee;
+  }
+  .case-related__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--duration-slow) var(--ease-out);
+  }
+  .case-related__link:hover .case-related__thumb img {
+    transform: scale(1.04);
+  }
+  .case-related__body {
+    padding: 20px 20px 24px;
+  }
+  .case-related__meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--color-neutral-80-txt);
+    margin-bottom: 10px;
+  }
+  .case-related__cat {
+    padding: 2px 10px;
+    border: 1px solid var(--color-deep-green);
+    border-radius: var(--radius-pill);
+    color: var(--color-deep-green);
+    font-weight: 600;
+    font-size: 11px;
+  }
+  .case-related__company {
+    margin: 0 0 4px;
+    font-size: 13px;
+    color: var(--color-neutral-80-txt);
+  }
+  .case-related__heading {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: var(--color-neutral-100-txt);
+  }
+</style>

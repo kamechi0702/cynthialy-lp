@@ -1,0 +1,107 @@
+---
+/**
+ * ConsultantSection.astro
+ * ---------------------------------------------------------------
+ * 代表・取締役のプロフィールと、在籍する専門家の紹介。
+ */
+const leaders = [
+  {
+    name: "國本 知里",
+    role: "シンシアリー株式会社 代表取締役",
+    x: "https://x.com/chelsea_ainee",
+    tags: ["Copilotアンバサダー", "AI業務改革・DX推進"],
+    bio: "企業向け生成AI人材育成・AI定着化支援事業、AI Work Transformation事業を展開。女性のAIリスキリングに取り組む一般社団法人Women AI Initiative Japan 代表。",
+  },
+  {
+    name: "小澤 健祐",
+    role: "シンシアリー株式会社 取締役",
+    x: "https://x.com/ozaken_AI",
+    tags: ["AIエージェント構築・設計", "AI組織変革"],
+    bio: "「人間とAIが共存する社会をつくる」をビジョンに掲げ、AI分野で幅広く活動。書籍『生成AI導入の教科書』『AIエージェントの教科書』の著者。1500本以上のAI関連記事の執筆を通じてAIの社会実装を推進。",
+  },
+];
+
+const specialists = [
+  {
+    title: "AIを活用した暗黙知継承支援",
+    desc: "ベテラン社員の\"言語化できない技術・判断\"をAIで構造化・継承可能にし、技術伝承にかかる期間を大幅に短縮する暗黙知DXコンサルタント。",
+  },
+  {
+    title: "Copilot特化エージェント支援",
+    desc: "Microsoft Copilot Studio等を活用したAIエージェントの設計・構築に特化し、社内問い合わせ・承認フロー・データ集計など定型業務の自動化を実現。",
+  },
+  {
+    title: "Gemini専門自動化支援",
+    desc: "Gemini for Google Workspace の導入戦略から部門別活用シナリオ設計までを手がけ、全社的なAI活用文化の醸成を支援。",
+  },
+];
+---
+<section class="py-24 tablet:py-32 bg-white">
+  <div class="container-page">
+    <p class="eyebrow !text-deep-green/80">CONSULTANT</p>
+    <h2 class="mt-4 text-3xl tablet:text-4xl font-bold text-deep-green">
+      生成AI特化コンサルタント
+    </h2>
+    <p class="mt-4 text-text-secondary text-sm tablet:text-base">
+      業界・業種を問わず、上場企業をはじめとした確かな実績。
+    </p>
+
+    <ul class="mt-12 grid gap-6 tablet:grid-cols-2">
+      {leaders.map((l) => (
+        <li class="bg-surface-bg rounded-2xl p-6 tablet:p-8 border border-border-default">
+          <div class="flex items-start gap-5">
+            <div
+              class="shrink-0 w-20 h-20 rounded-full bg-gradient-to-br from-deep-green to-[#1d4524] flex items-center justify-center text-white font-en font-bold text-xl"
+              aria-hidden="true"
+            >
+              {l.name.charAt(0)}
+            </div>
+            <div>
+              <p class="text-xs text-text-secondary">{l.role}</p>
+              <h3 class="mt-1 text-xl font-bold text-deep-green">{l.name}</h3>
+              <ul class="mt-3 flex flex-wrap gap-2">
+                {l.tags.map((t) => (
+                  <li class="text-[11px] bg-deep-green text-white rounded-full px-3 py-1">
+                    {t}
+                  </li>
+                ))}
+              </ul>
+              <p class="mt-4 text-sm text-text-secondary leading-relaxed">
+                {l.bio}
+              </p>
+              <a
+                href={l.x}
+                rel="noopener"
+                class="mt-4 inline-flex items-center text-sm text-link hover:underline"
+              >
+                X (Twitter) →
+              </a>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <div class="mt-16">
+      <h3 class="text-xl font-bold text-deep-green">
+        他にも、各領域に精通した専門家が多数在籍
+      </h3>
+      <ul class="mt-6 grid gap-4 tablet:grid-cols-3">
+        {specialists.map((s) => (
+          <li class="border border-border-default rounded-xl p-6">
+            <p class="text-sm font-bold text-deep-green">{s.title}</p>
+            <p class="mt-2 text-sm text-text-secondary leading-relaxed">
+              {s.desc}
+            </p>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-10 text-right">
+        <a class="btn btn-ghost" href="/aboutus">
+          私たちについて <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,103 @@
+---
+/**
+ * HeroSection.astro
+ * ---------------------------------------------------------------
+ * FV（ファーストビュー）。Studio版の背景動画＋グラデ（deep-green × gold）
+ * の雰囲気を踏襲しつつ、監査UIUX-18「FV直下にMetricsBadge」を適用。
+ */
+---
+<section
+  class="relative isolate overflow-hidden text-white min-h-[100svh] flex items-center"
+  aria-labelledby="hero-heading"
+>
+  <!-- 背景：グラデ＋動画（動画は任意。失敗時はグラデのみ） -->
+  <div class="absolute inset-0 hero-gradient z-0"></div>
+  <div class="absolute inset-0 hero-overlay z-10"></div>
+
+  <!-- 動画は production 差し替え。プレースホルダとしてグラデのみでも映える -->
+  <video
+    class="hero-bg-video opacity-30"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="metadata"
+    poster=""
+  >
+    <!-- 将来：自ホスティングの動画URLに差し替え -->
+  </video>
+
+  <div class="container-page relative z-20 py-28 tablet:py-40">
+    <p class="eyebrow">Go AI Native.</p>
+
+    <h1
+      id="hero-heading"
+      class="mt-6 font-sans text-[34px] leading-[1.25] tablet:text-[56px] small:text-[64px] tracking-[-0.01em]"
+    >
+      大手・上場企業を中心に<br />
+      <span class="text-accent-gold">7年以上AI活用を推進</span>
+    </h1>
+
+    <p class="mt-6 max-w-[640px] text-sm tablet:text-base text-white/85 leading-relaxed">
+      シンシアリーは「Gemini／Copilotでの成果創出を支援する企業」です。<br />
+      人と業務をAIベースで再設計し、AIを企業の強みに変える伴走型DX支援を提供します。
+    </p>
+
+    <div class="mt-10 flex flex-wrap gap-4">
+      <a
+        class="btn btn-primary"
+        href="https://share-na2.hsforms.com/1PvsmVs3nQKKkGyMSTxaqzQdk2zo"
+        rel="noopener"
+      >
+        資料請求（3分）
+        <span aria-hidden="true">→</span>
+      </a>
+      <a
+        class="btn btn-secondary"
+        href="https://meetings-na2.hubspot.com/yoshiki-watanabe2"
+        rel="noopener"
+      >
+        無料相談を予約
+      </a>
+    </div>
+
+    <!-- Metrics Badge -->
+    <ul class="mt-16 grid grid-cols-2 tablet:grid-cols-3 gap-6 max-w-3xl">
+      <li class="bg-white/5 border border-white/10 rounded-xl px-5 py-6 backdrop-blur">
+        <p class="text-xs tracking-wider text-white/70">Copilot 導入支援実績</p>
+        <p class="metric-num mt-2">
+          50<span class="text-xl align-middle ml-1">件以上</span>
+        </p>
+        <p class="mt-2 text-[10px] text-white/50">※顧客アンケート調べ</p>
+      </li>
+      <li class="bg-white/5 border border-white/10 rounded-xl px-5 py-6 backdrop-blur">
+        <p class="text-xs tracking-wider text-white/70">Gemini 導入支援実績</p>
+        <p class="metric-num mt-2">
+          30<span class="text-xl align-middle ml-1">件以上</span>
+        </p>
+        <p class="mt-2 text-[10px] text-white/50">※顧客アンケート調べ</p>
+      </li>
+      <li class="bg-white/5 border border-white/10 rounded-xl px-5 py-6 backdrop-blur col-span-2 tablet:col-span-1">
+        <p class="text-xs tracking-wider text-white/70">平均業務削減率</p>
+        <p class="metric-num mt-2">
+          30<span class="text-xl align-middle ml-1">%以上</span>
+        </p>
+        <p class="mt-2 text-[10px] text-white/50">※顧客アンケート調べ</p>
+      </li>
+    </ul>
+
+    <p class="mt-10 font-script text-accent-gold/90 text-lg">
+      cynthialy Dual Transformation
+    </p>
+  </div>
+
+  <!-- スクロール誘導 -->
+  <a
+    href="#method"
+    class="absolute left-1/2 -translate-x-1/2 bottom-6 z-20 text-white/80 text-xs flex flex-col items-center gap-2"
+    aria-label="下にスクロール"
+  >
+    <span>SCROLL</span>
+    <span class="w-px h-10 bg-white/60 animate-pulse"></span>
+  </a>
+</section>

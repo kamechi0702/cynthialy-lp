@@ -1,0 +1,58 @@
+---
+/**
+ * CTABlock.astro
+ * ---------------------------------------------------------------
+ * ページ末尾の一次/二次CTA。監査CTA-26「モバイル追従CTA」とは別で、
+ * ページ内の「読み終わった後に行動する」ための静的ブロック。
+ */
+interface Props {
+  variant?: "dark" | "light";
+}
+const { variant = "dark" } = Astro.props;
+const isDark = variant === "dark";
+---
+<section
+  class={`py-24 tablet:py-32 ${
+    isDark ? "bg-gradient-to-br from-deep-green to-[#1d4524] text-white" : "bg-white text-deep-green"
+  }`}
+>
+  <div class="container-page text-center">
+    <p class={`eyebrow ${isDark ? "" : "!text-deep-green/80"}`}>CONTACT</p>
+    <h2 class="mt-4 text-3xl tablet:text-4xl font-bold">
+      資料請求・お問い合わせ
+    </h2>
+    <p class={`mt-4 text-sm tablet:text-base max-w-2xl mx-auto ${isDark ? "text-white/80" : "text-text-secondary"}`}>
+      生成AIを単なる導入で終わらせず、組織全体に根付かせることで、<br class="hidden tablet:inline" />
+      企業変革と事業成長を実現する成果創出サービスです。
+    </p>
+
+    <div class="mt-10 flex flex-col tablet:flex-row gap-4 justify-center">
+      <a
+        class="btn btn-primary"
+        href="https://share-na2.hsforms.com/1PvsmVs3nQKKkGyMSTxaqzQdk2zo"
+        rel="noopener"
+      >
+        <span class="flex flex-col items-start">
+          <span class="text-[10px] opacity-70">サービス概要や事例集の資料がほしい</span>
+          <span class="font-bold">資料請求</span>
+        </span>
+        <span aria-hidden="true">→</span>
+      </a>
+      <a
+        class={isDark ? "btn btn-secondary" : "btn btn-ghost"}
+        href="https://meetings-na2.hubspot.com/yoshiki-watanabe2"
+        rel="noopener"
+      >
+        <span class="flex flex-col items-start">
+          <span class="text-[10px] opacity-70">生成AIの定着に関してまずは相談したい</span>
+          <span class="font-bold">無料相談</span>
+        </span>
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <p class={`mt-6 text-xs ${isDark ? "text-white/50" : "text-text-secondary"}`}>
+      通常3営業日以内にご返信 / 相談のみも歓迎
+    </p>
+  </div>
+</section>

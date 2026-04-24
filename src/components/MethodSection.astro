@@ -1,0 +1,76 @@
+---
+/**
+ * MethodSection.astro
+ * ---------------------------------------------------------------
+ * 「独自メソッド／デュアル・AIグロース方式」の訴求セクション。
+ * Hero直下に置き、4つの壁→独自メソッド→成果 の順にブロックを積む。
+ */
+const walls = [
+  { label: "①活用の壁", desc: "入れたものの現場で使われない" },
+  { label: "②定着の壁", desc: "一部のAI人材にとどまり組織に広がらない" },
+  { label: "③成果の壁", desc: "使われていても業務KPIに接続しない" },
+  { label: "④ガバナンスの壁", desc: "セキュリティ・利用ルールが整備されず拡張できない" },
+];
+
+const stats = [
+  { label: "ユースケース作成件数", value: "900", unit: "件以上" },
+  { label: "業務削減時間", value: "5,000", unit: "時間以上" },
+  { label: "業務削減率 満足度", value: "87.5", unit: "%" },
+];
+---
+<section id="method" class="relative py-24 tablet:py-32 bg-surface-bg">
+  <div class="container-page">
+    <p class="eyebrow !text-deep-green/80">METHOD</p>
+    <h2 class="mt-4 text-3xl tablet:text-4xl font-bold text-deep-green">
+      企業が必ずぶつかる
+      <span class="block mt-2 text-deep-green">
+        生成AIの<span class="text-accent-gold-dark underline decoration-2 underline-offset-4">4つの壁</span>
+      </span>
+    </h2>
+
+    <ul class="mt-10 grid gap-4 tablet:grid-cols-2 small:grid-cols-4">
+      {walls.map((w) => (
+        <li class="bg-white rounded-xl p-6 border border-border-default">
+          <p class="text-sm text-deep-green font-bold">{w.label}</p>
+          <p class="mt-2 text-sm text-text-secondary leading-relaxed">{w.desc}</p>
+        </li>
+      ))}
+    </ul>
+
+    <!-- 独自メソッド ブロック -->
+    <div class="mt-24 grid gap-10 tablet:grid-cols-[1fr_1.2fr] items-center">
+      <div>
+        <p class="eyebrow !text-deep-green/80">CYNTHIALY ORIGINAL</p>
+        <h3 class="mt-4 text-2xl tablet:text-3xl font-bold text-deep-green">
+          シンシアリー独自メソッド
+        </h3>
+        <p class="mt-4 font-en text-accent-gold-dark text-xl tablet:text-2xl font-bold">
+          Dual AI Growth Method
+        </p>
+        <p class="mt-6 text-sm tablet:text-base text-text-secondary leading-relaxed">
+          生成AI導入・定着の壁を効率的に突破し、企業競争力につなげるための独自モデル。<br />
+          それが <strong>デュアル・AIグロース方式</strong> です。
+        </p>
+        <a class="btn btn-ghost mt-8" href="/services">
+          デュアル・AIグロース方式をもっと知る
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      <div class="bg-gradient-to-br from-deep-green to-[#1d4524] text-white rounded-2xl p-8 tablet:p-10 shadow-lg">
+        <ul class="grid grid-cols-3 gap-4 text-center">
+          {stats.map((s) => (
+            <li>
+              <p class="text-xs text-white/70">{s.label}</p>
+              <p class="metric-num mt-2">{s.value}</p>
+              <p class="text-xs text-white/70 mt-1">{s.unit}</p>
+            </li>
+          ))}
+        </ul>
+        <p class="mt-8 text-xs text-white/60 border-t border-white/10 pt-4">
+          各種メディアでも話題のメソッド。業界特化の成功パターンを多数保有しています。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

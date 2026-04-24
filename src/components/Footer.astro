@@ -1,0 +1,73 @@
+---
+/**
+ * Footer.astro
+ * ---------------------------------------------------------------
+ * サイト共通フッター。情報設計は既存サイトを踏襲しつつ、
+ * 統廃合プラン（/about・/company→/aboutus 等）に沿ってリンク整理。
+ */
+const year = new Date().getFullYear();
+---
+<footer class="bg-deep-green text-white pt-20 pb-10">
+  <div class="container-page grid gap-12 tablet:grid-cols-[1.2fr_1fr_1fr_1fr]">
+    <div>
+      <a href="/" class="inline-block text-2xl font-en font-bold tracking-wider">
+        cynthialy
+      </a>
+      <p class="mt-4 text-sm leading-relaxed text-white/80">
+        シンシアリーは、大手・上場企業を中心に<br class="hidden small:inline" />
+        生成AIの導入から定着、成果創出までを伴走する<br class="hidden small:inline" />
+        AI Work Transformation カンパニーです。
+      </p>
+      <a href="/aboutus" class="inline-block mt-6 text-sm text-accent-gold hover:underline">
+        会社概要 →
+      </a>
+    </div>
+
+    <div>
+      <h3 class="text-sm tracking-widest text-accent-gold mb-4">SERVICE</h3>
+      <ul class="space-y-2 text-sm text-white/85">
+        <li><a href="/services" class="hover:text-accent-gold">サービス一覧</a></li>
+        <li><a href="/services/consulting" class="hover:text-accent-gold">コンサルティング</a></li>
+        <li><a href="/services/transformation" class="hover:text-accent-gold">トランスフォーメーション</a></li>
+        <li><a href="/services/training" class="hover:text-accent-gold">研修・育成</a></li>
+        <li><a href="/services/training/copilot" class="hover:text-accent-gold">Copilot</a></li>
+        <li><a href="/services/training/gemini" class="hover:text-accent-gold">Gemini</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-sm tracking-widest text-accent-gold mb-4">CASES / NEWS</h3>
+      <ul class="space-y-2 text-sm text-white/85">
+        <li><a href="/cases" class="hover:text-accent-gold">事例一覧</a></li>
+        <li><a href="https://peatix.com/group/16530707/events" class="hover:text-accent-gold" rel="noopener">セミナー一覧</a></li>
+        <li><a href="/news" class="hover:text-accent-gold">お知らせ</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-sm tracking-widest text-accent-gold mb-4">CONTACT</h3>
+      <ul class="space-y-2 text-sm text-white/85">
+        <li>
+          <a href="https://share-na2.hsforms.com/1PvsmVs3nQKKkGyMSTxaqzQdk2zo" class="hover:text-accent-gold" rel="noopener">
+            資料請求
+          </a>
+        </li>
+        <li>
+          <a href="https://meetings-na2.hubspot.com/yoshiki-watanabe2" class="hover:text-accent-gold" rel="noopener">
+            無料相談
+          </a>
+        </li>
+        <li><a href="/contact/form" class="hover:text-accent-gold">お問い合わせフォーム</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container-page mt-14 pt-6 border-t border-white/15 flex flex-col tablet:flex-row tablet:items-center tablet:justify-between gap-4 text-xs text-white/60">
+    <ul class="flex flex-wrap gap-6">
+      <li><a href="/privacy" class="hover:text-accent-gold">プライバシーポリシー</a></li>
+      <li><a href="/terms" class="hover:text-accent-gold">利用規約</a></li>
+      <li><a href="/sitemap.xml" class="hover:text-accent-gold">サイトマップ</a></li>
+    </ul>
+    <p>© {year} cynthialy.co.jp All rights reserved.</p>
+  </div>
+</footer>

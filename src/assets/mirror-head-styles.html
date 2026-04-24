@@ -1,0 +1,176 @@
+<style>#bg-movie {     
+    position: fixed !important;                                                                  
+  }
+  .loop-sizer {
+  height: auto!important;
+  }</style>
+<style>#contents h3 {
+    display:flex!important;
+    align-items:center!important;
+    gap:0.5em!important;;
+  }
+
+  #contents h3:before {
+    content:"";
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-image:url('/storage.googleapis.com/studio-design-asset-files/projects/7kadNX28O3/s-32x32_a4e9aa88-04e2-4c6e-9b0f-dcb74d197185.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+  }</style>
+<style id="loop-box-appear-override">
+      loop-box .appear {
+        opacity: inherit !important;
+        transform: inherit !important;
+        transition: inherit !important;
+      }
+    </style>
+<style type="text/css" rel="stylesheet" class="ts-font">@font-face {
+  font-family: '秀英角ゴシック銀 L JIS2004';
+  font-weight: Bold;
+  src: url(//wf.typesquare.com/3/tsst/dist/ja/ts?condition=464d90c9e1da1dda3a062fa2bffc0e25&onetime_condition=&eid=5ad00062415c46a09fd67fd7ac1e024a&bw[name]=Chrome&bw[ftf]=0&bw[os]=Macintosh&location=cynthialy.co.jp%2F&fonts[id]=1972&fonts[str]=JS4wMTM1Nzg5QUNERUdJSk1OUFRVVldYYWNkZWZoaWttbm9wcnN0dnd5euOAgeOAguOAjOOAjeOAjuOAj%2BOBjOOBj%2BOBkeOBkuOBl%2BOBmOOBmeOBn%2BOBpOOBpuOBp%2BOBqOOBq%2BOBruOBr%2BOBvuOCgOOCgeOCguOChOOCiuOCi%2BOCj%2BOCkuOCouOCpOOCp%2BOCqOOCreOCr%2BOCsOOCtuOCt%2BOCuOOCueOCu%2BOCveOCv%2BODg%2BODh%2BODiOODieODiuODjeODjuODkOODkeODk%2BODleODl%2BODmeODnuODoeODouODp%2BODqeODquODq%2BODrOODreODs%2BODu%2BODvOS4gOS4iuS6i%2BS6uuS7iuS7o%2BS7peS7u%2BS8geS8muS9jeS%2FoeS%2FruWFpeWFqOWFseWGheWGjeWIhuWIiuWLleWLmeWMluWNg%2BWNlOWPiuWPluWPr%2BWQkeWToeWWtuWbnuWbo%2BWbveWft%2BWgseWjh%2BWkmuWkp%2BWls%2BWtmOWtpuWumuWun%2BWuouWwguWwjuWxleW4guW4q%2BW4uOW5heW5tOW6g%2BW8j%2BW9ueaAp%2BaDheaIkOaOiOaOqOaOsuaPtOaQuuaUr%2BaUv%2BaVmeaVsOaWmeaXpeaZruabuOacrOadkOagqualreapi%2Baxguazlea0u%2Ba8lOeEoeeOh%2BeQhueUn%2BeUqOeVqueZuueZu%2BeahOebo%2BebuOecjOedgOeglOekvuenkeethuexjee1hOe1jOe3oOe4vuiBt%2BiCsuiDveiIrOiIueiRieihjOihqOioiOiomOioreiqjeirh%2Biri%2Bism%2BitsOizh%2Bi3temAmumAo%2BmAsumHjumWgOmWi%2BmWk%2BmWog%3D%3D);
+}</style>
+<style type="text/css" rel="stylesheet" class="ts-font">@font-face {
+  font-family: '秀英角ゴシック銀 B JIS2004';
+  font-weight: Bold;
+  src: url(//wf.typesquare.com/3/tsst/dist/ja/ts?condition=464d90c9e1da1dda3a062fa2bffc0e25&onetime_condition=&eid=5ad00062415c46a09fd67fd7ac1e024a&bw[name]=Chrome&bw[ftf]=0&bw[os]=Macintosh&location=cynthialy.co.jp%2F&fonts[id]=1974&fonts[str]=LzA0QUNHSWVpbG1ub3B0w5figJzigJ3jgIHjgILjgIXjgIzjgI3jgJzjgYLjgYTjgYbjgYjjgYrjgYvjgYzjgY3jgY%2FjgZHjgZPjgZTjgZXjgZbjgZfjgZjjgZnjgZrjgZvjgZ3jgZ%2FjgaDjgaPjgaTjgaXjgabjgafjgajjgarjgavjga7jga%2Fjgbjjgbvjgb7jgb%2FjgoHjgoLjgoTjgojjgonjgorjgovjgozjgo%2FjgpLjgqLjgqPjgqfjgqjjgqnjgqzjgq3jgq%2FjgrDjgrHjgrPjgrXjgrfjgrjjgrnjgrvjgrzjgr3jgr%2Fjg4Hjg4Pjg4Tjg4bjg4fjg4jjg4njg4rjg43jg5Djg5Hjg5Pjg5Xjg5fjg5njg5%2Fjg6Djg6Hjg6Ljg6Pjg6Xjg6bjg6fjg6njg6rjg6vjg63jg7Pjg7vjg7zkuIDkuIrkuKHkuK3kuLvkuovkurrkvIHkvJrkvLTkvb%2Fkvovkvpvkv4Lkv53kv67lgaXlgpnlhaXlhajlhoXlho3lh7rliKnliLbliY3libXlip%2Flirnli5Xli5nljJblj43lj5blj6%2FlkITlkIjllY%2Flmajlm7Llm73lnIvloLHloLTlooPlo4HlpInlpJrlpKflrZjlronlrprlrp%2FlsILlsI7lsI%2FlsZXluLjluYXluoPlvI%2FlvLflvZPlvrTlv4Plv5zmgKfmg4XmhI%2FmhYvmiJDmiYvmib%2Fmiormi6zmjIHmj5Dmj6Hmj7TmkLrmlK%2FmlbDmlbTmlpnmlrDmlrnml6LmmIfmmI7mmKDmma%2FmmpfmnIDmnInmnJ%2FmnKzmnZDmnpzmoYjmpa3mpoLmqKnmrabmsJfmsYLms4Hms5Xms6jmtLvmvqTngrnnibnnirbni6znjK7nj77nkrDnlJ%2FnlKjnlYznmoTnm7jnnYDnn6XnoJTnoLTnorrnpL7npZDnqK7nqY3nqoHnrYnnr4TntITntYTntpnntprnt5rnuL7nuZTogJDog4zog73oh6roj6%2Fok4TooYzopoHopovopqfoqIjoqK3oqaboqbHoqqToq4foq4vosqLos4fotbDovrzpgKPpgLLpgZXpganpgbjpg6jph4zpi63pjK%2FploDplovplqLpm4bpnaLpnanpoYzpu47pu5k%3D);
+}</style>
+<style type="text/css" rel="stylesheet" class="ts-font">@font-face {
+  font-family: '秀英角ゴシック銀 M JIS2004';
+  font-weight: Bold;
+  src: url(//wf.typesquare.com/3/tsst/dist/ja/ts?condition=464d90c9e1da1dda3a062fa2bffc0e25&onetime_condition=&eid=5ad00062415c46a09fd67fd7ac1e024a&bw[name]=Chrome&bw[ftf]=0&bw[os]=Macintosh&location=cynthialy.co.jp%2F&fonts[id]=1973&fonts[str]=IiUsLS4vMDEyNDY3QUNER0lNU1dYYWNkZWZnaGlqa2xtbm9wcnN0dXZ5wqnDl%2BKAneKAp%2BKAu%2BK8pOK8vOK8v%2BOAgeOAguOAjOOAjeOBhOOBhuOBiOOBiuOBi%2BOBjOOBjeOBkeOBkuOBk%2BOBl%2BOBmeOBmuOBm%2BOBneOBn%2BOBoeOBo%2BOBpOOBpuOBp%2BOBqOOBqeOBquOBq%2BOBruOBr%2BOBs%2BOBtuOBuOOBueOBvuOBv%2BOCgeOCguOCiOOCieOCiuOCi%2BOCjOOCj%2BOCkuOCouOCo%2BOCpOOCpuOCp%2BOCqOOCquOCq%2BOCr%2BOCsOOCseOCs%2BOCteOCt%2BOCuOOCueOCuuOCu%2BOCveOCv%2BODgOODg%2BODhOODhuODh%2BODiOODieODiuODi%2BODjeODjuODkOODk%2BODleODl%2BODmeODm%2BODneODnuODn%2BODoOODoeODouODpeODpuODp%2BODqeODquODq%2BODrOODreODs%2BODu%2BODvOS4gOS4iuS4reS6ieS6i%2BS6uuS7iuS7luS7mOS7o%2BS7peS7tuS8geS8muS8neS8tOS9k%2BS9nOS%2Bi%2BS%2Fg%2BS%2FruWAjeWFpeWFqOWFt%2BWGheWGjeWHuuWIpOWIpeWIqeWJiuWJjeWJteWKm%2BWKoOWKueWLieWLleWLmeWMluWNmOWNs%2BWPguWPluWPl%2BWPo%2BWPr%2BWQhOWQiOWQjeWQkeWToeWVj%2BWcqOWdh%2BWei%2BWfn%2BWgtOWjgeWkieWkmuWkp%2BWumuWun%2BWuouWutuWwguWwjuW5heW5s%2BW5tOW6puW8j%2BW8t%2BW%2BjOW%2Bl%2BW%2FheW%2Fl%2BaIkOaIpuaJi%2BaJv%2BaKgOaKnOaOqOaPtOaUr%2BaUueaVsOaWh%2BaWreaWsOaWueaXpeaZguaal%2BacgOacieacn%2BadkOaenOagquaguealreani%2Ba0u%2Ba1uOa4m%2Ba6gOeCueeJueeLrOeNsueOh%2BePvueUn%2BeUqOeVpeeZuueahOedgOefpeefreeglOegtOekvuengeeqgeertuetieevieexjeeyvuezuOe0hOe1gue1hOe1kOe2mee3mue4rue4vue5lOe9suiDveiHquihjOihk%2Bimi%2Bimj%2Bimp%2BinpuiogOioiOioreiqjeiqleiqnuiqv%2Bi1sOi1t%2Bi2hei2s%2BmAj%2BmAmumAn%2BmAoOmAsumBuOmDqOmGuOmVt%2BmWgOmWi%2BmWk%2BmbhumdqemgmOmhp%2Bm7me%2B8ge%2B8jQ%3D%3D);
+}</style>
+<style type="text/css" rel="stylesheet" class="ts-font">@font-face {
+  font-family: '秀英角ゴシック銀 L JIS2004';
+  font-weight: Bold;
+  src: url(//wf.typesquare.com/3/tsst/dist/ja/ts?condition=464d90c9e1da1dda3a062fa2bffc0e25&onetime_condition=&eid=5ad00062415c46a09fd67fd7ac1e024a&bw[name]=Chrome&bw[ftf]=0&bw[os]=Macintosh&location=cynthialy.co.jp%2F&fonts[id]=1972&fonts[str]=JS4wMTM1Nzg5QUNERUdJSk1OUFRVVldYYWNkZWZoaWttbm9wcnN0dnd5euOAgeOAguOAjOOAjeOAjuOAj%2BOBjOOBj%2BOBkeOBkuOBl%2BOBmOOBmeOBn%2BOBpOOBpuOBp%2BOBqOOBq%2BOBruOBr%2BOBvuOCgOOCgeOCguOChOOCiuOCi%2BOCj%2BOCkuOCouOCpOOCp%2BOCqOOCreOCr%2BOCsOOCtuOCt%2BOCuOOCueOCu%2BOCveOCv%2BODg%2BODh%2BODiOODieODiuODjeODjuODkOODkeODk%2BODleODl%2BODmeODnuODoeODouODp%2BODqeODquODq%2BODrOODreODs%2BODu%2BODvOS4gOS4iuS6i%2BS6uuS7iuS7o%2BS7peS7u%2BS8geS8muS9jeS%2FoeS%2FruWFpeWFqOWFseWGheWGjeWIhuWIiuWLleWLmeWMluWNg%2BWNlOWPiuWPluWPr%2BWQkeWToeWWtuWbnuWbo%2BWbveWft%2BWgseWjh%2BWkmuWkp%2BWls%2BWtmOWtpuWumuWun%2BWuouWwguWwjuWxleW4guW4q%2BW4uOW5heW5tOW6g%2BW8j%2BW9ueaAp%2BaDheaIkOaOiOaOqOaOsuaPtOaQuuaUr%2BaUv%2BaVmeaVsOaWmeaXpeaZruabuOacrOadkOagqualreapi%2Baxguazlea0u%2Ba8lOeEoeeOh%2BeQhueUn%2BeUqOeVqueZuueZu%2BeahOebo%2BebuOecjOedgOeglOekvuenkeethuexjee1hOe1jOe3oOe4vuiBt%2BiCsuiDveiIrOiIueiRieihjOihqOioiOiomOioreiqjeirh%2Biri%2Bism%2BitsOizh%2Bi3temAmumAo%2BmAsumHjumWgOmWi%2BmWk%2BmWog%3D%3D);
+}</style>
+<style type="text/css" rel="stylesheet" class="ts-font">@font-face {
+  font-family: '秀英角ゴシック銀 B JIS2004';
+  font-weight: Bold;
+  src: url(//wf.typesquare.com/3/tsst/dist/ja/ts?condition=464d90c9e1da1dda3a062fa2bffc0e25&onetime_condition=&eid=5ad00062415c46a09fd67fd7ac1e024a&bw[name]=Chrome&bw[ftf]=0&bw[os]=Macintosh&location=cynthialy.co.jp%2F&fonts[id]=1974&fonts[str]=LzA0QUNHSWVpbG1ub3B0w5figJzigJ3jgIHjgILjgIXjgIzjgI3jgJzjgYLjgYTjgYbjgYjjgYrjgYvjgYzjgY3jgY%2FjgZHjgZPjgZTjgZXjgZbjgZfjgZjjgZnjgZrjgZvjgZ3jgZ%2FjgaDjgaPjgaTjgaXjgabjgafjgajjgarjgavjga7jga%2Fjgbjjgbvjgb7jgb%2FjgoHjgoLjgoTjgojjgonjgorjgovjgozjgo%2FjgpLjgqLjgqPjgqfjgqjjgqnjgqzjgq3jgq%2FjgrDjgrHjgrPjgrXjgrfjgrjjgrnjgrvjgrzjgr3jgr%2Fjg4Hjg4Pjg4Tjg4bjg4fjg4jjg4njg4rjg43jg5Djg5Hjg5Pjg5Xjg5fjg5njg5%2Fjg6Djg6Hjg6Ljg6Pjg6Xjg6bjg6fjg6njg6rjg6vjg63jg7Pjg7vjg7zkuIDkuIrkuKHkuK3kuLvkuovkurrkvIHkvJrkvLTkvb%2Fkvovkvpvkv4Lkv53kv67lgaXlgpnlhaXlhajlhoXlho3lh7rliKnliLbliY3libXlip%2Flirnli5Xli5nljJblj43lj5blj6%2FlkITlkIjllY%2Flmajlm7Llm73lnIvloLHloLTlooPlo4HlpInlpJrlpKflrZjlronlrprlrp%2FlsILlsI7lsI%2FlsZXluLjluYXluoPlvI%2FlvLflvZPlvrTlv4Plv5zmgKfmg4XmhI%2FmhYvmiJDmiYvmib%2Fmiormi6zmjIHmj5Dmj6Hmj7TmkLrmlK%2FmlbDmlbTmlpnmlrDmlrnml6LmmIfmmI7mmKDmma%2FmmpfmnIDmnInmnJ%2FmnKzmnZDmnpzmoYjmpa3mpoLmqKnmrabmsJfmsYLms4Hms5Xms6jmtLvmvqTngrnnibnnirbni6znjK7nj77nkrDnlJ%2FnlKjnlYznmoTnm7jnnYDnn6XnoJTnoLTnorrnpL7npZDnqK7nqY3nqoHnrYnnr4TntITntYTntpnntprnt5rnuL7nuZTogJDog4zog73oh6roj6%2Fok4TooYzopoHopovopqfoqIjoqK3oqaboqbHoqqToq4foq4vosqLos4fotbDovrzpgKPpgLLpgZXpganpgbjpg6jph4zpi63pjK%2FploDplovplqLpm4bpnaLpnanpoYzpu47pu5k%3D);
+}</style>
+<style type="text/css" rel="stylesheet" class="ts-font">@font-face {
+  font-family: '秀英角ゴシック銀 M JIS2004';
+  font-weight: Bold;
+  src: url(//wf.typesquare.com/3/tsst/dist/ja/ts?condition=464d90c9e1da1dda3a062fa2bffc0e25&onetime_condition=&eid=5ad00062415c46a09fd67fd7ac1e024a&bw[name]=Chrome&bw[ftf]=0&bw[os]=Macintosh&location=cynthialy.co.jp%2F&fonts[id]=1973&fonts[str]=IiUsLS4vMDEyNDY3QUNER0lNU1dYYWNkZWZnaGlqa2xtbm9wcnN0dXZ5wqnDl%2BKAneKAp%2BKAu%2BK8pOK8vOK8v%2BOAgeOAguOAjOOAjeOBhOOBhuOBiOOBiuOBi%2BOBjOOBjeOBkeOBkuOBk%2BOBl%2BOBmeOBmuOBm%2BOBneOBn%2BOBoeOBo%2BOBpOOBpuOBp%2BOBqOOBqeOBquOBq%2BOBruOBr%2BOBs%2BOBtuOBuOOBueOBvuOBv%2BOCgeOCguOCiOOCieOCiuOCi%2BOCjOOCj%2BOCkuOCouOCo%2BOCpOOCpuOCp%2BOCqOOCquOCq%2BOCr%2BOCsOOCseOCs%2BOCteOCt%2BOCuOOCueOCuuOCu%2BOCveOCv%2BODgOODg%2BODhOODhuODh%2BODiOODieODiuODi%2BODjeODjuODkOODk%2BODleODl%2BODmeODm%2BODneODnuODn%2BODoOODoeODouODpeODpuODp%2BODqeODquODq%2BODrOODreODs%2BODu%2BODvOS4gOS4iuS4reS6ieS6i%2BS6uuS7iuS7luS7mOS7o%2BS7peS7tuS8geS8muS8neS8tOS9k%2BS9nOS%2Bi%2BS%2Fg%2BS%2FruWAjeWFpeWFqOWFt%2BWGheWGjeWHuuWIpOWIpeWIqeWJiuWJjeWJteWKm%2BWKoOWKueWLieWLleWLmeWMluWNmOWNs%2BWPguWPluWPl%2BWPo%2BWPr%2BWQhOWQiOWQjeWQkeWToeWVj%2BWcqOWdh%2BWei%2BWfn%2BWgtOWjgeWkieWkmuWkp%2BWumuWun%2BWuouWutuWwguWwjuW5heW5s%2BW5tOW6puW8j%2BW8t%2BW%2BjOW%2Bl%2BW%2FheW%2Fl%2BaIkOaIpuaJi%2BaJv%2BaKgOaKnOaOqOaPtOaUr%2BaUueaVsOaWh%2BaWreaWsOaWueaXpeaZguaal%2BacgOacieacn%2BadkOaenOagquaguealreani%2Ba0u%2Ba1uOa4m%2Ba6gOeCueeJueeLrOeNsueOh%2BePvueUn%2BeUqOeVpeeZuueahOedgOefpeefreeglOegtOekvuengeeqgeertuetieevieexjeeyvuezuOe0hOe1gue1hOe1kOe2mee3mue4rue4vue5lOe9suiDveiHquihjOihk%2Bimi%2Bimj%2Bimp%2BinpuiogOioiOioreiqjeiqleiqnuiqv%2Bi1sOi1t%2Bi2hei2s%2BmAj%2BmAmumAn%2BmAoOmAsumBuOmDqOmGuOmVt%2BmWgOmWi%2BmWk%2BmbhumdqemgmOmhp%2Bm7me%2B8ge%2B8jQ%3D%3D);
+}</style>
+<style id="cyn-sticky-cta-style">
+  .cyn-sticky-cta{position:fixed;left:0;right:0;bottom:0;z-index:9999;display:none;gap:8px;
+    padding:8px 12px;background:rgba(13,38,35,.95);backdrop-filter:saturate(180%) blur(8px);
+    border-top:1px solid rgba(232,222,159,.25);}
+  .cyn-sticky-cta a{flex:1;display:flex;align-items:center;justify-content:center;
+    padding:12px 8px;border-radius:999px;font-weight:700;font-size:12px;letter-spacing:.04em;
+    text-decoration:none;line-height:1.2;font-family:"Noto Sans JP",system-ui,sans-serif;
+    transition:transform .2s ease,opacity .2s ease;}
+  .cyn-sticky-cta a:active{transform:scale(.98);}
+  .cyn-sticky-cta .cyn-cta-primary{background:#e8de9f;color:#0d2623;}
+  .cyn-sticky-cta .cyn-cta-secondary{background:transparent;color:#e8de9f;border:1px solid #e8de9f;}
+  @media (max-width:839px){.cyn-sticky-cta{display:flex;}body{padding-bottom:72px;}}
+</style>
+<style id="cyn-live-style">
+  /* .loop-sizer は "高さ確保用のプレースホルダ" なので visibility:hidden のまま。
+     実際に見えるのは .loop-track と .loop-clone（絶対配置オーバーレイ） */
+  /* ハイドレーション前に透明になっている appear 要素を常時表示 */
+  .appear { opacity: 1 !important; transform: none !important; }
+  .loop-track, .loop-clone { will-change: transform; transition: none !important; }
+  /* 背景動画のフォールバック（JSでautoplay失敗しても最低限見えるように） */
+  #bg-movie { background: #0d2623; }
+
+  /* --- Studio runtime が効かないと白地になってしまうセクション背景を明示 --- */
+
+  /* CONTACT セクション（div uuid=6791a066…）の土台白地を SEMINAR と同じ sage mint にする。
+     内部のカードは独自の緑グラデを持っているので触らない。 */
+  div[data-s-6791a066-43f9-470b-8f5e-f76cc5d0b952] {
+    background-color: #E5EFE4 !important;
+  }
+
+  /* WORKS セクションの巨大な "WORKS" ウォーターマーク（p uuid=be69e1c4…）は
+     本来 decorative background として 薄く敷かれるはずが、JS無効のままだと
+     前面でベタに描かれ、日本語見出し "生成AIを事業の強みに変えた事例が続々" と
+     重なって読めなくなる。装飾としての透過を付与して背後に回す。 */
+  div[data-s-efdb9bb9-6998-4692-a5ab-400991331b74] { isolation: isolate; }
+  p[data-s-be69e1c4-a0a3-4adc-9dd5-f9f494d04273] {
+    z-index: 0 !important;
+    opacity: 0.22 !important;
+    pointer-events: none;
+  }
+  /* 見出しブロックを前面に引き上げ、ウォーターマークに埋もれないようにする */
+  div[data-s-181ef032-64da-4d53-91ea-96d625870c72] {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* --- CONTACT section hero photo (BG) ---
+     本家は .image:before の background-image に data-r- 別の URL を流し込む。
+     1つ目（9fe0acf0 側）は JS捕獲前だったため inline <style> が空。同じ URL を
+     :before に注入する。上に乗るカードの可読性確保のため、親 6791a066 側に
+     暗めのオーバーレイを重ねる。 */
+  .sd[data-r-0_10_9fe0acf0-c591-4279-ba42-347f69fec261_e4cda0a1-7ad4-4165-812d-14ec3d3f07e0]:before {
+    background-image: url("/storage.googleapis.com/studio-design-asset-files/projects/7kadNX28O3/s-2560x1638_v-frms_webp_c5516dcc-0266-4960-91c4-becbb27b1332_regular.webp") !important;
+  }
+  /* 写真の上に暗めのオーバーレイ（カード・見出しの可読性を上げる） */
+  div[data-s-e4cda0a1-7ad4-4165-812d-14ec3d3f07e0] { position: relative; }
+  div[data-s-e4cda0a1-7ad4-4165-812d-14ec3d3f07e0]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(13,38,35,0.35) 0%, rgba(13,38,35,0.15) 55%, rgba(13,38,35,0.45) 100%);
+    z-index: -1;
+    pointer-events: none;
+  }
+  /* CTAラッパを上に */
+  div[data-s-0a186074-26df-46cf-b106-4f0b2321d979] {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* --- CTAカード cover 画像 (資料請求 / 無料相談) ---
+     d9ac60d3 image 枠の :before に具体的な画像URLを流し込む。
+     URL は 15_d78685a0 側（2nd CONTACT）でキャプチャ済みのものと同一。 */
+  .sd[data-r-2_0_0_1_0_1_10_9fe0acf0-c591-4279-ba42-347f69fec261_d9ac60d3-a078-45b9-bea9-22c0afc2440b]:before {
+    background-image: url("/storage.googleapis.com/studio-design-asset-files/projects/7kadNX28O3/s-539x303_webp_2d9ee3aa-b765-4561-97e5-467a588d402f.webp") !important;
+  }
+  .sd[data-r-2_0_1_1_0_1_10_9fe0acf0-c591-4279-ba42-347f69fec261_d9ac60d3-a078-45b9-bea9-22c0afc2440b]:before {
+    background-image: url("/storage.googleapis.com/studio-design-asset-files/projects/7kadNX28O3/s-539x303_webp_de385e76-f27c-44da-8e3c-be424fda3b66.webp") !important;
+  }
+
+  /* --- POINT セクション背景 ---
+     b4a7c363 は POINT を内包する <section>。元々は薄いクリーム→白のグラデだけ
+     が敷かれているが、本家LPではsage mint／cream の装飾ブロブも並ぶ。近似する。 */
+  section[data-s-b4a7c363-370d-43ca-a90f-3787ca3d42a0] {
+    position: relative;
+    isolation: isolate;
+    /* 下地：クリーム→sage mint のソフトグラデ（元の 0.83 透過グラデを上書き） */
+    background:
+      radial-gradient(ellipse 900px 420px at 15% 10%, rgba(232, 222, 159, 0.35) 0%, transparent 65%),
+      radial-gradient(ellipse 800px 380px at 85% 92%, rgba(0, 184, 148, 0.14) 0%, transparent 60%),
+      linear-gradient(180deg, #FBF8EA 0%, #F5F2DC 50%, #E9EFDE 100%) !important;
+    overflow: hidden;
+  }
+  section[data-s-b4a7c363-370d-43ca-a90f-3787ca3d42a0]::before {
+    content: "";
+    position: absolute;
+    top: 60px; right: -120px;
+    width: 340px; height: 340px;
+    background: radial-gradient(circle, rgba(0, 184, 148, 0.18) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  section[data-s-b4a7c363-370d-43ca-a90f-3787ca3d42a0]::after {
+    content: "";
+    position: absolute;
+    bottom: -120px; left: -140px;
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, rgba(230, 223, 162, 0.38) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  section[data-s-b4a7c363-370d-43ca-a90f-3787ca3d42a0] > * {
+    position: relative;
+    z-index: 1;
+  }
+</style>

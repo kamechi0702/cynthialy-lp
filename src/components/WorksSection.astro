@@ -1,0 +1,490 @@
+---
+/**
+ * WorksSection.astro
+ * ---------------------------------------------------------------
+ * TOP の WORKS（導入事例）セクション。
+ * 本家 cynthialy.co.jp のレイアウトを忠実にトレース:
+ *
+ *   ┌── 見出し帯 ───────────────────────────────┐
+ *   │ 薄いグレーの巨大 "WORKS" ウォーターマーク     │
+ *   │ 小見出し「大手〜スタートアップまで…」          │
+ *   │ H2「生成AIを事業の強みに変えた事例が続々」     │
+ *   └─────────────────────────────────────────┘
+ *
+ *   ┌── 2カラムカード ────────────────────┬───┐
+ *   │ 会社名 (H3 相当)                    │   │
+ *   │ 画像 + 上に [Future of AI / #NN]     │   │
+ *   │        左帯 (dark) にタイトル + 氏名  │   │
+ *   │ 大タイトル                          │   │
+ *   │ [タグ] [タグ] …                     │   │
+ *   │ 背景 ▶ xxx                          │   │
+ *   │ 効果 ▶ xxx                          │   │
+ *   │ サマリー                            │   │
+ *   └─────────────────────────────────────┴───┘
+ *
+ * 特徴:
+ *   - カードはボーダーなしのフラットレイアウト (本家と同じ)
+ *   - 画像の上半分は実写 / 左55%に #0d2130 の dark overlay パネル
+ *   - カテゴリチップはゴールド系の淡色 (Copilotバッジと同じ)
+ */
+import { getCollection, type CollectionEntry } from "astro:content";
+
+const worksEntries: CollectionEntry<"works">[] = await getCollection("works");
+
+// 公開日の新しい順・最大2件（本家も2カード構成）
+const realWorks = worksEntries
+  .sort(
+    (a, b) =>
+      (b.data.publishedAt?.getTime() ?? 0) -
+      (a.data.publishedAt?.getTime() ?? 0),
+  )
+  .slice(0, 2);
+
+// 実データが2件に満たない場合のプレースホルダ
+const placeholders = [
+  {
+    company: "リケンテクノス株式会社",
+    title: "研修後にAI利用率が約2倍に。現場活用の糸口を見出せました！",
+    chips: ["1,000名以上", "Copilot"],
+    backgroundLabel: "新ツール導入後も社内での活用が業務に結びつかない",
+    effectLabel: "研修後にCopilot利用率が約2倍に向上",
+    summary:
+      "業務フローに即したカスタマイズ研修により、各部門の選抜メンバーがAI活用の具体的なイメージを獲得。Copilot利用率が約2倍に向上し、現場活用の糸口に。",
+  },
+];
+const fillerCount = Math.max(0, 2 - realWorks.length);
+const fillers = placeholders.slice(0, fillerCount);
+---
+
+<section class="works">
+  <div class="works__inner container-page">
+    <div class="works__head">
+      <p class="works__eyebrow">大手〜スタートアップまで幅広く成果に貢献しています</p>
+      <h2 class="works__title">
+        生成AIを事業の強みに<br />変えた事例が続々
+      </h2>
+      <span class="works__watermark" aria-hidden="true">WORKS</span>
+    </div>
+
+    <ul class="works__grid">
+      {
+        realWorks.map((e) => {
+          const chips = e.data.tags && e.data.tags.length ? e.data.tags : [e.data.category];
+          return (
+            <li class="wcard">
+              <a class="wcard__link" href={`/case/${e.slug}/`}>
+                <p class="wcard__company">{e.data.company}</p>
+
+                <div class="wcard__media">
+                  {e.data.heroImage ? (
+                    <img
+                      src={e.data.heroImage}
+                      alt={e.data.heroImageAlt ?? `${e.data.company}のインタビュー`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div class="wcard__media-placeholder" aria-hidden="true">
+                      <span>CASE</span>
+                    </div>
+                  )}
+                  <div class="wcard__overlay">
+                    <div class="wcard__series">
+                      {e.data.seriesLabel && (
+                        <span class="wcard__series-label">{e.data.seriesLabel}</span>
+                      )}
+                      {e.data.seriesNumber && (
+                        <span class="wcard__series-num">
+                          Interview #{e.data.seriesNumber}
+                        </span>
+                      )}
+                    </div>
+                    <p class="wcard__overlay-title">{e.data.title}</p>
+                    {e.data.interviewee && (
+                      <div class="wcard__overlay-person">
+                        <span class="wcard__overlay-co">{e.data.company}</span>
+                        <span class="wcard__overlay-name">{e.data.interviewee}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <h3 class="wcard__title">{e.data.title}</h3>
+
+                <ul class="wcard__chips">
+                  {chips.map((c) => (
+                    <li class="wcard__chip">{c}</li>
+                  ))}
+                </ul>
+
+                <dl class="wcard__meta">
+                  {e.data.backgroundLabel && (
+                    <div class="wcard__row">
+                      <dt>背景</dt>
+                      <dd>{e.data.backgroundLabel}</dd>
+                    </div>
+                  )}
+                  {e.data.effectLabel && (
+                    <div class="wcard__row">
+                      <dt>効果</dt>
+                      <dd>{e.data.effectLabel}</dd>
+                    </div>
+                  )}
+                </dl>
+
+                {e.data.summary && <p class="wcard__summary">{e.data.summary}</p>}
+              </a>
+            </li>
+          );
+        })
+      }
+
+      {
+        fillers.map((w) => (
+          <li class="wcard wcard--placeholder">
+            <div class="wcard__link">
+              <p class="wcard__company">{w.company}</p>
+              <div class="wcard__media">
+                <div class="wcard__media-placeholder" aria-hidden="true">
+                  <span>CASE</span>
+                </div>
+              </div>
+              <h3 class="wcard__title">{w.title}</h3>
+              <ul class="wcard__chips">
+                {w.chips.map((c) => (
+                  <li class="wcard__chip">{c}</li>
+                ))}
+              </ul>
+              <dl class="wcard__meta">
+                <div class="wcard__row">
+                  <dt>背景</dt>
+                  <dd>{w.backgroundLabel}</dd>
+                </div>
+                <div class="wcard__row">
+                  <dt>効果</dt>
+                  <dd>{w.effectLabel}</dd>
+                </div>
+              </dl>
+              <p class="wcard__summary">{w.summary}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="works__foot">
+      <a class="works__more" href="/cases">
+        <span>導入事例一覧</span>
+        <span class="works__more-arrow" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <circle cx="18" cy="18" r="17.5" stroke="currentColor" />
+            <path
+              d="M14 12l8 6-8 6"
+              stroke="currentColor"
+              stroke-width="1.4"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .works {
+    position: relative;
+    padding: 96px 0 120px;
+    background: #fff;
+    overflow: hidden;
+  }
+  @media (max-width: 720px) {
+    .works {
+      padding: 64px 0 80px;
+    }
+  }
+
+  /* 見出し帯 */
+  .works__head {
+    position: relative;
+    padding-bottom: 48px;
+  }
+  .works__eyebrow {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: var(--color-neutral-80-txt);
+    letter-spacing: 0.04em;
+  }
+  .works__title {
+    margin: 0;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--color-deep-green);
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 1;
+  }
+  @media (max-width: 720px) {
+    .works__title {
+      font-size: 28px;
+    }
+  }
+  .works__watermark {
+    position: absolute;
+    right: -8px;
+    top: -16px;
+    font-family: var(--font-sans-en);
+    font-size: 160px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: rgba(13, 38, 35, 0.06);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+  @media (max-width: 720px) {
+    .works__watermark {
+      font-size: 96px;
+      right: -4px;
+      top: -8px;
+    }
+  }
+
+  /* カードグリッド */
+  .works__grid {
+    list-style: none;
+    padding: 0;
+    margin: 32px 0 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px 48px;
+  }
+  @media (min-width: 820px) {
+    .works__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 56px 72px;
+    }
+  }
+
+  /* カード本体 (枠なし) */
+  .wcard {
+    margin: 0;
+  }
+  .wcard__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+  .wcard__company {
+    margin: 0 0 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-neutral-100-txt);
+    letter-spacing: 0.02em;
+  }
+
+  /* 画像＋オーバーレイ */
+  .wcard__media {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #0d2130;
+  }
+  .wcard__media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--duration-slow) var(--ease-out);
+  }
+  a.wcard__link:hover .wcard__media img {
+    transform: scale(1.04);
+  }
+  .wcard__overlay {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 58%;
+    padding: 16px 16px 14px;
+    background: #0d2130;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+  }
+  .wcard__series {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+  .wcard__series-label {
+    display: inline-block;
+    padding: 2px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 2px;
+    width: fit-content;
+    font-family: var(--font-sans-en);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    line-height: 1.6;
+  }
+  .wcard__series-num {
+    font-family: var(--font-sans-en);
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.85);
+    letter-spacing: 0.04em;
+  }
+  .wcard__overlay-title {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    font-weight: 700;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    letter-spacing: 0.02em;
+  }
+  .wcard__overlay-person {
+    margin-top: auto;
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .wcard__overlay-co {
+    color: rgba(255, 255, 255, 0.75);
+  }
+  .wcard__overlay-name {
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* プレースホルダー */
+  .wcard__media-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-deep-green), #1d4524);
+    color: rgba(255, 255, 255, 0.75);
+    font-family: var(--font-sans-en);
+    letter-spacing: 0.2em;
+    font-size: 14px;
+  }
+
+  /* カード下部のテキストブロック */
+  .wcard__title {
+    margin: 22px 0 14px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.6;
+    color: var(--color-deep-green);
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 720px) {
+    .wcard__title {
+      font-size: 18px;
+    }
+  }
+
+  .wcard__chips {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .wcard__chip {
+    display: inline-block;
+    padding: 5px 14px;
+    background: var(--color-accent-gold);
+    color: var(--color-deep-green);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: 3px;
+  }
+
+  .wcard__meta {
+    margin: 0 0 14px;
+    padding: 0;
+    border-top: 1px solid var(--color-neutral-30-border);
+  }
+  .wcard__row {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-neutral-30-border);
+  }
+  .wcard__row dt {
+    margin: 0;
+    font-size: 13px;
+    color: var(--color-neutral-80-txt);
+    font-weight: 600;
+    position: relative;
+    padding-right: 14px;
+  }
+  .wcard__row dt::after {
+    content: "▶";
+    position: absolute;
+    right: 0;
+    top: 3px;
+    color: var(--color-accent-gold-dark);
+    font-size: 10px;
+  }
+  .wcard__row dd {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--color-neutral-100-txt);
+  }
+
+  .wcard__summary {
+    margin: 4px 0 0;
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--color-neutral-80-txt);
+  }
+
+  /* 導入事例一覧 リンク */
+  .works__foot {
+    margin-top: 72px;
+    display: flex;
+    justify-content: center;
+  }
+  .works__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--color-deep-green);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+  .works__more:hover {
+    opacity: 0.75;
+  }
+  .works__more-arrow {
+    display: inline-flex;
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+  .works__more:hover .works__more-arrow {
+    transform: translateX(4px);
+  }
+</style>

@@ -1,0 +1,225 @@
+---
+/**
+ * CaseLayout.astro
+ * ---------------------------------------------------------------
+ * /case/[slug] の共通レイアウト。
+ * 本家 cynthialy.co.jp/case/XXXXXXXX と近いビジュアルで:
+ *   Header → Hero（H1・メタ・タグ・写真・導入前/導入後 比較） →
+ *   目次 → 本文スロット → CTA → 関連事例 → 関連サービス → Footer
+ *
+ * Hero 配色・H2 スタイルは本家を Playwright で採寸して再現:
+ *   H1: 秀英角ゴシック銀 M JIS2004 / 30px / #0e2623
+ *   H2: 秀英角ゴシック銀 L JIS2004 / 30px / #1d4524 / bg rgba(29,69,36,.1) / pad 16px 20px
+ *   Body: Noto Sans JP / 16px / 1.8
+ *   Column: 800px
+ *
+ * ※本家の「秀英角ゴシック銀」は TypeSquare 配信フォントのため、
+ *   再現不可な環境では Noto Sans JP にフォールバック（tokens.css の --font-sans-jp）。
+ */
+import BaseLayout from "./BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import CTABlock from "../components/CTABlock.astro";
+import StickyCTA from "../components/StickyCTA.astro";
+import CaseHero from "../components/case/CaseHero.astro";
+import CaseToc from "../components/case/CaseToc.astro";
+import CaseRelated from "../components/case/CaseRelated.astro";
+import CaseServiceLinks from "../components/case/CaseServiceLinks.astro";
+
+interface Props {
+  slug: string;
+  frontmatter: {
+    title: string;
+    company: string;
+    category: string;
+    publishedAt: Date;
+    tags: string[];
+    heroImage: string;
+    heroImageAlt?: string;
+    summary: string;
+    before?: string[];
+    after?: string[];
+    toc: string[];
+    related: string[];
+    ogImage?: string;
+    noindex?: boolean;
+  };
+}
+
+const { slug, frontmatter } = Astro.props;
+
+const canonical = `https://cynthialy.co.jp/case/${slug}`;
+const pageTitle = `${frontmatter.title} | 導入事例 | シンシアリー株式会社`;
+const pageDescription = frontmatter.summary.slice(0, 120);
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={canonical}
+  ogImage={frontmatter.ogImage ?? frontmatter.heroImage}
+  noindex={frontmatter.noindex}
+  bodyClass="case-article"
+>
+  <Header />
+
+  <main id="main" class="pt-[88px] tablet:pt-[104px] bg-white">
+    <CaseHero frontmatter={frontmatter} />
+
+    {frontmatter.toc?.length > 0 && <CaseToc items={frontmatter.toc} />}
+
+    <article class="case-body">
+      <div class="case-body__inner">
+        <slot />
+      </div>
+    </article>
+
+    <!-- ミドルCTA（本文直後の相談導線） -->
+    <section class="case-midcta">
+      <div class="case-midcta__card">
+        <p class="case-midcta__lead">
+          同様の課題をお持ちの場合、まずは60分の壁打ちからご相談いただけます
+        </p>
+        <a
+          class="btn btn-primary case-midcta__btn"
+          href="https://meetings-na2.hubspot.com/yoshiki-watanabe2"
+          rel="noopener"
+          target="_blank"
+        >
+          <span class="font-bold">個別相談</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+
+    {frontmatter.related?.length > 0 && <CaseRelated slugs={frontmatter.related} />}
+
+    <CaseServiceLinks />
+
+    <CTABlock variant="dark" />
+  </main>
+
+  <Footer />
+  <StickyCTA />
+</BaseLayout>
+
+<style is:global>
+  /* =================================================================
+   * case article: 本文カラム（800px）
+   * ================================================================= */
+  .case-body {
+    padding: 48px 0 80px;
+  }
+  .case-body__inner {
+    max-width: 800px;
+    margin-inline: auto;
+    padding-inline: 24px;
+    color: var(--color-neutral-100-txt);
+    font-size: 16px;
+    line-height: 1.9;
+  }
+  .case-body__inner > * + * {
+    margin-top: 1.4em;
+  }
+  .case-body__inner h2 {
+    margin-top: 80px;
+    margin-bottom: 32px;
+    padding: 16px 20px;
+    font-family:
+      "秀英角ゴシック銀 L JIS2004",
+      var(--font-sans-jp);
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #1d4524;
+    background: rgba(29, 69, 36, 0.1);
+    border-radius: 0;
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 540px) {
+    .case-body__inner h2 {
+      font-size: 20px;
+      padding: 14px 16px;
+      margin-top: 56px;
+      margin-bottom: 24px;
+    }
+  }
+  .case-body__inner h3 {
+    margin-top: 48px;
+    margin-bottom: 16px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-deep-green);
+    border-left: 4px solid var(--color-accent-gold);
+    padding-left: 12px;
+  }
+  .case-body__inner p {
+    margin: 0;
+    line-height: 1.95;
+  }
+  .case-body__inner p + p {
+    margin-top: 1.4em;
+  }
+  .case-body__inner img {
+    width: 100%;
+    max-width: 800px;
+    border-radius: 8px;
+    margin: 40px auto;
+  }
+  /* MDX 内で <figure class="case-figure"> を使う場合のスタイル */
+  .case-body__inner .case-figure {
+    margin: 40px 0;
+    padding: 0;
+  }
+  .case-body__inner .case-figure img {
+    width: 100%;
+    height: auto;
+    max-width: 800px;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 0;
+    display: block;
+  }
+  .case-body__inner .case-figure figcaption {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--color-neutral-80-txt);
+    text-align: center;
+    line-height: 1.7;
+  }
+  .case-body__inner strong {
+    color: var(--color-deep-green);
+    font-weight: 700;
+  }
+  .case-body__inner a {
+    color: var(--color-link);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* =================================================================
+   * Mid CTA（本文直後）
+   * ================================================================= */
+  .case-midcta {
+    padding: 32px 16px 80px;
+  }
+  .case-midcta__card {
+    max-width: 800px;
+    margin-inline: auto;
+    padding: 32px 24px;
+    background: var(--color-accent-gold-light);
+    border-radius: var(--radius-lg);
+    text-align: center;
+  }
+  .case-midcta__lead {
+    margin: 0 0 20px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--color-deep-green);
+    font-weight: 600;
+  }
+  .case-midcta__btn {
+    padding: 14px 48px;
+  }
+</style>

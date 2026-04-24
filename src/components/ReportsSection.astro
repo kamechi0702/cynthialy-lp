@@ -1,0 +1,249 @@
+---
+/**
+ * ReportsSection.astro
+ * ---------------------------------------------------------------
+ * ミラー「REPORTS / 生成AI活用 最前線レポート」帯を再現。
+ * PDFダウンロード or note記事など後続の実装前提で、まずは静的3枚。
+ */
+const reports = [
+  {
+    title: "生成AI成果創出レポート 2026 Spring",
+    excerpt:
+      "国内大手企業100社の生成AI定着事例をもとに、成果創出まで届いた組織と停滞した組織の差を構造化したホワイトペーパー。",
+    tag: "WHITEPAPER",
+    href: "/reports/ai-outcome-2026-spring",
+  },
+  {
+    title: "Copilot × 業務再設計 実践ガイド",
+    excerpt:
+      "Copilotで本当に業務が変わった部署はどこか、何を導入しどう測定したか。実データに基づく実践ガイド。",
+    tag: "GUIDE",
+    href: "/reports/copilot-practice",
+  },
+  {
+    title: "Gemini 定着度診断チェックシート",
+    excerpt:
+      "Gemini for Google Workspace 導入後の「定着 or 形骸化」を12の観点で自己採点できる診断シート。",
+    tag: "CHECKLIST",
+    href: "/reports/gemini-adoption-check",
+  },
+];
+---
+
+<section class="reports">
+  <div class="reports__inner container-page">
+    <div class="reports__head">
+      <p class="reports__eyebrow">生成AIの"今"がわかる</p>
+      <h2 class="reports__title">
+        生成AI活用 <span class="reports__title-accent">最前線レポート</span>
+      </h2>
+      <span class="reports__watermark" aria-hidden="true">REPORTS</span>
+    </div>
+
+    <ul class="reports__grid">
+      {
+        reports.map((r) => (
+          <li class="rcard">
+            <a class="rcard__link" href={r.href}>
+              <span class="rcard__tag">{r.tag}</span>
+              <h3 class="rcard__title">{r.title}</h3>
+              <p class="rcard__excerpt">{r.excerpt}</p>
+              <span class="rcard__arrow" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                  <circle cx="14" cy="14" r="13.5" stroke="currentColor" />
+                  <path
+                    d="M11 9l6 5-6 5"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="reports__foot">
+      <a class="reports__more" href="/reports">
+        <span>レポート一覧</span>
+        <span class="reports__more-arrow" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <circle cx="18" cy="18" r="17.5" stroke="currentColor" />
+            <path
+              d="M14 12l8 6-8 6"
+              stroke="currentColor"
+              stroke-width="1.4"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .reports {
+    position: relative;
+    padding: 96px 0 120px;
+    background: var(--color-surface-bg, #fafaf5);
+    overflow: hidden;
+  }
+  @media (max-width: 720px) {
+    .reports {
+      padding: 64px 0 80px;
+    }
+  }
+
+  .reports__head {
+    position: relative;
+    padding-bottom: 40px;
+  }
+  .reports__eyebrow {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: var(--color-neutral-80-txt);
+    letter-spacing: 0.04em;
+  }
+  .reports__title {
+    margin: 0;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--color-deep-green);
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 1;
+  }
+  .reports__title-accent {
+    color: var(--color-deep-green);
+  }
+  @media (max-width: 720px) {
+    .reports__title {
+      font-size: 28px;
+    }
+  }
+  .reports__watermark {
+    position: absolute;
+    right: -8px;
+    top: -16px;
+    font-family: var(--font-sans-en);
+    font-size: 160px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: rgba(13, 38, 35, 0.06);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+  @media (max-width: 720px) {
+    .reports__watermark {
+      font-size: 96px;
+    }
+  }
+
+  .reports__grid {
+    list-style: none;
+    padding: 0;
+    margin: 32px 0 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media (min-width: 820px) {
+    .reports__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+  }
+
+  .rcard {
+    list-style: none;
+  }
+  .rcard__link {
+    position: relative;
+    display: block;
+    padding: 28px 28px 64px;
+    background: #fff;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--color-deep-green);
+    height: 100%;
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out);
+  }
+  .rcard__link:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(13, 38, 35, 0.08);
+  }
+  .rcard__tag {
+    display: inline-block;
+    padding: 3px 10px;
+    font-family: var(--font-sans-en);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    background: var(--color-accent-gold);
+    color: var(--color-deep-green);
+    border-radius: 3px;
+  }
+  .rcard__title {
+    margin: 18px 0 12px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.6;
+    color: var(--color-deep-green);
+  }
+  .rcard__excerpt {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.85;
+    color: var(--color-neutral-80-txt);
+  }
+  .rcard__arrow {
+    position: absolute;
+    right: 20px;
+    bottom: 22px;
+    display: inline-flex;
+    color: var(--color-deep-green);
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+  .rcard__link:hover .rcard__arrow {
+    transform: translateX(3px);
+  }
+
+  .reports__foot {
+    margin-top: 56px;
+    display: flex;
+    justify-content: center;
+  }
+  .reports__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--color-deep-green);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+  .reports__more:hover {
+    opacity: 0.75;
+  }
+  .reports__more-arrow {
+    display: inline-flex;
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+  .reports__more:hover .reports__more-arrow {
+    transform: translateX(4px);
+  }
+</style>

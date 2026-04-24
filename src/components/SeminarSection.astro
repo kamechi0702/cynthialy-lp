@@ -1,0 +1,250 @@
+---
+/**
+ * SeminarSection.astro
+ * ---------------------------------------------------------------
+ * ミラーのSEMINAR帯（最新生成AI活用セミナー／カード3枚＋左右矢印ナビ）を再現。
+ * 実データは後続でCMS/MDX化する前提で、まずは静的サンプル3枚で構築。
+ */
+const seminars = [
+  {
+    date: "2026.05.15",
+    title: "Copilot × 業務フロー再設計｜明日から現場で使える実装ワーク",
+    tag: "Copilot",
+    image:
+      "https://storage.googleapis.com/studio-design-asset-files/projects/7kadNX28O3/s-1280x759_v-fms_webp_bdf1721d-eb8c-478d-86e8-795b050cce7b.webp",
+  },
+  {
+    date: "2026.05.22",
+    title: "Gemini for Workspace 全社展開 〜情シス／現場／経営の三位一体〜",
+    tag: "Gemini",
+    image:
+      "https://storage.googleapis.com/studio-design-asset-files/projects/7kadNX28O3/s-2560x1638_v-frms_webp_c5516dcc-0266-4960-91c4-becbb27b1332_regular.webp",
+  },
+  {
+    date: "2026.06.04",
+    title: "生成AIの内製化ロードマップ｜PoC疲れを脱出する実装順序",
+    tag: "Transformation",
+    image:
+      "https://storage.googleapis.com/studio-design-asset-files/projects/7kadNX28O3/s-539x303_webp_2d9ee3aa-b765-4561-97e5-467a588d402f.webp",
+  },
+];
+---
+
+<section class="seminar">
+  <div class="seminar__inner container-page">
+    <div class="seminar__head">
+      <p class="seminar__eyebrow">生成AIをビジネスの強みに</p>
+      <h2 class="seminar__title">
+        最新<span class="seminar__title-accent">生成AI活用セミナー</span>
+      </h2>
+      <span class="seminar__watermark" aria-hidden="true">SEMINAR</span>
+    </div>
+
+    <ul class="seminar__grid">
+      {
+        seminars.map((s) => (
+          <li class="scard">
+            <a class="scard__link" href="/seminars">
+              <figure class="scard__media">
+                <img src={s.image} alt="" loading="lazy" decoding="async" />
+                <span class="scard__tag">{s.tag}</span>
+              </figure>
+              <div class="scard__body">
+                <time class="scard__date">{s.date}</time>
+                <p class="scard__title">{s.title}</p>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="seminar__foot">
+      <a class="seminar__more" href="/seminars">
+        <span>セミナー一覧</span>
+        <span class="seminar__more-arrow" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <circle cx="18" cy="18" r="17.5" stroke="currentColor" />
+            <path
+              d="M14 12l8 6-8 6"
+              stroke="currentColor"
+              stroke-width="1.4"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .seminar {
+    position: relative;
+    padding: 96px 0 120px;
+    background: var(--color-surface-bg, #fafaf5);
+    overflow: hidden;
+  }
+  @media (max-width: 720px) {
+    .seminar {
+      padding: 64px 0 80px;
+    }
+  }
+
+  .seminar__head {
+    position: relative;
+    padding-bottom: 40px;
+  }
+  .seminar__eyebrow {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: var(--color-neutral-80-txt);
+    letter-spacing: 0.04em;
+  }
+  .seminar__title {
+    margin: 0;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--color-deep-green);
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 1;
+  }
+  .seminar__title-accent {
+    display: inline-block;
+    padding: 0 4px;
+  }
+  @media (max-width: 720px) {
+    .seminar__title {
+      font-size: 28px;
+    }
+  }
+  .seminar__watermark {
+    position: absolute;
+    right: -8px;
+    top: -16px;
+    font-family: var(--font-sans-en);
+    font-size: 160px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: rgba(13, 38, 35, 0.06);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+  @media (max-width: 720px) {
+    .seminar__watermark {
+      font-size: 96px;
+    }
+  }
+
+  .seminar__grid {
+    list-style: none;
+    padding: 0;
+    margin: 32px 0 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  @media (min-width: 820px) {
+    .seminar__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+  }
+
+  .scard__link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out);
+    height: 100%;
+  }
+  .scard__link:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(13, 38, 35, 0.08);
+  }
+  .scard__media {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #e5e5d7;
+  }
+  .scard__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .scard__tag {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    padding: 4px 10px;
+    background: var(--color-accent-gold);
+    color: var(--color-deep-green);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: 3px;
+  }
+  .scard__body {
+    padding: 18px 20px 24px;
+  }
+  .scard__date {
+    display: block;
+    font-family: var(--font-sans-en);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-accent-gold-dark);
+    letter-spacing: 0.06em;
+  }
+  .scard__title {
+    margin: 8px 0 0;
+    font-size: 15px;
+    line-height: 1.7;
+    font-weight: 700;
+    color: var(--color-deep-green);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .seminar__foot {
+    margin-top: 56px;
+    display: flex;
+    justify-content: center;
+  }
+  .seminar__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--color-deep-green);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+  .seminar__more:hover {
+    opacity: 0.75;
+  }
+  .seminar__more-arrow {
+    display: inline-flex;
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+  .seminar__more:hover .seminar__more-arrow {
+    transform: translateX(4px);
+  }
+</style>
