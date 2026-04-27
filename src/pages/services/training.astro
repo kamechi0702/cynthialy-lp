@@ -1,0 +1,55 @@
+---
+/**
+ * /services/training — cynthialy ミラー注入ページ
+ * ---------------------------------------------------------------
+ * 本家 cynthialy.co.jp/services/training の完全 SSR HTML を Astro に取り込み、
+ * ピクセル一致でレンダリングする。
+ *
+ * 取り込み内訳:
+ * - public/_nuxt/entry.C0E92ihM.css                  … Studio/Nuxt CSS バンドル
+ * - src/assets/services-training-head-styles.html               … head 内のクリティカル <style>
+ * - src/assets/services-training-body.html                      … body 全体（リンク/URL書換済み）
+ *
+ * bg-movie 削除済み。新たに追加する場合は scripts/process_html.py を再実行する。
+ */
+import bodyHtml from "../../assets/services-training-body.html?raw";
+import headStyles from "../../assets/services-training-head-styles.html?raw";
+
+const pageTitle = "研修サービス｜AI人材育成・定着化支援 | シンシアリー株式会社";
+const pageDescription = "Microsoft Copilot / Google Gemini を中心とした生成AI人材育成・定着化研修プログラム。定着率97%の独自メソッドで、現場で使われ続ける生成AI活用の組織づくりを支援。";
+const canonical = "https://cynthialy.co.jp/services/training/";
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonical} />
+
+    <link rel="stylesheet" href="/_nuxt/entry.C0E92ihM.css" crossorigin="" />
+    <link
+      href="https://fonts.googleapis.com/css?display=swap&family=Poppins:wght@400"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?display=swap&family=Lato:wght@700"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?display=swap&family=Inter:wght@500"
+      rel="stylesheet"
+    />
+
+    <Fragment set:html={headStyles} />
+  </head>
+
+  <body>
+    <Fragment set:html={bodyHtml} />
+
+    <!-- cynthialy ランタイム（loop-box / video / appear） -->
+    <script is:inline src="/_astro/cynthialy-runtime.js"></script>
+  </body>
+</html>

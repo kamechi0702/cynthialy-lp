@@ -8,6 +8,9 @@ dist/
 # dev/preview artifacts
 preview.html
 
+# screenshots / mirror diff artifacts (~50MB)
+docs/
+
 # Astro
 .env
 .env.local

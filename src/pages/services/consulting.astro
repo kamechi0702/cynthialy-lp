@@ -1,0 +1,58 @@
+---
+/**
+ * /services/consulting — コンサルティングサービス紹介ページ
+ * ---------------------------------------------------------------
+ * 本家 cynthialy.co.jp/services/consulting の完全 SSR HTML を Astro に取り込み、
+ * ピクセル一致でレンダリングする。
+ *
+ * 取り込み内訳:
+ * - public/_nuxt/entry.C0E92ihM.css                   … Studio/Nuxt CSS バンドル
+ * - src/assets/services-consulting-head-styles.html   … head 内のクリティカル <style>
+ * - src/assets/services-consulting-body.html          … body 全体（リンク/URL書換済み）
+ *
+ * bg-movie の右側突き抜け対策として、body 取り込み時に該当 <div> は削除済み。
+ * 商材を新規追加する場合は本ファイルを参考に services/{slug}.astro を量産する。
+ */
+import bodyHtml from "../../assets/services-consulting-body.html?raw";
+import headStyles from "../../assets/services-consulting-head-styles.html?raw";
+
+const pageTitle =
+  "コンサルティングサービス｜業務変革｜AI×Infrastructure改革 | シンシアリー株式会社";
+const pageDescription =
+  "業務プロセスをAIベースで再設計し、現場で使われ続ける生成AI活用を実現するコンサルティングサービス。デュアル・AIグロース方式に基づく業務変革を伴走支援します。";
+const canonical = "https://cynthialy.co.jp/services/consulting/";
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonical} />
+
+    <link rel="stylesheet" href="/_nuxt/entry.C0E92ihM.css" crossorigin="" />
+    <link
+      href="https://fonts.googleapis.com/css?display=swap&family=Poppins:wght@400"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?display=swap&family=Lato:wght@700"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?display=swap&family=Inter:wght@500"
+      rel="stylesheet"
+    />
+
+    <Fragment set:html={headStyles} />
+  </head>
+
+  <body>
+    <Fragment set:html={bodyHtml} />
+
+    <!-- cynthialy ランタイム（loop-box / video / appear） -->
+    <script is:inline src="/_astro/cynthialy-runtime.js"></script>
+  </body>
+</html>
