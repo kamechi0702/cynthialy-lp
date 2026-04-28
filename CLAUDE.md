@@ -2,7 +2,10 @@
 
 このディレクトリは cynthialy.co.jp を Astro で再構築した本体。
 
-最初に必ず `../HANDOFF.md` を読むこと。
+**最初に必ず読む順序**：
+1. `../HANDOFF.md` — 進行状況・引き継ぎ
+2. `../Design.md` — デザインシステム憲章（色・タイポ・セクション・コンポーネント・Do/Don't）
+3. 本ファイル — 実装上のガードレール
 
 ## 重要なルール
 
@@ -23,9 +26,16 @@
 
 ### ✅ やってよいこと
 
-1. 新ページ追加 → スキル `cynthialy-page-mirror` の `run_all.sh` を使う
-2. CMS 編集（事例記事の文言変更）→ `src/content/works/{slug}.mdx` の frontmatter or 本文を編集
-3. ランタイム拡張 → `public/_astro/cynthialy-runtime.js` に追記（新しい `<scroll-box>` 等の web component が増えた場合）
+1. **既存ページのミラー追加** → スキル `cynthialy-page-mirror` の `run_all.sh` を使う（cynthialy.co.jp に存在するページのみ）
+2. **新規プロダクトページ作成**（cynthialy.co.jp に存在しないもの、例：わざツグ）→ `../Design.md` のセクションアーキタイプ／コンポーネント仕様に従ってコンポーネント方式で実装
+3. **CMS 編集**（事例記事の文言変更）→ `src/content/works/{slug}.mdx` の frontmatter or 本文を編集
+4. **ランタイム拡張** → `public/_astro/cynthialy-runtime.js` に追記（新しい `<scroll-box>` 等の web component が増えた場合）
+
+## デザインシステム
+
+`../Design.md` が正典。色・タイポグラフィ・セクションアーキタイプ・コンポーネント仕様・Do/Don't はすべてそこに集約。
+
+トークン値は `cto/design-tokens/tokens.css` に CSS 変数として定義済み。**ハードコード禁止**、必ず `var(--…)` 参照で書く。
 
 ## ビルドが落ちたら
 
@@ -40,9 +50,13 @@ npm install astro@4.16.18 @astrojs/mdx@3.1.9 @astrojs/tailwind@5.1.5 tailwindcss
 ## デプロイ
 
 ```bash
-git push origin main      # Vercel-GitHub 連携が動いてれば自動
-# または
-vercel --prod             # 手動
+git push origin main      # GitHub Actions が自動で vercel build & deploy（約50秒）
+# 手動デプロイ（緊急時）
+vercel --prod
 ```
+
+GitHub Actions の workflow は `.github/workflows/deploy.yml`。
+Secrets（`VERCEL_TOKEN` / `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID`）は登録済み。
+本番URL（安定エイリアス）：<https://mock-rho-two.vercel.app/>
 
 詳細は `../HANDOFF.md`。
