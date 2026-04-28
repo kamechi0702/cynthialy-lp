@@ -8,8 +8,12 @@ dist/
 # dev/preview artifacts
 preview.html
 
-# screenshots / mirror diff artifacts (~50MB)
-docs/
+# screenshots / mirror diff artifacts (~50MB) — images only, .md docs are tracked
+docs/*.png
+docs/*.jpg
+docs/*.jpeg
+docs/*.gif
+docs/*.webp
 
 # Astro
 .env

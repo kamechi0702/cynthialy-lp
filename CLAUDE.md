@@ -4,7 +4,7 @@
 
 **最初に必ず読む順序**：
 1. `../HANDOFF.md` — 進行状況・引き継ぎ
-2. `../Design.md` — デザインシステム憲章（色・タイポ・セクション・コンポーネント・Do/Don't）
+2. `docs/Design.md` — デザインシステム憲章（色・タイポ・セクション・コンポーネント・Do/Don't）
 3. 本ファイル — 実装上のガードレール
 
 ## 重要なルール
@@ -27,13 +27,13 @@
 ### ✅ やってよいこと
 
 1. **既存ページのミラー追加** → スキル `cynthialy-page-mirror` の `run_all.sh` を使う（cynthialy.co.jp に存在するページのみ）
-2. **新規プロダクトページ作成**（cynthialy.co.jp に存在しないもの、例：わざツグ）→ `../Design.md` のセクションアーキタイプ／コンポーネント仕様に従ってコンポーネント方式で実装
+2. **新規プロダクトページ作成**（cynthialy.co.jp に存在しないもの、例：わざツグ）→ `docs/Design.md` のセクションアーキタイプ／コンポーネント仕様に従ってコンポーネント方式で実装
 3. **CMS 編集**（事例記事の文言変更）→ `src/content/works/{slug}.mdx` の frontmatter or 本文を編集
 4. **ランタイム拡張** → `public/_astro/cynthialy-runtime.js` に追記（新しい `<scroll-box>` 等の web component が増えた場合）
 
 ## デザインシステム
 
-`../Design.md` が正典。色・タイポグラフィ・セクションアーキタイプ・コンポーネント仕様・Do/Don't はすべてそこに集約。
+`docs/Design.md` が正典。色・タイポグラフィ・セクションアーキタイプ・コンポーネント仕様・Do/Don't はすべてそこに集約。
 
 トークン値は `cto/design-tokens/tokens.css` に CSS 変数として定義済み。**ハードコード禁止**、必ず `var(--…)` 参照で書く。
 
