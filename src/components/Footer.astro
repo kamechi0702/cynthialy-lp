@@ -1,73 +1,502 @@
 ---
 /**
- * Footer.astro
- * ---------------------------------------------------------------
- * サイト共通フッター。情報設計は既存サイトを踏襲しつつ、
- * 統廃合プラン（/about・/company→/aboutus 等）に沿ってリンク整理。
+ * Footer.astro — 全ページ共通フッター
+ * ----------------------------------------------------------------
+ * docs/Design.md §4.9 CTA-Block 準拠の自前実装。
+ * Studio ミラー方式は依存が多すぎて新規ページに移植できなかったため、
+ * design tokens ベースで再構築。
+ *
+ * 構成（上から）:
+ *   1. CTA Block (CONTACT eyebrow + 資料請求・お問い合わせ + 2 カードCTA)
+ *   2. Bottom Nav (ホーム / サービス / 事例・実績 / お問い合わせ)
+ *   3. Sitemap (Cynthialy ロゴ + 4カラム リンク)
+ *   4. Copyright
+ *
+ * 使い方:
+ *   <Footer />                — そのまま使用
+ *   <Footer hideCta={true} /> — CTA 非表示（個別ページに自前 CTA がある場合）
+ *
+ * Astro の scoped style がクラス名を自動的に名前空間化するため、
+ * 親ページの CSS と衝突しない。viewport 幅で展開、内部のみ max-width 1180px。
  */
-const year = new Date().getFullYear();
+
+interface Props {
+  /** CTA セクションを非表示にする（自前 CTA を持つページ向け） */
+  hideCta?: boolean;
+}
+const { hideCta = false } = Astro.props;
+
+// CTA カード背景画像（既存の Studio CDN ローカルコピーを再利用）
+const CTA_IMG_SHIRYOU =
+  "/storage.googleapis.com/studio-design-asset-files/projects/7kadNX28O3/s-539x303_webp_2d9ee3aa-b765-4561-97e5-467a588d402f.webp";
+const CTA_IMG_MURYOU =
+  "/storage.googleapis.com/studio-design-asset-files/projects/7kadNX28O3/s-539x303_webp_de385e76-f27c-44da-8e3c-be424fda3b66.webp";
+
+// HubSpot リンク（cynthialy 標準）
+const HS_SHIRYOU = "https://share-na2.hsforms.com/1PvsmVs3nQKKkGyMSTxaqzQdk2zo";
+const HS_MURYOU =
+  "https://meetings-na2.hubspot.com/yoshiki-watanabe2?uuid=663ae103-d9fe-4e1c-8dda-c659aaef5ec5";
 ---
-<footer class="bg-deep-green text-white pt-20 pb-10">
-  <div class="container-page grid gap-12 tablet:grid-cols-[1.2fr_1fr_1fr_1fr]">
-    <div>
-      <a href="/" class="inline-block text-2xl font-en font-bold tracking-wider">
-        cynthialy
-      </a>
-      <p class="mt-4 text-sm leading-relaxed text-white/80">
-        シンシアリーは、大手・上場企業を中心に<br class="hidden small:inline" />
-        生成AIの導入から定着、成果創出までを伴走する<br class="hidden small:inline" />
-        AI Work Transformation カンパニーです。
-      </p>
-      <a href="/aboutus" class="inline-block mt-6 text-sm text-accent-gold hover:underline">
-        会社概要 →
-      </a>
-    </div>
 
-    <div>
-      <h3 class="text-sm tracking-widest text-accent-gold mb-4">SERVICE</h3>
-      <ul class="space-y-2 text-sm text-white/85">
-        <li><a href="/services" class="hover:text-accent-gold">サービス一覧</a></li>
-        <li><a href="/services/consulting" class="hover:text-accent-gold">コンサルティング</a></li>
-        <li><a href="/services/transformation" class="hover:text-accent-gold">トランスフォーメーション</a></li>
-        <li><a href="/services/training" class="hover:text-accent-gold">研修・育成</a></li>
-        <li><a href="/services/training/copilot" class="hover:text-accent-gold">Copilot</a></li>
-        <li><a href="/services/training/gemini" class="hover:text-accent-gold">Gemini</a></li>
-      </ul>
-    </div>
+<footer class="site-footer" data-cynthialy-footer>
+  {!hideCta && (
+    <section class="ft-cta">
+      <div class="ft-inner">
+        <span class="ft-eyebrow">CONTACT</span>
+        <h2 class="ft-cta-title">資料請求・お問い合わせ</h2>
+        <p class="ft-cta-lead">
+          生成AIを単なる導入で終わらせず、組織全体に根付かせることで、企業変革と事業成長を実現する生成AIの成果創出サービスです。
+        </p>
 
-    <div>
-      <h3 class="text-sm tracking-widest text-accent-gold mb-4">CASES / NEWS</h3>
-      <ul class="space-y-2 text-sm text-white/85">
-        <li><a href="/cases" class="hover:text-accent-gold">事例一覧</a></li>
-        <li><a href="https://peatix.com/group/16530707/events" class="hover:text-accent-gold" rel="noopener">セミナー一覧</a></li>
-        <li><a href="/news" class="hover:text-accent-gold">お知らせ</a></li>
-      </ul>
-    </div>
+        <ul class="ft-cta-grid">
+          <li>
+            <a class="ft-cta-card" href={HS_SHIRYOU} rel="noopener" target="_blank">
+              <div
+                class="ft-cta-card__media"
+                style={`background-image:url('${CTA_IMG_SHIRYOU}')`}
+                aria-hidden="true"
+              />
+              <div class="ft-cta-card__body">
+                <h3 class="ft-cta-card__title">
+                  <small>サービス概要や事例集の</small>
+                  資料がほしい
+                </h3>
+                <span class="ft-cta-pill">
+                  資料請求
+                  <svg viewBox="0 0 16 16" aria-hidden="true">
+                    <path
+                      d="M3 8 H13 M9 4 L13 8 L9 12"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a class="ft-cta-card" href={HS_MURYOU} rel="noopener" target="_blank">
+              <div
+                class="ft-cta-card__media"
+                style={`background-image:url('${CTA_IMG_MURYOU}')`}
+                aria-hidden="true"
+              />
+              <div class="ft-cta-card__body">
+                <h3 class="ft-cta-card__title">
+                  <small>生成AIの定着に関して</small>
+                  まずは相談したい
+                </h3>
+                <span class="ft-cta-pill">
+                  無料相談
+                  <svg viewBox="0 0 16 16" aria-hidden="true">
+                    <path
+                      d="M3 8 H13 M9 4 L13 8 L9 12"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+  )}
 
-    <div>
-      <h3 class="text-sm tracking-widest text-accent-gold mb-4">CONTACT</h3>
-      <ul class="space-y-2 text-sm text-white/85">
-        <li>
-          <a href="https://share-na2.hsforms.com/1PvsmVs3nQKKkGyMSTxaqzQdk2zo" class="hover:text-accent-gold" rel="noopener">
-            資料請求
-          </a>
-        </li>
-        <li>
-          <a href="https://meetings-na2.hubspot.com/yoshiki-watanabe2" class="hover:text-accent-gold" rel="noopener">
-            無料相談
-          </a>
-        </li>
-        <li><a href="/contact/form" class="hover:text-accent-gold">お問い合わせフォーム</a></li>
-      </ul>
+  <nav class="ft-nav" aria-label="主要ナビゲーション">
+    <div class="ft-inner ft-nav-inner">
+      <a href="/">ホーム</a>
+      <a href="/services/">サービス</a>
+      <a href="/case/">事例・実績</a>
+      <a href="#contact">お問い合わせ</a>
+    </div>
+  </nav>
+
+  <div class="ft-sitemap">
+    <div class="ft-inner ft-sitemap-grid">
+      <div class="ft-brand">
+        <div class="ft-logo">Cynthialy</div>
+        <a href="/about/" class="ft-brand-link">▸ 会社概要</a>
+        <div class="ft-legal">
+          <a href="/privacy/">プライバシーポリシー</a>
+          <a href="/terms/">利用規約</a>
+        </div>
+      </div>
+
+      <div class="ft-col">
+        <h4>事例・セミナー</h4>
+        <ul>
+          <li><a href="/case/">▸ 事例一覧</a></li>
+          <li><a href="/seminars/">▸ セミナー一覧</a></li>
+        </ul>
+      </div>
+
+      <div class="ft-col">
+        <h4>お問い合わせ</h4>
+        <ul>
+          <li><a href="#contact">▸ お問い合わせ一覧</a></li>
+          <li>
+            <a href={HS_MURYOU} rel="noopener" target="_blank">▸ お問い合わせフォーム</a>
+          </li>
+          <li>
+            <a href={HS_SHIRYOU} rel="noopener" target="_blank">▸ 資料請求</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="ft-col">
+        <h4>サービス</h4>
+        <ul>
+          <li><a href="/services/">▸ サービス一覧</a></li>
+          <li><a href="/services/training/">▸ 人材変革（研修）</a></li>
+          <li><a href="/services/consulting/">▸ 業務変革（コンサル）</a></li>
+          <li><a href="/services/wazatsugu/">▸ わざツグ</a></li>
+        </ul>
+      </div>
     </div>
   </div>
 
-  <div class="container-page mt-14 pt-6 border-t border-white/15 flex flex-col tablet:flex-row tablet:items-center tablet:justify-between gap-4 text-xs text-white/60">
-    <ul class="flex flex-wrap gap-6">
-      <li><a href="/privacy" class="hover:text-accent-gold">プライバシーポリシー</a></li>
-      <li><a href="/terms" class="hover:text-accent-gold">利用規約</a></li>
-      <li><a href="/sitemap.xml" class="hover:text-accent-gold">サイトマップ</a></li>
-    </ul>
-    <p>© {year} cynthialy.co.jp All rights reserved.</p>
+  <div class="ft-copyright">
+    <div class="ft-inner">© 2026 cynthialy.co.jp All rights reserved.</div>
   </div>
 </footer>
+
+<style>
+  /* =================================================================
+   * Footer ローカルトークン（tokens.css の値を再掲）
+   * ================================================================= */
+  .site-footer {
+    --c-deep: #0d2623;
+    --c-deeper: #061513;
+    --c-gold: #e8de9f;
+    --c-white: #ffffff;
+    --c-line: rgba(232, 222, 159, 0.18);
+    --c-text-muted: rgba(255, 255, 255, 0.62);
+    --r-md: 8px;
+    --r-lg: 16px;
+    --r-pill: 9999px;
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.18);
+    --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.24);
+    --dur: 300ms;
+    --ease: cubic-bezier(0.2, 0, 0, 1);
+
+    width: 100%;
+    background: var(--c-deep);
+    color: var(--c-white);
+    font-family:
+      "Noto Sans JP",
+      "Hiragino Kaku Gothic ProN",
+      sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .site-footer * {
+    box-sizing: border-box;
+  }
+  .site-footer a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .ft-inner {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* =================================================================
+   * 1. CTA Block
+   * ================================================================= */
+  .ft-cta {
+    padding: 96px 0 64px;
+    background:
+      radial-gradient(
+        ellipse at top right,
+        rgba(232, 222, 159, 0.12) 0%,
+        transparent 60%
+      ),
+      var(--c-deep);
+  }
+  @media (max-width: 720px) {
+    .ft-cta {
+      padding: 64px 0 48px;
+    }
+  }
+  .ft-eyebrow {
+    display: inline-block;
+    font-family:
+      "Inter",
+      "Lato",
+      system-ui,
+      sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    color: var(--c-gold);
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--c-gold);
+    margin-bottom: 16px;
+  }
+  .ft-cta-title {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0 0 16px;
+    letter-spacing: -0.01em;
+  }
+  .ft-cta-lead {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0 0 40px;
+    max-width: 720px;
+  }
+
+  .ft-cta-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 720px) {
+    .ft-cta-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+  .ft-cta-card {
+    position: relative;
+    display: block;
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: var(--shadow-md);
+    min-height: 220px;
+    transition:
+      transform var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
+  }
+  .ft-cta-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+  }
+  .ft-cta-card__media {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+  }
+  .ft-cta-card__media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(13, 38, 35, 0.85) 0%,
+      rgba(13, 38, 35, 0.55) 70%,
+      rgba(13, 38, 35, 0.35) 100%
+    );
+  }
+  .ft-cta-card__body {
+    position: relative;
+    z-index: 1;
+    padding: 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    min-height: 220px;
+  }
+  .ft-cta-card__title {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 0;
+    color: var(--c-white);
+    letter-spacing: -0.01em;
+  }
+  .ft-cta-card__title small {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 6px;
+    letter-spacing: 0;
+  }
+  .ft-cta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+    margin-top: 24px;
+    padding: 10px 20px;
+    border-radius: var(--r-pill);
+    background: var(--c-gold);
+    color: var(--c-deep);
+    font-weight: 700;
+    font-size: 14px;
+    transition:
+      background var(--dur) var(--ease),
+      gap var(--dur) var(--ease);
+  }
+  .ft-cta-card:hover .ft-cta-pill {
+    background: var(--c-white);
+    gap: 12px;
+  }
+  .ft-cta-pill svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* =================================================================
+   * 2. Bottom Nav
+   * ================================================================= */
+  .ft-nav {
+    background: var(--c-deep);
+    border-top: 1px solid var(--c-line);
+  }
+  .ft-nav-inner {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    padding-top: 28px;
+    padding-bottom: 28px;
+    flex-wrap: wrap;
+    font-size: 14px;
+  }
+  .ft-nav-inner a {
+    transition: color var(--dur) var(--ease);
+  }
+  .ft-nav-inner a:hover {
+    color: var(--c-gold);
+  }
+  @media (max-width: 540px) {
+    .ft-nav-inner {
+      gap: 20px;
+      font-size: 13px;
+    }
+  }
+
+  /* =================================================================
+   * 3. Sitemap
+   * ================================================================= */
+  .ft-sitemap {
+    background: var(--c-deep);
+    border-top: 1px solid var(--c-line);
+    padding: 56px 0 40px;
+  }
+  .ft-sitemap-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr 1fr;
+    gap: 40px;
+  }
+  @media (max-width: 880px) {
+    .ft-sitemap-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+  }
+  @media (max-width: 540px) {
+    .ft-sitemap-grid {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+  }
+
+  .ft-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ft-logo {
+    font-family:
+      "Inter",
+      "Lato",
+      system-ui,
+      sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+  }
+  .ft-brand-link {
+    font-size: 15px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--c-line);
+    padding-bottom: 12px;
+    width: fit-content;
+    transition: color var(--dur) var(--ease);
+  }
+  .ft-brand-link:hover {
+    color: var(--c-gold);
+  }
+  .ft-legal {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .ft-legal a {
+    color: var(--c-text-muted);
+    font-size: 12px;
+    transition: color var(--dur) var(--ease);
+  }
+  .ft-legal a:hover {
+    color: var(--c-gold);
+  }
+
+  .ft-col {
+    display: flex;
+    flex-direction: column;
+  }
+  .ft-col h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--c-line);
+    letter-spacing: 0.02em;
+  }
+  .ft-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .ft-col a {
+    font-size: 13px;
+    transition: color var(--dur) var(--ease);
+  }
+  .ft-col a:hover {
+    color: var(--c-gold);
+  }
+
+  /* =================================================================
+   * 4. Copyright
+   * ================================================================= */
+  .ft-copyright {
+    background: var(--c-deeper);
+    color: var(--c-text-muted);
+    padding: 16px 0;
+    font-family:
+      "Inter",
+      "Lato",
+      system-ui,
+      sans-serif;
+    font-size: 12px;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+</style>

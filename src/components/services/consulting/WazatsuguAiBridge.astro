@@ -1,0 +1,200 @@
+---
+/**
+ * WazatsuguAiBridge.astro
+ * /services/consulting への追加セクション ④
+ * わざツグ → AIワークフロー の橋渡し図。
+ * 技カードがそのまま AI 実装の仕様書になることを示す。
+ */
+---
+
+<section class="cab">
+  <div class="cab__inner">
+    <p class="cab__eyebrow">WAZATSUGU × AI WORKFLOW</p>
+    <h2 class="cab__title">
+      技カードが、<br />
+      <span class="cab__title-accent">AI実装の仕様書</span>に直結する
+    </h2>
+    <p class="cab__lead">
+      わざツグで形式知化した暗黙知（技カード）は、<br />
+      そのまま AIワークフロー設計の入力仕様として使えます。<br />
+      「業務の見える化 → 運用設計 → 実装」を、断絶なくつなげます。
+    </p>
+
+    <div class="cab__bridge">
+      <div class="cab__side cab__side--left">
+        <p class="cab__side-en">WAZATSUGU</p>
+        <p class="cab__side-jp">暗黙知 → 技カード</p>
+        <ul class="cab__list">
+          <li>業務に潜む判断を 5 観点で抽出</li>
+          <li>例外・グレーゾーンも明文化</li>
+          <li>JSON で機械可読に書き出し</li>
+        </ul>
+      </div>
+
+      <div class="cab__arrow" aria-hidden="true">
+        <svg width="64" height="32" viewBox="0 0 64 32" fill="none">
+          <path
+            d="M2 16 H58 M50 8 L58 16 L50 24"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"
+          />
+        </svg>
+        <p class="cab__arrow-label">入力仕様として渡す</p>
+      </div>
+
+      <div class="cab__side cab__side--right">
+        <p class="cab__side-en">AI WORKFLOW</p>
+        <p class="cab__side-jp">課題特定 → 運用設計 → 実装</p>
+        <ul class="cab__list">
+          <li>カードの判断基準が AI の判断ロジックに</li>
+          <li>例外条件がそのまま運用ルールに</li>
+          <li>RAG / Agent の設計書として再利用</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="cab__note">
+      手順だけが書かれた業務マニュアルでは、AI実装に渡せる仕様にはなりません。
+      <strong>判断基準・例外・経験の根拠</strong>まで揃った技カードがあるからこそ、
+      AI は「再現可能な業務」として動けるようになります。
+    </p>
+  </div>
+</section>
+
+<style>
+  .cab {
+    padding: 96px 24px 96px;
+    background: linear-gradient(180deg, #fff 0%, #f6f4e0 100%);
+    color: var(--color-neutral-100-txt, #030807);
+  }
+  .cab__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+  }
+  .cab__eyebrow {
+    margin: 0 0 16px;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-xs, 12px);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--color-accent-gold-dark, #b88c00);
+  }
+  .cab__title {
+    margin: 0 0 24px;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    line-height: 1.45;
+    color: var(--color-deep-green, #0d2623);
+    letter-spacing: 0.02em;
+  }
+  .cab__title-accent {
+    color: var(--color-accent-gold-dark, #b88c00);
+  }
+  .cab__lead {
+    margin: 0 0 48px;
+    max-width: 720px;
+    font-size: var(--font-size-base, 16px);
+    line-height: 2;
+    color: var(--color-neutral-80-txt, #384946);
+  }
+
+  .cab__bridge {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    align-items: stretch;
+    margin-bottom: 48px;
+  }
+  @media (min-width: 880px) {
+    .cab__bridge {
+      grid-template-columns: 1fr auto 1fr;
+      gap: 24px;
+    }
+  }
+
+  .cab__side {
+    background: #fff;
+    border-radius: 14px;
+    padding: 32px 28px 28px;
+    box-shadow: 0 4px 20px rgba(13, 38, 35, 0.06);
+  }
+  .cab__side--left {
+    border: 2px solid var(--color-deep-green, #0d2623);
+  }
+  .cab__side--right {
+    border: 2px solid var(--color-accent-gold-dark, #b88c00);
+  }
+  .cab__side-en {
+    margin: 0 0 6px;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-2xs, 11px);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--color-accent-gold-dark, #b88c00);
+  }
+  .cab__side-jp {
+    margin: 0 0 18px;
+    font-size: var(--font-size-xl, 20px);
+    font-weight: 700;
+    color: var(--color-deep-green, #0d2623);
+    line-height: 1.4;
+  }
+  .cab__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .cab__list li {
+    position: relative;
+    padding: 6px 0 6px 22px;
+    font-size: var(--font-size-sm, 14px);
+    line-height: 1.7;
+    color: var(--color-neutral-80-txt, #384946);
+  }
+  .cab__list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 12px;
+    height: 1px;
+    background: var(--color-accent-gold-dark, #b88c00);
+  }
+
+  .cab__arrow {
+    align-self: center;
+    text-align: center;
+    color: var(--color-accent-gold-dark, #b88c00);
+  }
+  @media (max-width: 879px) {
+    .cab__arrow svg {
+      transform: rotate(90deg);
+    }
+  }
+  .cab__arrow-label {
+    margin: 8px 0 0;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-2xs, 11px);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--color-deep-green, #0d2623);
+  }
+
+  .cab__note {
+    margin: 0;
+    padding: 24px 28px;
+    background: rgba(13, 38, 35, 0.04);
+    border-left: 4px solid var(--color-accent-gold, #e8de9f);
+    font-size: var(--font-size-sm, 14px);
+    line-height: 2;
+    color: var(--color-neutral-80-txt, #384946);
+    border-radius: 4px;
+  }
+  .cab__note strong {
+    color: var(--color-deep-green, #0d2623);
+    font-weight: 700;
+  }
+</style>

@@ -1,0 +1,1296 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Studio → Astro 移行 検討メモ｜cynthialy.co.jp リニューアル検証レポート</title>
+    <meta
+      name="description"
+      content="cynthialy.co.jp（Studio.Design 製）を Astro へ移行する是非を、実装検証の結果に基づいて整理した社内ジャッジ用ドキュメント。"
+    />
+    <meta name="robots" content="noindex,nofollow" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --c-deep: #0d2623;
+        --c-deep-soft: #1a3a36;
+        --c-deeper: #061513;
+        --c-gold: #e8de9f;
+        --c-gold-soft: #f9f9ba;
+        --c-gold-dark: #c9b94d;
+        --c-bg: #f7f8f7;
+        --c-card: #ffffff;
+        --c-border: #d8dcdb;
+        --c-text: #1a2826;
+        --c-text-muted: #5a6764;
+        --c-success: #1f7a52;
+        --c-success-bg: #e1f1ea;
+        --c-warning: #b8741f;
+        --c-warning-bg: #fbf1de;
+        --c-danger: #a83b3b;
+        --c-danger-bg: #fae3e3;
+        --c-neutral-bg: #eef2f0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-font-smoothing: antialiased;
+      }
+      body {
+        margin: 0;
+        font-family:
+          "Noto Sans JP",
+          "Hiragino Kaku Gothic ProN",
+          sans-serif;
+        font-size: 15px;
+        line-height: 1.85;
+        color: var(--c-text);
+        background: var(--c-bg);
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      p,
+      ul,
+      ol,
+      table {
+        margin: 0;
+      }
+      ul,
+      ol {
+        padding-left: 1.4em;
+      }
+      a {
+        color: var(--c-deep);
+      }
+      strong {
+        color: var(--c-deep);
+      }
+
+      /* ===== Header ===== */
+      .doc-header {
+        background:
+          radial-gradient(
+            ellipse at top right,
+            rgba(232, 222, 159, 0.18) 0%,
+            transparent 60%
+          ),
+          var(--c-deep);
+        color: #fff;
+        padding: 64px 32px 56px;
+      }
+      .doc-header__inner {
+        max-width: 920px;
+        margin: 0 auto;
+      }
+      .doc-header__eyebrow {
+        font-family: "Inter", sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        font-weight: 700;
+        color: var(--c-gold);
+        margin-bottom: 16px;
+      }
+      .doc-header h1 {
+        font-size: clamp(28px, 4vw, 42px);
+        font-weight: 700;
+        line-height: 1.3;
+        letter-spacing: -0.01em;
+        margin-bottom: 16px;
+      }
+      .doc-header__lead {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 16px;
+        line-height: 1.85;
+        max-width: 720px;
+      }
+      .doc-meta {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px solid rgba(232, 222, 159, 0.25);
+        font-family: "Inter", sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .doc-meta b {
+        color: var(--c-gold);
+        font-weight: 700;
+        margin-right: 8px;
+      }
+
+      /* ===== Layout ===== */
+      .doc-body {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 48px 32px 80px;
+      }
+      section + section {
+        margin-top: 56px;
+      }
+      h2 {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--c-deep);
+        padding-bottom: 12px;
+        border-bottom: 3px solid var(--c-gold);
+        margin-bottom: 24px;
+        scroll-margin-top: 24px;
+      }
+      h2 .h2-no {
+        font-family: "Inter", sans-serif;
+        font-size: 13px;
+        letter-spacing: 0.16em;
+        color: var(--c-gold-dark);
+        display: block;
+        margin-bottom: 6px;
+      }
+      h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--c-deep);
+        margin: 32px 0 12px;
+        padding-left: 12px;
+        border-left: 4px solid var(--c-gold);
+      }
+
+      /* ===== TL;DR Card ===== */
+      .tldr {
+        background: linear-gradient(
+          135deg,
+          var(--c-gold-soft) 0%,
+          var(--c-gold) 100%
+        );
+        padding: 28px 32px;
+        border-radius: 12px;
+        margin-bottom: 40px;
+        box-shadow: 0 2px 8px rgba(13, 38, 35, 0.06);
+      }
+      .tldr h2 {
+        margin: 0 0 16px;
+        padding: 0;
+        border: 0;
+        font-size: 13px;
+        letter-spacing: 0.18em;
+        color: var(--c-deep);
+        font-family: "Inter", sans-serif;
+      }
+      .tldr p {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--c-deep);
+        line-height: 1.85;
+      }
+      .tldr p + p {
+        margin-top: 12px;
+      }
+      .tldr strong {
+        background: rgba(13, 38, 35, 0.85);
+        color: var(--c-gold);
+        padding: 1px 8px;
+        border-radius: 4px;
+        font-weight: 700;
+      }
+
+      /* ===== TOC ===== */
+      .toc {
+        background: var(--c-card);
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+        padding: 20px 28px;
+        margin-bottom: 40px;
+      }
+      .toc h3 {
+        margin: 0 0 12px;
+        padding: 0;
+        border: 0;
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        font-family: "Inter", sans-serif;
+        color: var(--c-text-muted);
+      }
+      .toc ol {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px 24px;
+        font-size: 13px;
+      }
+      @media (max-width: 720px) {
+        .toc ol {
+          grid-template-columns: 1fr;
+        }
+      }
+      .toc a {
+        text-decoration: none;
+        color: var(--c-text);
+        transition: color 200ms;
+      }
+      .toc a:hover {
+        color: var(--c-gold-dark);
+      }
+      .toc a::before {
+        content: "▸ ";
+        color: var(--c-gold-dark);
+      }
+
+      /* ===== Inline page link (with ↗) ===== */
+      .link-page {
+        color: var(--c-deep);
+        text-decoration: none;
+        font-family: "Inter", monospace;
+        font-size: 13px;
+        font-weight: 500;
+        background: var(--c-neutral-bg);
+        padding: 3px 10px;
+        border-radius: 4px;
+        border: 1px solid var(--c-border);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: background 200ms, color 200ms;
+      }
+      .link-page:hover {
+        background: var(--c-deep);
+        color: var(--c-gold);
+      }
+      .link-arrow {
+        font-size: 11px;
+        opacity: 0.6;
+      }
+      .link-page:hover .link-arrow {
+        opacity: 1;
+      }
+
+      /* ===== Status badges ===== */
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 3px 12px;
+        border-radius: 99px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        font-family: "Inter", sans-serif;
+        white-space: nowrap;
+      }
+      .status--ok {
+        background: var(--c-success-bg);
+        color: var(--c-success);
+      }
+      .status--ng {
+        background: var(--c-danger-bg);
+        color: var(--c-danger);
+      }
+      .status--partial {
+        background: var(--c-warning-bg);
+        color: var(--c-warning);
+      }
+      .status::before {
+        content: "●";
+        font-size: 14px;
+      }
+
+      /* ===== Result cards ===== */
+      .result-card {
+        background: var(--c-card);
+        border: 1px solid var(--c-border);
+        border-left: 6px solid var(--c-gold);
+        border-radius: 8px;
+        padding: 24px 28px;
+        margin-bottom: 16px;
+      }
+      .result-card--ng {
+        border-left-color: var(--c-danger);
+      }
+      .result-card--partial {
+        border-left-color: var(--c-warning);
+      }
+      .result-card--ok {
+        border-left-color: var(--c-success);
+      }
+      .result-card__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 12px;
+      }
+      .result-card__title {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--c-deep);
+      }
+      .result-card__body {
+        font-size: 14px;
+        line-height: 1.85;
+        color: var(--c-text);
+      }
+      .result-card__body p + p {
+        margin-top: 8px;
+      }
+      .result-card__detail {
+        margin-top: 12px;
+        padding: 12px 16px;
+        background: var(--c-neutral-bg);
+        border-radius: 6px;
+        font-size: 13px;
+        color: var(--c-text-muted);
+      }
+      .result-card__detail strong {
+        color: var(--c-deep);
+      }
+
+      /* ===== Comparison table ===== */
+      .compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--c-card);
+        font-size: 13px;
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .compare-table th,
+      .compare-table td {
+        padding: 14px 16px;
+        text-align: left;
+        border-bottom: 1px solid var(--c-border);
+        vertical-align: top;
+      }
+      .compare-table thead th {
+        background: var(--c-deep);
+        color: #fff;
+        font-weight: 700;
+        font-size: 13px;
+        text-align: center;
+        border-bottom: 0;
+      }
+      .compare-table thead th:first-child {
+        text-align: left;
+      }
+      .compare-table thead th small {
+        display: block;
+        font-weight: 400;
+        font-size: 11px;
+        opacity: 0.75;
+        margin-top: 4px;
+        letter-spacing: 0.04em;
+      }
+      .compare-table tbody tr:nth-child(even) {
+        background: #f6f8f7;
+      }
+      .compare-table tbody td {
+        text-align: center;
+      }
+      .compare-table tbody td:first-child {
+        text-align: left;
+        font-weight: 700;
+        color: var(--c-deep);
+        background: var(--c-neutral-bg);
+      }
+      .compare-table tbody tr:last-child td {
+        border-bottom: 0;
+      }
+      .score {
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1;
+        display: inline-block;
+      }
+      .score--good {
+        color: #1f7a52;
+      }
+      .score--mid {
+        color: #b8741f;
+      }
+      .score--bad {
+        color: #a83b3b;
+      }
+      .score-note {
+        display: block;
+        font-size: 11px;
+        font-weight: 400;
+        color: var(--c-text-muted);
+        margin-top: 4px;
+        line-height: 1.4;
+      }
+
+      /* ===== Pros / Cons grid ===== */
+      .pc-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 16px;
+      }
+      @media (max-width: 720px) {
+        .pc-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .pc-card {
+        padding: 20px 24px;
+        border-radius: 8px;
+        border: 1px solid var(--c-border);
+        background: var(--c-card);
+      }
+      .pc-card--pro {
+        border-left: 6px solid var(--c-success);
+      }
+      .pc-card--con {
+        border-left: 6px solid var(--c-danger);
+      }
+      .pc-card h4 {
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        font-family: "Inter", sans-serif;
+        margin: 0 0 10px;
+        color: var(--c-text-muted);
+      }
+      .pc-card--pro h4 {
+        color: var(--c-success);
+      }
+      .pc-card--con h4 {
+        color: var(--c-danger);
+      }
+      .pc-card ul {
+        margin: 0;
+        padding-left: 1.2em;
+        font-size: 13.5px;
+      }
+      .pc-card li {
+        margin: 4px 0;
+      }
+
+      /* ===== Conclusion box ===== */
+      .conclusion {
+        margin-top: 24px;
+        background: var(--c-deep);
+        color: #fff;
+        padding: 32px 36px;
+        border-radius: 12px;
+        border-left: 8px solid var(--c-gold);
+      }
+      .conclusion h3 {
+        color: var(--c-gold);
+        margin: 0 0 16px;
+        padding: 0;
+        border: 0;
+        font-size: 14px;
+        letter-spacing: 0.18em;
+        font-family: "Inter", sans-serif;
+      }
+      .conclusion p {
+        font-size: 15px;
+        line-height: 1.95;
+        color: rgba(255, 255, 255, 0.92);
+      }
+      .conclusion p + p {
+        margin-top: 12px;
+      }
+      .conclusion strong {
+        background: var(--c-gold);
+        color: var(--c-deep);
+        padding: 1px 8px;
+        border-radius: 4px;
+        font-weight: 700;
+      }
+
+      /* ===== Path cards (3 routes) ===== */
+      .path-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin: 16px 0 24px;
+      }
+      @media (max-width: 880px) {
+        .path-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .path-card {
+        background: var(--c-card);
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+        padding: 24px;
+      }
+      .path-card--recommended {
+        border: 2px solid var(--c-deep);
+        position: relative;
+      }
+      .path-card--recommended::before {
+        content: "RECOMMENDED";
+        position: absolute;
+        top: -10px;
+        left: 16px;
+        background: var(--c-deep);
+        color: var(--c-gold);
+        font-family: "Inter", sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        padding: 3px 10px;
+        border-radius: 99px;
+      }
+      .path-card__label {
+        font-family: "Inter", sans-serif;
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        color: var(--c-gold-dark);
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .path-card__title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--c-deep);
+        margin-bottom: 12px;
+        line-height: 1.5;
+      }
+      .path-card__cost {
+        font-size: 11px;
+        color: var(--c-text-muted);
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px dashed var(--c-border);
+      }
+      .path-card__list {
+        font-size: 13px;
+        margin: 0;
+        padding-left: 1.2em;
+      }
+
+      /* ===== Footer ===== */
+      .doc-footer {
+        background: var(--c-deeper);
+        color: rgba(255, 255, 255, 0.5);
+        font-family: "Inter", sans-serif;
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-align: center;
+        padding: 24px;
+      }
+
+      /* ===== Print ===== */
+      @media print {
+        body {
+          background: #fff;
+          font-size: 11pt;
+        }
+        .doc-header {
+          padding: 24px 0;
+        }
+        .doc-body {
+          padding: 16px 0;
+        }
+        .toc,
+        .result-card,
+        .pc-card,
+        .path-card,
+        .compare-table {
+          break-inside: avoid;
+        }
+        section + section {
+          margin-top: 32px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="doc-header">
+      <div class="doc-header__inner">
+        <div class="doc-header__eyebrow">INTERNAL DECISION MEMO</div>
+        <h1>Studio → Astro 移行の是非<br />— 検証レポートと推奨アクション</h1>
+        <p class="doc-header__lead">
+          cynthialy.co.jp（Studio.Design 製）を Astro 静的サイトへ移行する是非を、約2週間の実装検証の結果に基づいて整理。社内意思決定のための判断材料として残す。
+        </p>
+        <div class="doc-meta">
+          <span><b>作成</b>2026-04-30</span>
+          <span><b>対象</b>cynthialy.co.jp リニューアル検討メンバー</span>
+          <span><b>検証期間</b>2026-04-24 〜 2026-04-30</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="doc-body">
+      <!-- ===== TL;DR ===== -->
+      <div class="tldr">
+        <h2>TL;DR — 結論サマリ</h2>
+        <p>
+          Studio で構築されたサイトを Astro
+          へミラー方式で移植する技術的検証は完了。<strong>事例記事の量産フォーマット</strong>
+          や <strong>ピクセル一致のミラー表示</strong>
+          は実現できた。一方で、ミラー HTML
+          を部分的に編集しようとするとデザインが連鎖的に崩壊し、新規ページを Studio
+          トーンと完全一致させることも難しい。
+        </p>
+        <p>
+          したがって移行を進めるなら、<strong>AI が安全に更新できるデザインシステム</strong>
+          を Design.md として明文化し、コンポーネント方式で再構築する道しか現実解はない。Studio
+          の見た目をそのまま完全保存しつつ AI で運用するハイブリッドは成立しない。
+        </p>
+      </div>
+
+      <!-- ===== TOC ===== -->
+      <nav class="toc">
+        <h3>目次</h3>
+        <ol>
+          <li><a href="#bg">1. 背景と検証の目的</a></li>
+          <li><a href="#scope">2. 検証範囲</a></li>
+          <li><a href="#results">3. 検証結果（OK / NG マトリクス）</a></li>
+          <li><a href="#diag">4. 技術的に明らかになったこと</a></li>
+          <li><a href="#paths">5. 3 つの選択肢</a></li>
+          <li><a href="#compare">6. 比較分析（運用観点）</a></li>
+          <li><a href="#proscons">7. AI 運用 vs 人運用 メリット・デメリット</a></li>
+          <li><a href="#decision">8. 結論と推奨アクション</a></li>
+        </ol>
+      </nav>
+
+      <!-- ===== 1. 背景 ===== -->
+      <section id="bg">
+        <h2><span class="h2-no">SECTION 01</span>背景と検証の目的</h2>
+        <p>
+          cynthialy.co.jp は Studio.Design（ノーコード Web ビルダー）で構築・運用されている。
+          リニューアル検討では下記の課題が確認された。
+        </p>
+        <ul>
+          <li>
+            <strong>パフォーマンス</strong>：JS バンドルが重く、LCP が遅い
+          </li>
+          <li>
+            <strong>運用フォーマットの不統一</strong>：事例記事の構造がページごとに違い、量産しづらい
+          </li>
+          <li>
+            <strong>編集効率の限界</strong>：Studio 上での画面操作が必要で、1 件あたりの工数が大きい
+          </li>
+          <li>
+            <strong>ロックイン</strong>：Studio
+            のエコシステムに依存し、独自要件への拡張が困難
+          </li>
+        </ul>
+        <p style="margin-top: 16px">
+          そこで「Studio から Astro 静的サイトへ移行できるか」を検証するため、リポジトリ
+          <code>kamechi0702/cynthialy-lp</code> 上で実装検証を実施した。
+        </p>
+      </section>
+
+      <!-- ===== 2. 検証範囲 ===== -->
+      <section id="scope">
+        <h2><span class="h2-no">SECTION 02</span>検証範囲</h2>
+        <p>以下のページ・機能で検証を行った。
+          <strong>↗ をクリックすると別タブで実装ページが開きます。</strong>
+        </p>
+        <table class="compare-table" style="margin-top: 12px">
+          <thead>
+            <tr>
+              <th>カテゴリ</th>
+              <th style="text-align: left">対象（URL）</th>
+              <th>方式</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TOP</td>
+              <td style="text-align: left">
+                <a href="/" target="_blank" rel="noopener" class="link-page">/<span class="link-arrow">↗</span></a>
+              </td>
+              <td>ミラー HTML 注入</td>
+            </tr>
+            <tr>
+              <td>サービス一覧</td>
+              <td style="text-align: left">
+                <a href="/services/" target="_blank" rel="noopener" class="link-page">/services/<span class="link-arrow">↗</span></a>
+              </td>
+              <td>ミラー HTML 注入</td>
+            </tr>
+            <tr>
+              <td>業務変革コンサル</td>
+              <td style="text-align: left">
+                <a href="/services/consulting/" target="_blank" rel="noopener" class="link-page">/services/consulting/<span class="link-arrow">↗</span></a>
+              </td>
+              <td>ミラー HTML 注入</td>
+            </tr>
+            <tr>
+              <td>研修サービス</td>
+              <td style="text-align: left">
+                <a href="/services/training/" target="_blank" rel="noopener" class="link-page">/services/training/<span class="link-arrow">↗</span></a>
+              </td>
+              <td>ミラー HTML 注入</td>
+            </tr>
+            <tr>
+              <td>事例（タマディック）</td>
+              <td style="text-align: left">
+                <a href="/case/X8Q6V52T/" target="_blank" rel="noopener" class="link-page">/case/X8Q6V52T/<span class="link-arrow">↗</span></a>
+              </td>
+              <td>ミラーテンプレ + MDX + 自前 Footer</td>
+            </tr>
+            <tr>
+              <td>事例（リケンテクノス）</td>
+              <td style="text-align: left">
+                <a href="/case/vEzexR_H/" target="_blank" rel="noopener" class="link-page">/case/vEzexR_H/<span class="link-arrow">↗</span></a>
+              </td>
+              <td>ミラーテンプレ + MDX + 自前 Footer</td>
+            </tr>
+            <tr>
+              <td>新規プロダクト（わざツグ）</td>
+              <td style="text-align: left">
+                <a href="/services/wazatsugu/" target="_blank" rel="noopener" class="link-page">/services/wazatsugu/<span class="link-arrow">↗</span></a>
+              </td>
+              <td>コンポーネント実装（Design.md 準拠）</td>
+            </tr>
+            <tr>
+              <td>運用基盤</td>
+              <td style="text-align: left">
+                Vercel デプロイ、GitHub Actions 自動 CI/CD、AI 画像生成（OpenAI
+                gpt-image-1）
+              </td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>本検証で残せた成果物（移行 GO 時に流用可）</h3>
+        <ul>
+          <li>
+            <code>cto/mock/docs/Design.md</code> — デザイン憲章（11 章）
+          </li>
+          <li>
+            <code>cto/mock/src/components/Footer.astro</code> — 共通フッターコンポーネント（Design.md 準拠）
+          </li>
+          <li>
+            <code>cto/mock/src/pages/services/wazatsugu.astro</code> — Design.md 準拠の新規ページ実装サンプル
+          </li>
+          <li>
+            <code>cto/mock/src/pages/case/[slug].astro</code> + <code>case-template-body.html</code> — MDX による事例記事フォーマット
+          </li>
+          <li>
+            <code>cto/mock/scripts/generate-images.mjs</code> — AI 画像生成基盤（汎用、ページ追加だけで他案件にも横展開可）
+          </li>
+          <li>
+            <code>.github/workflows/deploy.yml</code> — Vercel 自動デプロイ
+          </li>
+          <li>
+            cynthialy.co.jp の本家ミラー資産（保管用）
+          </li>
+        </ul>
+      </section>
+
+      <!-- ===== 3. 結果 ===== -->
+      <section id="results">
+        <h2><span class="h2-no">SECTION 03</span>検証結果（OK / NG マトリクス）</h2>
+
+        <h3>3.1 できたこと（OK）</h3>
+
+        <article class="result-card result-card--ok">
+          <div class="result-card__head">
+            <div class="result-card__title">
+              ミラーサイトの完全構築（ピクセル一致）
+            </div>
+            <span class="status status--ok">OK</span>
+          </div>
+          <div class="result-card__body">
+            <p>
+              Studio が出力した SSR HTML をそのまま Astro
+              の静的ページに取り込み、CSS バンドルも合わせて配置することで、本家と
+              <strong>ピクセルレベルで同じ見た目</strong>を再現できた。
+            </p>
+            <div class="result-card__detail">
+              <strong>成果物</strong>：TOP / サービス一覧 / コンサル / 研修 / 事例 ×
+              2、計 7 ページが本家と同等の見た目で表示。背景動画・ロゴカルーセル・スクロール連動フェードインも動作。
+            </div>
+          </div>
+        </article>
+
+        <article class="result-card result-card--ok">
+          <div class="result-card__head">
+            <div class="result-card__title">
+              事例記事の量産フォーマット（MDX + テンプレート）
+            </div>
+            <span class="status status--ok">OK</span>
+          </div>
+          <div class="result-card__body">
+            <p>
+              ミラーテンプレートに <code>{`{{COMPANY}}`}</code>
+              <code>{`{{TOC_*}}`}</code> 等のトークンを埋め込み、frontmatter
+              から流し込む方式が確立。MDX で本文だけ書けば、Hero
+              / 目次 / 関連事例 / フッターが自動的に統一された見た目で生成される。
+            </p>
+            <div class="result-card__detail">
+              <strong>運用効率</strong>：1 件の事例記事を ~30 分で公開可能（従来の
+              Studio 編集と比較して 1/3 の時間）。AI による下書き生成も MDX 形式なら容易。
+            </div>
+          </div>
+        </article>
+
+        <article class="result-card result-card--ok">
+          <div class="result-card__head">
+            <div class="result-card__title">
+              インフラ・運用基盤の整備
+            </div>
+            <span class="status status--ok">OK</span>
+          </div>
+          <div class="result-card__body">
+            <p>
+              GitHub Actions による自動デプロイ（push → 約 50 秒で本番反映）、Design.md
+              による設計憲章、AI 画像生成スクリプト（OpenAI gpt-image-1）の汎用基盤、
+              までを 1 セッション内で構築完了。
+            </p>
+            <div class="result-card__detail">
+              <strong>運用フロー</strong>：MDX を書いて <code>git push</code>
+              すれば本番反映。新ページ用の写真は <code>npm run generate:images</code>
+              でブランドトーン統一の AI 画像が出力。
+            </div>
+          </div>
+        </article>
+
+        <h3>3.2 できなかったこと（NG）</h3>
+
+        <article class="result-card result-card--ng">
+          <div class="result-card__head">
+            <div class="result-card__title">
+              ミラーで構築したサイトの編集（部分修正でデザイン崩れ）
+            </div>
+            <span class="status status--ng">NG</span>
+          </div>
+          <div class="result-card__body">
+            <p>
+              ミラー HTML
+              を「内容だけ差し替える」試み（わざツグ初版で実施）は、テキストは入れ替わるがデザインの語り口が
+              Studio
+              のままで、新コンテンツの訴求が立ち上がらなかった。さらに細部編集を進めるとレイアウトが崩れていく。
+            </p>
+            <div class="result-card__detail">
+              <strong>原因</strong>：Studio CSS は
+              <code>data-r-XX_YY_..._UUID</code>
+              という<strong>位置依存のセレクタ</strong>を使用。要素を移動・追加・削除すると階層パスが変わり、対応する
+              CSS がマッチしなくなる。AI
+              が部分的にテキストを差し替えるだけでも、全体のレイアウトが連鎖的に崩れるリスクがある。
+            </div>
+          </div>
+        </article>
+
+        <article class="result-card result-card--ng">
+          <div class="result-card__head">
+            <div class="result-card__title">
+              事例ページの CTA / フッターの統一
+            </div>
+            <span class="status status--ng">NG</span>
+          </div>
+          <div class="result-card__body">
+            <p>
+              事例ページのフッターはメインページと異なり、CTA セクション・Bottom
+              nav が欠落していた。ミラー HTML
+              から該当部分を抽出して移植する試みは、CSS 依存（<code>.container</code>
+              の幅制約・data-s ベースのレイアウト 463 ルール・media query 287
+              個）が複雑すぎて、移植先で必ず崩れた。
+            </p>
+            <div class="result-card__detail">
+              <strong>最終的な解決</strong>：ミラー方式を諦め、Design.md
+              準拠で <code>Footer.astro</code>
+              を新規実装。デザイントーンは揃えたが、Studio
+              との完全一致は犠牲になった。
+            </div>
+          </div>
+        </article>
+
+        <h3>3.3 部分的にできたこと（Partial）</h3>
+
+        <article class="result-card result-card--partial">
+          <div class="result-card__head">
+            <div class="result-card__title">
+              新規プロダクトページ（わざツグ）の生成
+            </div>
+            <span class="status status--partial">PARTIAL</span>
+          </div>
+          <div class="result-card__body">
+            <p>
+              cynthialy.co.jp に存在しない新規プロダクト「わざツグ」のページを Design.md
+              のセクションアーキタイプに沿ってコンポーネント方式で実装。深緑×ゴールドのブランドトーンは保ったが、Studio
+              タイポグラフィや細部の余白などは完全には合わせきれなかった。
+            </p>
+            <div class="result-card__detail">
+              <strong>制約</strong>：Studio
+              の独自フォント（秀英角ゴシック銀・FontPlus 契約フォント）はライセンスの都合で再現不可。Design.md
+              で代替（Noto Sans JP + Inter）を定義したが、印象は微妙に変わる。
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- ===== 4. 診断 ===== -->
+      <section id="diag">
+        <h2><span class="h2-no">SECTION 04</span>技術的に明らかになったこと</h2>
+        <ul>
+          <li>
+            Studio の CSS は<strong>位置依存（<code>data-r-...</code>）と要素 ID
+              依存（<code>data-s-...</code>）の二重構造</strong>で、合計 700+ 個の
+            inline <code>&lt;style&gt;</code> ルールが各ページに散らばっている
+          </li>
+          <li>
+            これらのルールは<strong>親 div の階層パスにロックされている</strong>ため、要素を切り出して別ページに移植すると親階層が変わり、CSS
+            が無効になる
+          </li>
+          <li>
+            ミラーで取り込んだ HTML を AI
+            で書き換えるためには、対応する CSS ルールも全て検出して同時に書き換える必要があり、<strong>編集の一貫性を保つ自動化は事実上不可能</strong>
+          </li>
+          <li>
+            一方、Design.md
+            ベースのコンポーネント実装なら<strong>CSS の cascade
+              が予測可能</strong>で、AI が安全に部分編集できる
+          </li>
+          <li>
+            Studio
+            タイポグラフィや独自フォントの完全再現は、ライセンス・モバイル対応の両面で不可
+          </li>
+        </ul>
+      </section>
+
+      <!-- ===== 5. 3つの選択肢 ===== -->
+      <section id="paths">
+        <h2><span class="h2-no">SECTION 05</span>3 つの選択肢</h2>
+
+        <div class="path-grid">
+          <div class="path-card">
+            <div class="path-card__label">PATH A</div>
+            <div class="path-card__title">Studio 現状維持<br />（人がノーコードで運用）</div>
+            <div class="path-card__cost">初期コスト：0 ／ 移行リスク：なし</div>
+            <ul class="path-card__list">
+              <li>cynthialy.co.jp をそのまま使い続ける</li>
+              <li>編集はメンバーが Studio 上で実施</li>
+              <li>運用効率・パフォーマンス課題は据え置き</li>
+            </ul>
+          </div>
+
+          <div class="path-card">
+            <div class="path-card__label">PATH B</div>
+            <div class="path-card__title">Astro 移行 ＋ 人で運用</div>
+            <div class="path-card__cost">初期コスト：高 ／ 月次運用：中</div>
+            <ul class="path-card__list">
+              <li>Astro で再構築するが、編集はエンジニアが手動</li>
+              <li>パフォーマンスは改善</li>
+              <li>運用工数は Studio 時代と変わらない or 増える</li>
+            </ul>
+          </div>
+
+          <div class="path-card path-card--recommended">
+            <div class="path-card__label">PATH C</div>
+            <div class="path-card__title">Astro 移行 ＋ AI で運用<br />（Design.md 駆動）</div>
+            <div class="path-card__cost">初期コスト：高 ／ 月次運用：低</div>
+            <ul class="path-card__list">
+              <li>Design.md と Astro コンポーネントで再設計</li>
+              <li>記事追加・改修は AI が安全に実行可能</li>
+              <li>運用効率・パフォーマンス・拡張性すべて改善</li>
+              <li><strong>移行するならこれ以外の道はない</strong></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 6. 比較表 ===== -->
+      <section id="compare">
+        <h2><span class="h2-no">SECTION 06</span>比較分析（運用観点）</h2>
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>評価軸</th>
+              <th>A. Studio 現状<small>（人で運用）</small></th>
+              <th>B. Astro 移行<small>（人で運用）</small></th>
+              <th>C. Astro 移行<small>（AI で運用）</small></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>記事追加の速度</td>
+              <td>
+                <span class="score score--mid">△</span>
+                <span class="score-note">画面操作で 1〜2 時間／本</span>
+              </td>
+              <td>
+                <span class="score score--mid">○</span>
+                <span class="score-note">エンジニアが MDX 書けば 1 時間</span>
+              </td>
+              <td>
+                <span class="score score--good">◎</span>
+                <span class="score-note">AI 下書き → 30 分以内</span>
+              </td>
+            </tr>
+            <tr>
+              <td>デザインの自由度</td>
+              <td>
+                <span class="score score--good">◎</span>
+                <span class="score-note">Studio 内で何でも作れる</span>
+              </td>
+              <td>
+                <span class="score score--good">◎</span>
+                <span class="score-note">コードで何でも書ける</span>
+              </td>
+              <td>
+                <span class="score score--mid">○</span>
+                <span class="score-note">Design.md の枠内、逸脱は要更新</span>
+              </td>
+            </tr>
+            <tr>
+              <td>一貫性・ブランド維持</td>
+              <td>
+                <span class="score score--mid">△</span>
+                <span class="score-note">担当者依存、揺れやすい</span>
+              </td>
+              <td>
+                <span class="score score--mid">○</span>
+                <span class="score-note">レビュー次第、属人的</span>
+              </td>
+              <td>
+                <span class="score score--good">◎</span>
+                <span class="score-note">Design.md で機械的に強制</span>
+              </td>
+            </tr>
+            <tr>
+              <td>パフォーマンス（LCP）</td>
+              <td>
+                <span class="score score--bad">×</span>
+                <span class="score-note">JS バンドル重い</span>
+              </td>
+              <td>
+                <span class="score score--good">◎</span>
+                <span class="score-note">静的配信で軽量</span>
+              </td>
+              <td>
+                <span class="score score--good">◎</span>
+                <span class="score-note">同上</span>
+              </td>
+            </tr>
+            <tr>
+              <td>必要スキル</td>
+              <td>
+                <span class="score score--good">◎</span>
+                <span class="score-note">ノーコードで誰でも</span>
+              </td>
+              <td>
+                <span class="score score--bad">×</span>
+                <span class="score-note">Astro / TypeScript / Git 必須</span>
+              </td>
+              <td>
+                <span class="score score--mid">○</span>
+                <span class="score-note">AI に指示できる人</span>
+              </td>
+            </tr>
+            <tr>
+              <td>初期構築コスト</td>
+              <td>
+                <span class="score score--good">◎</span>
+                <span class="score-note">既にある（0）</span>
+              </td>
+              <td>
+                <span class="score score--bad">×</span>
+                <span class="score-note">フル再設計（高）</span>
+              </td>
+              <td>
+                <span class="score score--mid">△</span>
+                <span class="score-note">Design.md + コンポーネント基盤（高）</span>
+              </td>
+            </tr>
+            <tr>
+              <td>月次運用コスト</td>
+              <td>
+                <span class="score score--mid">△</span>
+                <span class="score-note">手動更新の人件費</span>
+              </td>
+              <td>
+                <span class="score score--mid">△</span>
+                <span class="score-note">エンジニア工数</span>
+              </td>
+              <td>
+                <span class="score score--good">◎</span>
+                <span class="score-note">AI で大半を自動化</span>
+              </td>
+            </tr>
+            <tr>
+              <td>拡張性（新機能・新ページ）</td>
+              <td>
+                <span class="score score--bad">×</span>
+                <span class="score-note">Studio エコシステムに縛られる</span>
+              </td>
+              <td>
+                <span class="score score--good">◎</span>
+                <span class="score-note">何でも追加可能</span>
+              </td>
+              <td>
+                <span class="score score--good">◎</span>
+                <span class="score-note">同上、AI で量産</span>
+              </td>
+            </tr>
+            <tr>
+              <td>エラー時の復旧</td>
+              <td>
+                <span class="score score--mid">△</span>
+                <span class="score-note">Studio 履歴に依存</span>
+              </td>
+              <td>
+                <span class="score score--good">◎</span>
+                <span class="score-note">git revert で即座</span>
+              </td>
+              <td>
+                <span class="score score--good">◎</span>
+                <span class="score-note">同上、CI で事前検知も可</span>
+              </td>
+            </tr>
+            <tr>
+              <td>編集権限の管理</td>
+              <td>
+                <span class="score score--mid">△</span>
+                <span class="score-note">アカウント単位、雑になりやすい</span>
+              </td>
+              <td>
+                <span class="score score--good">◎</span>
+                <span class="score-note">PR + レビューで明確</span>
+              </td>
+              <td>
+                <span class="score score--good">◎</span>
+                <span class="score-note">同上</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===== 7. メリデメ ===== -->
+      <section id="proscons">
+        <h2>
+          <span class="h2-no">SECTION 07</span>AI 運用 vs 人運用 メリット・デメリット
+        </h2>
+
+        <h3>7.1 AI による運用（Path C）のメリット・デメリット</h3>
+        <div class="pc-grid">
+          <div class="pc-card pc-card--pro">
+            <h4>MERITS</h4>
+            <ul>
+              <li>記事生成・改修の<strong>速度が圧倒的</strong>（30 分／本）</li>
+              <li>Design.md 準拠で<strong>一貫性が機械的に保たれる</strong></li>
+              <li><strong>24/365 稼働</strong>、夜間・休日のリリースも可</li>
+              <li>差分は git
+                履歴に残るため<strong>監査・ロールバック容易</strong></li>
+              <li>新ページ・新機能の追加コストが下がる</li>
+              <li>画像生成・コピー検討も同じワークフローで完結</li>
+            </ul>
+          </div>
+          <div class="pc-card pc-card--con">
+            <h4>DEMERITS</h4>
+            <ul>
+              <li>初期に
+                <strong>Design.md とコンポーネント基盤の整備が必要</strong>（中規模工数）</li>
+              <li>
+                AI に指示する人の側に<strong>「ブランド理解」と「指示力」</strong>が要る
+              </li>
+              <li>
+                完全な自由デザインから<strong>Design.md
+                  の枠内に収まる制約</strong>を受け入れる必要あり
+              </li>
+              <li>
+                AI 生成物の<strong>レビュープロセス</strong>が必要（誤情報や事実関係のチェック）
+              </li>
+              <li>OpenAI など外部 API 利用料（軽微：月数千円〜数万円）</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>7.2 人による運用（Path A / Path B）のメリット・デメリット</h3>
+        <div class="pc-grid">
+          <div class="pc-card pc-card--pro">
+            <h4>MERITS</h4>
+            <ul>
+              <li>
+                ノーコード（Studio）なら<strong>非エンジニアでも触れる</strong>
+              </li>
+              <li>
+                細部の<strong>クリエイティブ表現の自由度が高い</strong>（手作業ゆえ）
+              </li>
+              <li>新規メンバーの<strong>オンボーディングが容易</strong>（Studio
+                の場合）</li>
+              <li>
+                外部依存（AI API）が無く<strong>運用コストが読める</strong>
+              </li>
+            </ul>
+          </div>
+          <div class="pc-card pc-card--con">
+            <h4>DEMERITS</h4>
+            <ul>
+              <li>
+                記事 1 本あたりの<strong>工数が大きい</strong>（1〜2 時間）
+              </li>
+              <li>
+                担当者によって<strong>品質・スタイルがブレる</strong>
+              </li>
+              <li>
+                Astro 移行（Path B）の場合、<strong>エンジニア人件費が継続発生</strong>
+              </li>
+              <li>
+                <strong>属人化のリスク</strong>（特定メンバー退職時の引き継ぎ難）
+              </li>
+              <li>
+                Studio 維持（Path A）の場合、<strong>性能・運用効率の課題が解決しない</strong>
+              </li>
+              <li>
+                月次の更新頻度が高くなると<strong>頭打ち</strong>になりやすい
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 8. 結論 ===== -->
+      <section id="decision">
+        <h2><span class="h2-no">SECTION 08</span>結論と推奨アクション</h2>
+        <p>
+          検証結果を踏まえると、選択肢は実質的に <strong>Path A（現状維持）</strong>
+          か <strong>Path C（Astro + AI 運用）</strong> の二択である。Path B（Astro
+          + 人運用）は初期コストだけ Path C と同等にかかり、運用コストは Path A
+          並みに高止まりするため、合理的な選択肢ではない。
+        </p>
+        <p>
+          そして、Studio
+          の見た目を完全に保ったまま AI で更新するハイブリッド運用は、本検証で<strong>技術的に成立しないことが明確</strong>になった。CSS
+          の位置依存セレクタによって、AI
+          の小さな編集すら全体崩壊を引き起こす。
+        </p>
+
+        <div class="conclusion">
+          <h3>RECOMMENDATION</h3>
+          <p>
+            移行するならば、<strong>AI が安全に更新できるデザインで構築する</strong>こと
+            が大前提。すなわち <strong>Path C</strong>（Astro + Design.md + AI 運用）を採る。
+          </p>
+          <p>
+            移行する/しないの判断は <strong>「月次の更新頻度・新規ページ追加頻度・運用効率の重要度」</strong>を基準にすべきである：
+          </p>
+          <ul style="margin-top: 12px; padding-left: 1.4em">
+            <li>
+              月 5 件以上の更新があり、新ページ拡張を継続的に行う → <strong>Path C を推奨</strong>
+            </li>
+            <li>
+              月 1〜2 件で十分、当面は現体制で回せる → <strong>Path A
+                で延命も合理的</strong>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="doc-footer">
+      cynthialy.co.jp Renewal Verification Report — 2026-04-30
+    </footer>
+  </body>
+</html>

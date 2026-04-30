@@ -1,0 +1,302 @@
+---
+/**
+ * RelatedWazatsugu.astro
+ * /services/consulting への追加セクション ⑥
+ * わざツグ単体導入の動線。3 PLAN（Trial / Point / Surface）も全部表示。
+ * 詳細は /services/wazatsugu/ へ。
+ */
+const plans = [
+  {
+    code: "PLAN 01",
+    name: "TRIAL",
+    jp: "無料トライアル",
+    price: "無料",
+    priceNote: "まず1業務から試したい方へ",
+    features: [
+      "ブラウザのみで完結（インストール不要）",
+      "AIとの対話で技カード作成",
+      "JSON で書き出し可能",
+    ],
+    popular: false,
+  },
+  {
+    code: "PLAN 02",
+    name: "POINT",
+    jp: "伴走支援｜点",
+    price: "¥要相談",
+    priceNote: "／月（税抜）",
+    features: [
+      "1 業務をプロが伴走",
+      "対象業務の選定〜目的設計",
+      "ベテラン同席のインタビュー設計",
+      "技カード × To-Be 設計書の納品",
+    ],
+    popular: true,
+  },
+  {
+    code: "PLAN 03",
+    name: "SURFACE",
+    jp: "伴走支援｜面",
+    price: "¥150万〜",
+    priceNote: "／月（税抜）",
+    features: [
+      "複数業務を戦略から実行まで",
+      "複数業務の横断マップ作成",
+      "育成・標準化・AI化の統合設計",
+      "研修・AIエージェント開発まで対応",
+    ],
+    popular: false,
+  },
+];
+---
+
+<section class="crw">
+  <div class="crw__inner">
+    <div class="crw__head">
+      <p class="crw__eyebrow">RELATED PRODUCT ／ WAZATSUGU</p>
+      <h2 class="crw__title">
+        業務変革まで踏み込まず、<br />
+        <span class="crw__title-accent">わざツグ単体導入</span>も可能です
+      </h2>
+      <p class="crw__lead">
+        まずは暗黙知の形式知化だけ進めたい、コンサルは社内で巻き取りたい。
+        そうしたケースに向けて、わざツグはツール単体／伴走付きの 3 プランで提供しています。
+      </p>
+    </div>
+
+    <ul class="crw__features">
+      <li>
+        <p class="crw__feature-label">SESSION</p>
+        <p class="crw__feature-value">30〜45分／回</p>
+      </li>
+      <li>
+        <p class="crw__feature-label">SETUP</p>
+        <p class="crw__feature-value">ブラウザのみで完結</p>
+      </li>
+      <li>
+        <p class="crw__feature-label">OUTPUT</p>
+        <p class="crw__feature-value">JSON で書き出し</p>
+      </li>
+    </ul>
+
+    <ul class="crw__plans">
+      {
+        plans.map((p) => (
+          <li class={`crw__plan ${p.popular ? "is-popular" : ""}`}>
+            {p.popular && <span class="crw__plan-tag">POPULAR</span>}
+            <p class="crw__plan-code">{p.code}</p>
+            <p class="crw__plan-name">{p.name}</p>
+            <p class="crw__plan-jp">{p.jp}</p>
+            <p class="crw__plan-price">{p.price}</p>
+            <p class="crw__plan-price-note">{p.priceNote}</p>
+            <ul class="crw__plan-features">
+              {p.features.map((f) => (
+                <li>{f}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="crw__cta">
+      <a class="crw__cta-link" href="/services/wazatsugu/">
+        わざツグの詳細をみる
+        <span class="crw__cta-arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .crw {
+    padding: 96px 24px 96px;
+    background: var(--color-deep-green, #0d2623);
+    color: #fff;
+  }
+  .crw__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+  }
+  .crw__head {
+    max-width: 880px;
+    margin: 0 auto 40px;
+    text-align: center;
+  }
+  .crw__eyebrow {
+    margin: 0 0 16px;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-xs, 12px);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--color-accent-gold, #e8de9f);
+  }
+  .crw__title {
+    margin: 0 0 20px;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    line-height: 1.45;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .crw__title-accent {
+    color: var(--color-accent-gold, #e8de9f);
+  }
+  .crw__lead {
+    margin: 0;
+    font-size: var(--font-size-base, 16px);
+    line-height: 2;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .crw__features {
+    list-style: none;
+    padding: 24px 0;
+    margin: 0 0 40px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 32px 56px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  .crw__feature-label {
+    margin: 0 0 4px;
+    font-family: var(--font-sans-en);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--color-accent-gold, #e8de9f);
+    text-align: center;
+  }
+  .crw__feature-value {
+    margin: 0;
+    font-size: var(--font-size-base, 16px);
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+  }
+
+  .crw__plans {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 48px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media (min-width: 880px) {
+    .crw__plans {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+  }
+  .crw__plan {
+    position: relative;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+    padding: 32px 28px 32px;
+  }
+  .crw__plan.is-popular {
+    background: rgba(232, 222, 159, 0.1);
+    border: 2px solid var(--color-accent-gold, #e8de9f);
+  }
+  .crw__plan-tag {
+    position: absolute;
+    top: -12px;
+    left: 28px;
+    padding: 4px 14px;
+    background: var(--color-accent-gold, #e8de9f);
+    color: var(--color-deep-green, #0d2623);
+    font-family: var(--font-sans-en);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    border-radius: 999px;
+  }
+  .crw__plan-code {
+    margin: 0 0 8px;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-2xs, 11px);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .crw__plan-name {
+    margin: 0;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-2xl, 24px);
+    font-weight: 700;
+    color: var(--color-accent-gold, #e8de9f);
+    letter-spacing: 0.04em;
+  }
+  .crw__plan-jp {
+    margin: 4px 0 20px;
+    font-size: var(--font-size-base, 16px);
+    color: #fff;
+    font-weight: 700;
+  }
+  .crw__plan-price {
+    margin: 0;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-3xl, 32px);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .crw__plan-price-note {
+    margin: 4px 0 24px;
+    font-size: var(--font-size-2xs, 11px);
+    color: rgba(255, 255, 255, 0.65);
+  }
+  .crw__plan-features {
+    list-style: none;
+    padding-top: 20px;
+    margin: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .crw__plan-features li {
+    position: relative;
+    padding: 6px 0 6px 22px;
+    font-size: var(--font-size-sm, 14px);
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .crw__plan-features li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    color: var(--color-accent-gold, #e8de9f);
+    font-weight: 700;
+  }
+
+  .crw__cta {
+    text-align: center;
+  }
+  .crw__cta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 40px;
+    background: var(--color-accent-gold, #e8de9f);
+    color: var(--color-deep-green, #0d2623);
+    font-size: var(--font-size-base, 16px);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    border-radius: 999px;
+    transition: transform 0.2s ease;
+  }
+  .crw__cta-link:hover {
+    transform: translateX(4px);
+  }
+  .crw__cta-arrow {
+    display: inline-flex;
+    transition: transform 0.2s ease;
+  }
+  .crw__cta-link:hover .crw__cta-arrow {
+    transform: translateX(4px);
+  }
+</style>

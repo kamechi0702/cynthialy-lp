@@ -1,0 +1,176 @@
+---
+/**
+ * ThreePurposes.astro
+ * /services/consulting への追加セクション ③
+ * 抽出した暗黙知を 3 つの出口に変換できるという訴求。
+ * Design.md の Grid-Cards (3) アーキタイプを使用。
+ */
+const purposes = [
+  {
+    en: "CULTIVATE TALENT",
+    jp: "人材育成",
+    body: "新人・若手にベテランの判断と所作を継承する。技カードを難易度順に並べ、段階的な習熟道筋を設計します。",
+    deliverable: "段階別研修プログラム ／ OJTチェックリスト",
+  },
+  {
+    en: "STANDARDIZE PRACTICE",
+    jp: "業務標準化",
+    body: "属人化を解消し、誰がやっても同じ品質に。判断基準と例外を明文化した SOP として書き起こします。",
+    deliverable: "判断基準付きマニュアル ／ 標準作業手順書",
+  },
+  {
+    en: "EMBODY IN AI",
+    jp: "AIエージェント化",
+    body: "ベテランの判断を AI に写す。人と機械の役割を切り分け、実装にそのまま渡せる設計書を納品します。",
+    deliverable: "AI 設計書 ／ システムプロンプト",
+  },
+];
+---
+
+<section class="ctp">
+  <div class="ctp__inner">
+    <p class="ctp__eyebrow">3 PURPOSES</p>
+    <h2 class="ctp__title">
+      抽出した暗黙知は、<br />
+      <span class="ctp__title-accent">3つの出口</span>に変換できる
+    </h2>
+    <p class="ctp__lead">
+      暗黙知を抽出して終わりではなく、目的に応じて成果物を選べる。<br />
+      人材育成・業務標準化・AI 実装、いずれの起点としても活用可能です。
+    </p>
+
+    <ul class="ctp__list">
+      {
+        purposes.map((p, i) => (
+          <li class="ctp__item">
+            <div class="ctp__item-head">
+              <span class="ctp__item-num">0{i + 1}</span>
+              <p class="ctp__item-en">{p.en}</p>
+            </div>
+            <h3 class="ctp__item-title">{p.jp}</h3>
+            <p class="ctp__item-body">{p.body}</p>
+            <div class="ctp__item-deliv">
+              <p class="ctp__item-deliv-label">DELIVERABLES</p>
+              <p class="ctp__item-deliv-body">{p.deliverable}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .ctp {
+    padding: 96px 24px 96px;
+    background: #fff;
+    color: var(--color-neutral-100-txt, #030807);
+  }
+  .ctp__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+  }
+  .ctp__eyebrow {
+    margin: 0 0 16px;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-xs, 12px);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--color-accent-gold-dark, #b88c00);
+  }
+  .ctp__title {
+    margin: 0 0 24px;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    line-height: 1.45;
+    color: var(--color-deep-green, #0d2623);
+    letter-spacing: 0.02em;
+  }
+  .ctp__title-accent {
+    background: linear-gradient(transparent 60%, var(--color-accent-gold, #e8de9f) 60%);
+    padding: 0 4px;
+  }
+  .ctp__lead {
+    margin: 0 0 56px;
+    max-width: 720px;
+    font-size: var(--font-size-base, 16px);
+    line-height: 2;
+    color: var(--color-neutral-80-txt, #384946);
+  }
+
+  .ctp__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 820px) {
+    .ctp__list {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+  }
+
+  .ctp__item {
+    background: linear-gradient(180deg, #fff, #faf9eb);
+    border: 1px solid var(--color-accent-gold, #e8de9f);
+    border-radius: 14px;
+    padding: 28px 24px 26px;
+    position: relative;
+  }
+  .ctp__item-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .ctp__item-num {
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-xl, 20px);
+    font-weight: 700;
+    color: var(--color-accent-gold-dark, #b88c00);
+    line-height: 1;
+  }
+  .ctp__item-en {
+    margin: 0;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-2xs, 11px);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--color-deep-green, #0d2623);
+  }
+  .ctp__item-title {
+    margin: 0 0 14px;
+    font-size: var(--font-size-2xl, 24px);
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--color-deep-green, #0d2623);
+  }
+  .ctp__item-body {
+    margin: 0 0 22px;
+    font-size: var(--font-size-sm, 14px);
+    line-height: 1.85;
+    color: var(--color-neutral-80-txt, #384946);
+  }
+  .ctp__item-deliv {
+    padding-top: 16px;
+    border-top: 1px dashed rgba(13, 38, 35, 0.18);
+  }
+  .ctp__item-deliv-label {
+    margin: 0 0 6px;
+    font-family: var(--font-sans-en);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--color-accent-gold-dark, #b88c00);
+  }
+  .ctp__item-deliv-body {
+    margin: 0;
+    font-size: var(--font-size-sm, 14px);
+    line-height: 1.7;
+    color: var(--color-deep-green, #0d2623);
+    font-weight: 600;
+  }
+</style>

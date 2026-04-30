@@ -1,0 +1,2641 @@
+---
+/**
+ * /services/wazatsugu — 暗黙知継承サービス「わざツグ」紹介ページ
+ * ----------------------------------------------------------------
+ * docs/Design.md のセクションアーキタイプに従って新規にコンポーネント実装。
+ * cynthialy.co.jp に存在しないプロダクトページのため、ミラー注入は使わない。
+ *
+ * セクション構成（10）:
+ *   1. Hero
+ *   2. The Problem (3カード)
+ *   3. Three Purposes (3カード・SVGアイコン)
+ *   4. Approach (5ステップ縦タイムライン)
+ *   5. Tech Card Showcase (5観点・SVGアイコン)
+ *   6. Use Cases (2カード)
+ *   7. Voices (大数字 + 引用4枚)
+ *   8. Session Timeline (横タイムライン)
+ *   9. Plans (3プラン比較)
+ *   10. CTA Block (cynthialy 標準)
+ */
+
+const pageTitle =
+  "わざツグ｜暗黙知継承サービス｜技を、つなぐ | シンシアリー株式会社";
+const pageDescription =
+  "ベテランの「なんとなく」を生成AIとの対話で形式知化し、再利用可能な「技カード」として組織の資産に変える暗黙知継承サービス。育成・標準化・AI化に活用可能。";
+const canonical = "https://cynthialy.co.jp/services/wazatsugu/";
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="robots" content="all" />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;700&family=Lato:wght@700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* =============================================================
+       * Design tokens (subset of cto/design-tokens/tokens.css)
+       * 詳細は docs/Design.md §2 参照
+       * ============================================================= */
+      :root {
+        --color-deep-green: #0d2623;
+        --color-accent-gold: #e8de9f;
+        --color-accent-gold-light: #f9f9ba;
+        --color-accent-gold-dark: #e6dfa2;
+        --color-white: #ffffff;
+        --color-neutral-100-txt: #030807;
+        --color-neutral-80-txt: #384946;
+        --color-neutral-60-border: #7b8180;
+        --color-neutral-30-border: #dbdbdb;
+        --color-neutral-10-bg: #f1f1f1;
+        --surface-card: #ffffffd4;
+        --surface-lightgreen-bg: rgba(237, 242, 231, 0.8);
+        --color-link: #4584ae;
+
+        --gradient-hero: linear-gradient(
+          90deg,
+          #0d2623e6 51%,
+          #e8de9fe6 87%,
+          rgba(142, 205, 168, 0.9) 94%,
+          rgba(65, 190, 175, 0.9)
+        );
+        --gradient-soft: linear-gradient(
+          135deg,
+          rgba(232, 222, 159, 0.18) 0%,
+          rgba(13, 38, 35, 0.04) 60%,
+          rgba(232, 222, 159, 0.12) 100%
+        );
+        --gradient-gold: linear-gradient(90deg, #f9f9ba, #e6dfa2);
+
+        --font-sans-jp: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+        --font-sans-en: "Inter", "Lato", system-ui, sans-serif;
+
+        --letter-spacing-tight: -0.02em;
+        --letter-spacing-wider: 0.1em;
+
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 20px;
+        --space-6: 24px;
+        --space-8: 32px;
+        --space-10: 40px;
+        --space-12: 48px;
+        --space-16: 64px;
+        --space-20: 80px;
+        --space-24: 96px;
+        --space-32: 128px;
+
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 16px;
+        --radius-xl: 24px;
+        --radius-pill: 9999px;
+
+        --shadow-sm: 0 1px 2px rgba(13, 38, 35, 0.08);
+        --shadow-md: 0 4px 12px rgba(13, 38, 35, 0.1);
+        --shadow-lg: 0 12px 32px rgba(13, 38, 35, 0.14);
+
+        --duration-base: 300ms;
+        --ease-out: cubic-bezier(0.2, 0, 0, 1);
+
+        /* 派生：深緑のソフトトーン（背景帯・アクセント用） */
+        --color-deep-green-08: rgba(13, 38, 35, 0.08);
+        --color-deep-green-12: rgba(13, 38, 35, 0.12);
+        --color-deep-green-soft: #f4f7f6;
+      }
+
+      /* ===== Reset ===== */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-font-smoothing: antialiased;
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        font-family: var(--font-sans-jp);
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--color-neutral-100-txt);
+        background: var(--color-white);
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      img,
+      svg {
+        display: block;
+        max-width: 100%;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      p,
+      ul {
+        margin: 0;
+      }
+      ul {
+        padding: 0;
+        list-style: none;
+      }
+      button {
+        font-family: inherit;
+      }
+
+      /* ===== Header ===== */
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 300;
+        background: rgba(255, 255, 255, 0.94);
+        backdrop-filter: saturate(140%) blur(10px);
+        -webkit-backdrop-filter: saturate(140%) blur(10px);
+        border-bottom: 1px solid var(--color-neutral-30-border);
+      }
+      .site-header__inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: var(--space-4) var(--space-6);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-6);
+      }
+      .site-header__brand {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-3);
+        font-family: var(--font-sans-en);
+        color: var(--color-deep-green);
+      }
+      .site-header__brand-name {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: var(--letter-spacing-wider);
+      }
+      .site-header__brand-divider {
+        width: 1px;
+        height: 16px;
+        background: var(--color-neutral-30-border);
+      }
+      .site-header__brand-product {
+        font-family: var(--font-sans-jp);
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .site-header__nav {
+        display: flex;
+        gap: var(--space-6);
+        font-size: 14px;
+      }
+      .site-header__nav a {
+        color: var(--color-neutral-80-txt);
+        transition: color var(--duration-base) var(--ease-out);
+      }
+      .site-header__nav a:hover {
+        color: var(--color-deep-green);
+      }
+      .site-header__cta {
+        background: var(--color-deep-green);
+        color: var(--color-white);
+        padding: 8px 16px;
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        font-weight: 700;
+        transition: transform var(--duration-base) var(--ease-out),
+          box-shadow var(--duration-base) var(--ease-out);
+      }
+      .site-header__cta:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+      @media (max-width: 720px) {
+        .site-header__nav {
+          display: none;
+        }
+      }
+
+      /* ===== Common section primitives ===== */
+      .section {
+        padding: var(--space-24) var(--space-6);
+      }
+      .section__inner {
+        max-width: 1180px;
+        margin: 0 auto;
+      }
+      .section__eyebrow {
+        font-family: var(--font-sans-en);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: var(--letter-spacing-wider);
+        color: var(--color-deep-green);
+        margin-bottom: var(--space-4);
+        display: inline-block;
+        padding-bottom: var(--space-2);
+        border-bottom: 2px solid var(--color-accent-gold);
+      }
+      .section__title {
+        font-size: clamp(28px, 4vw, 44px);
+        font-weight: 700;
+        line-height: 1.25;
+        margin-bottom: var(--space-6);
+        color: var(--color-deep-green);
+        letter-spacing: var(--letter-spacing-tight);
+      }
+      .section__lead {
+        font-size: 18px;
+        line-height: 1.8;
+        color: var(--color-neutral-80-txt);
+        max-width: 780px;
+        margin-bottom: var(--space-12);
+      }
+      @media (max-width: 720px) {
+        .section {
+          padding: var(--space-16) var(--space-6);
+        }
+        .section__lead {
+          font-size: 16px;
+          margin-bottom: var(--space-8);
+        }
+      }
+
+      /* ===== Buttons ===== */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: 14px 28px;
+        border-radius: var(--radius-md);
+        font-family: inherit;
+        font-weight: 700;
+        font-size: 15px;
+        cursor: pointer;
+        border: 0;
+        text-align: center;
+        transition: transform var(--duration-base) var(--ease-out),
+          box-shadow var(--duration-base) var(--ease-out),
+          background-color var(--duration-base) var(--ease-out),
+          color var(--duration-base) var(--ease-out);
+      }
+      .btn--primary {
+        background: var(--color-deep-green);
+        color: var(--color-white);
+      }
+      .btn--primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+      .btn--secondary {
+        background: var(--color-white);
+        color: var(--color-deep-green);
+        border: 1.5px solid var(--color-deep-green);
+      }
+      .btn--secondary:hover {
+        background: var(--color-deep-green);
+        color: var(--color-white);
+      }
+      .btn__arrow {
+        width: 14px;
+        height: 14px;
+        stroke: currentColor;
+        stroke-width: 2;
+        fill: none;
+      }
+
+      /* ===== HERO ===== */
+      .hero {
+        position: relative;
+        padding: var(--space-32) var(--space-6) var(--space-24);
+        background:
+          radial-gradient(
+            ellipse at top right,
+            rgba(232, 222, 159, 0.32) 0%,
+            transparent 55%
+          ),
+          radial-gradient(
+            ellipse 60% 80% at bottom left,
+            rgba(13, 38, 35, 0.10) 0%,
+            transparent 60%
+          ),
+          var(--color-white);
+        overflow: hidden;
+      }
+      .hero::before {
+        /* 左端の深緑アクセントバー */
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 12%;
+        bottom: 12%;
+        width: 6px;
+        background: var(--color-deep-green);
+        border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      }
+      .hero__photo-backdrop {
+        position: absolute;
+        right: -120px;
+        bottom: -80px;
+        width: 520px;
+        height: 360px;
+        opacity: 0.55;
+        z-index: 0;
+        transform: rotate(-2deg);
+      }
+      @media (max-width: 880px) {
+        .hero__photo-backdrop {
+          display: none;
+        }
+      }
+      .hero__inner { position: relative; z-index: 1; }
+      .hero__inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: var(--space-16);
+        align-items: center;
+      }
+      .hero__title-en {
+        display: block;
+        font-family: var(--font-sans-en);
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: var(--letter-spacing-wider);
+        color: var(--color-deep-green);
+        margin-bottom: var(--space-4);
+      }
+      .hero__title {
+        font-size: clamp(40px, 6vw, 68px);
+        font-weight: 700;
+        line-height: 1.1;
+        color: var(--color-deep-green);
+        margin-bottom: var(--space-6);
+        letter-spacing: var(--letter-spacing-tight);
+      }
+      .hero__title em {
+        font-style: normal;
+        background: var(--gradient-gold);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+      }
+      .hero__lead {
+        font-size: 19px;
+        line-height: 1.7;
+        color: var(--color-neutral-80-txt);
+        margin-bottom: var(--space-12);
+        max-width: 540px;
+      }
+      .hero__stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-3);
+        margin-bottom: var(--space-12);
+        max-width: 540px;
+      }
+      .stat-badge {
+        text-align: center;
+        padding: var(--space-4) var(--space-3);
+        background: var(--surface-card);
+        border: 1px solid var(--color-neutral-30-border);
+        border-radius: var(--radius-md);
+      }
+      .stat-badge__value {
+        display: block;
+        font-family: var(--font-sans-en);
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--color-deep-green);
+        line-height: 1;
+      }
+      .stat-badge__label {
+        display: block;
+        font-size: 11px;
+        color: var(--color-neutral-80-txt);
+        margin-top: var(--space-2);
+        line-height: 1.4;
+      }
+      .hero__ctas {
+        display: flex;
+        gap: var(--space-4);
+        flex-wrap: wrap;
+      }
+      /* Hero visual: stylized tech card */
+      .hero__visual {
+        position: relative;
+        aspect-ratio: 1 / 1;
+        background:
+          radial-gradient(
+            circle at 30% 30%,
+            rgba(232, 222, 159, 0.4),
+            rgba(232, 222, 159, 0) 60%
+          ),
+          var(--gradient-soft);
+        border-radius: var(--radius-xl);
+        padding: var(--space-12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .hero__visual-card {
+        width: 100%;
+        max-width: 360px;
+        background: var(--color-white);
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        box-shadow: var(--shadow-lg);
+        transform: rotate(-2.5deg);
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .hero__visual-card-no {
+        font-family: var(--font-sans-en);
+        font-size: 11px;
+        letter-spacing: var(--letter-spacing-wider);
+        color: var(--color-deep-green);
+        opacity: 0.6;
+        margin-bottom: var(--space-2);
+      }
+      .hero__visual-card-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--color-deep-green);
+        margin-bottom: var(--space-4);
+        line-height: 1.4;
+      }
+      .hero__visual-card-row {
+        display: grid;
+        grid-template-columns: 24px 1fr;
+        gap: var(--space-3);
+        align-items: flex-start;
+        padding: var(--space-2) 0;
+        border-top: 1px solid var(--color-neutral-30-border);
+      }
+      .hero__visual-card-row:first-of-type {
+        border-top: 0;
+      }
+      .hero__visual-card-row svg {
+        width: 20px;
+        height: 20px;
+        color: var(--color-deep-green);
+      }
+      .hero__visual-card-row span {
+        color: var(--color-neutral-80-txt);
+        font-size: 12px;
+      }
+      @media (max-width: 880px) {
+        .hero {
+          padding: var(--space-20) var(--space-6) var(--space-16);
+        }
+        .hero__inner {
+          grid-template-columns: 1fr;
+          gap: var(--space-12);
+        }
+        .hero__visual {
+          max-width: 420px;
+          margin: 0 auto;
+        }
+      }
+      @media (max-width: 540px) {
+        .hero__stats {
+          grid-template-columns: 1fr;
+          max-width: 100%;
+        }
+        .hero__ctas .btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      /* ===== Cards generic ===== */
+      .cards-grid {
+        display: grid;
+        gap: var(--space-6);
+      }
+      .cards-grid--3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .cards-grid--2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      @media (max-width: 1080px) {
+        .cards-grid--3 {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 720px) {
+        .cards-grid--3,
+        .cards-grid--2 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ===== Problem section ===== */
+      .problem {
+        background: var(--color-neutral-10-bg);
+      }
+      .issue-card {
+        position: relative;
+        background: var(--color-white);
+        border-radius: var(--radius-lg);
+        padding: var(--space-8);
+        padding-top: calc(var(--space-8) + 4px);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--color-neutral-30-border);
+        transition: transform var(--duration-base) var(--ease-out),
+          box-shadow var(--duration-base) var(--ease-out);
+      }
+      .issue-card::before {
+        /* 上端の深緑アクセントライン */
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--color-deep-green);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      }
+      .issue-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+      .issue-card__no {
+        font-family: var(--font-sans-en);
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--color-accent-gold-dark);
+        line-height: 1;
+        margin-bottom: var(--space-4);
+      }
+      .issue-card__tag {
+        display: inline-block;
+        font-size: 11px;
+        letter-spacing: var(--letter-spacing-wider);
+        color: var(--color-deep-green);
+        background: var(--color-accent-gold);
+        padding: 2px 10px;
+        border-radius: var(--radius-pill);
+        margin-bottom: var(--space-4);
+        font-weight: 700;
+      }
+      .issue-card__title {
+        font-size: 19px;
+        font-weight: 700;
+        color: var(--color-deep-green);
+        margin-bottom: var(--space-3);
+        line-height: 1.5;
+      }
+      .issue-card__body {
+        font-size: 14px;
+        color: var(--color-neutral-80-txt);
+        line-height: 1.7;
+      }
+      .problem__quote {
+        margin-top: var(--space-12);
+        font-size: 17px;
+        color: var(--color-neutral-80-txt);
+        font-style: italic;
+        padding-left: var(--space-6);
+        border-left: 3px solid var(--color-accent-gold);
+        max-width: 720px;
+      }
+
+      /* ===== Purposes section ===== */
+      .purpose-card {
+        position: relative;
+        background: var(--color-white);
+        border-radius: var(--radius-lg);
+        padding: var(--space-10) var(--space-8) var(--space-8);
+        border: 1px solid var(--color-neutral-30-border);
+        text-align: center;
+        transition: transform var(--duration-base) var(--ease-out),
+          box-shadow var(--duration-base) var(--ease-out),
+          border-color var(--duration-base) var(--ease-out);
+      }
+      .purpose-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--color-deep-green);
+      }
+      .purpose-card__icon {
+        width: 88px;
+        height: 88px;
+        margin: 0 auto var(--space-6);
+        color: var(--color-white);
+        background: var(--color-deep-green);
+        border-radius: 50%;
+        padding: 22px;
+        box-shadow: 0 0 0 6px rgba(232, 222, 159, 0.5);
+      }
+      .purpose-card__icon svg {
+        width: 100%;
+        height: 100%;
+      }
+      .purpose-card__label-en {
+        font-family: var(--font-sans-en);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: var(--letter-spacing-wider);
+        color: var(--color-deep-green);
+        opacity: 0.6;
+        margin-bottom: var(--space-2);
+      }
+      .purpose-card__title {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--color-deep-green);
+        margin-bottom: var(--space-4);
+      }
+      .purpose-card__body {
+        font-size: 14px;
+        color: var(--color-neutral-80-txt);
+        line-height: 1.8;
+        margin-bottom: var(--space-6);
+        text-align: left;
+      }
+      .purpose-card__deliverable {
+        background: var(--color-neutral-10-bg);
+        padding: var(--space-4);
+        border-radius: var(--radius-md);
+        font-size: 12px;
+        color: var(--color-deep-green);
+        text-align: left;
+      }
+      .purpose-card__deliverable strong {
+        display: block;
+        font-size: 11px;
+        letter-spacing: var(--letter-spacing-wider);
+        opacity: 0.7;
+        margin-bottom: var(--space-1);
+      }
+
+      /* ===== Approach (5 step timeline) ===== */
+      .approach {
+        background: var(--color-deep-green-soft);
+      }
+      .approach__layout {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: var(--space-12);
+        align-items: flex-start;
+      }
+      @media (max-width: 880px) {
+        .approach__layout {
+          grid-template-columns: 1fr;
+        }
+      }
+      .approach__photo {
+        position: sticky;
+        top: 100px;
+      }
+      .approach__timeline {
+        position: relative;
+      }
+      .approach__step {
+        position: relative;
+        padding-left: var(--space-16);
+        padding-bottom: var(--space-12);
+      }
+      .approach__step:last-child {
+        padding-bottom: 0;
+      }
+      .approach__step::before {
+        content: "";
+        position: absolute;
+        left: 23px;
+        top: 12px;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(
+          180deg,
+          var(--color-accent-gold) 0%,
+          var(--color-accent-gold) 50%,
+          rgba(232, 222, 159, 0.3) 100%
+        );
+      }
+      .approach__step:last-child::before {
+        display: none;
+      }
+      .approach__step-marker {
+        position: absolute;
+        left: 0;
+        top: 4px;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--color-deep-green);
+        color: var(--color-white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-sans-en);
+        font-size: 14px;
+        font-weight: 700;
+        z-index: 1;
+        border: 3px solid var(--color-white);
+        box-shadow: 0 0 0 1px var(--color-accent-gold);
+      }
+      .approach__step--featured .approach__step-marker {
+        background: var(--gradient-gold);
+        color: var(--color-deep-green);
+      }
+      .approach__step-label {
+        font-family: var(--font-sans-en);
+        font-size: 12px;
+        letter-spacing: var(--letter-spacing-wider);
+        color: var(--color-deep-green);
+        opacity: 0.6;
+        margin-bottom: var(--space-1);
+      }
+      .approach__step-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--color-deep-green);
+        margin-bottom: var(--space-3);
+      }
+      .approach__step-body {
+        font-size: 15px;
+        color: var(--color-neutral-80-txt);
+        line-height: 1.8;
+      }
+      .approach__step-pill {
+        display: inline-block;
+        margin-left: var(--space-3);
+        padding: 2px 10px;
+        background: var(--gradient-gold);
+        border-radius: var(--radius-pill);
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--color-deep-green);
+        letter-spacing: var(--letter-spacing-wider);
+      }
+
+      /* ===== Tech Card Showcase ===== */
+      .techcard {
+        background:
+          radial-gradient(
+            ellipse at center top,
+            rgba(232, 222, 159, 0.15) 0%,
+            transparent 60%
+          ),
+          var(--color-deep-green);
+        color: var(--color-white);
+      }
+      .techcard .section__eyebrow,
+      .techcard .section__title {
+        color: var(--color-white);
+      }
+      .techcard .section__eyebrow {
+        border-bottom-color: var(--color-accent-gold);
+      }
+      .techcard .section__lead {
+        color: rgba(255, 255, 255, 0.78);
+      }
+      .techcard__layout {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: var(--space-12);
+        align-items: center;
+        margin-top: var(--space-8);
+      }
+      @media (max-width: 880px) {
+        .techcard__layout {
+          grid-template-columns: 1fr;
+        }
+      }
+      .techcard__sample {
+        background: var(--color-white);
+        color: var(--color-neutral-100-txt);
+        border-radius: var(--radius-lg);
+        padding: var(--space-8);
+        box-shadow: var(--shadow-lg);
+      }
+      .techcard__sample-no {
+        font-family: var(--font-sans-en);
+        font-size: 12px;
+        letter-spacing: var(--letter-spacing-wider);
+        color: var(--color-deep-green);
+        opacity: 0.6;
+        margin-bottom: var(--space-2);
+      }
+      .techcard__sample-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--color-deep-green);
+        margin-bottom: var(--space-6);
+        line-height: 1.4;
+      }
+      .techcard__sample-row {
+        display: grid;
+        grid-template-columns: 36px 1fr;
+        gap: var(--space-4);
+        padding: var(--space-3) 0;
+        border-top: 1px solid var(--color-neutral-30-border);
+        align-items: flex-start;
+      }
+      .techcard__sample-row:first-of-type {
+        border-top: 0;
+      }
+      .techcard__sample-row-icon {
+        width: 28px;
+        height: 28px;
+        color: var(--color-deep-green);
+        background: var(--gradient-gold);
+        padding: 5px;
+        border-radius: var(--radius-md);
+      }
+      .techcard__sample-row-icon svg {
+        width: 100%;
+        height: 100%;
+      }
+      .techcard__sample-row-content {
+        font-size: 13.5px;
+        line-height: 1.7;
+      }
+      .techcard__sample-row-content strong {
+        display: block;
+        font-family: var(--font-sans-en);
+        font-size: 11px;
+        letter-spacing: var(--letter-spacing-wider);
+        color: var(--color-deep-green);
+        opacity: 0.7;
+        margin-bottom: 2px;
+      }
+
+      .techcard__legend {
+        display: grid;
+        gap: var(--space-4);
+      }
+      .techcard__legend-item {
+        display: grid;
+        grid-template-columns: 56px 1fr;
+        gap: var(--space-4);
+        align-items: center;
+        padding: var(--space-4);
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(232, 222, 159, 0.25);
+        border-radius: var(--radius-md);
+      }
+      .techcard__legend-icon {
+        width: 56px;
+        height: 56px;
+        background: var(--gradient-gold);
+        border-radius: var(--radius-md);
+        padding: 12px;
+        color: var(--color-deep-green);
+      }
+      .techcard__legend-icon svg {
+        width: 100%;
+        height: 100%;
+      }
+      .techcard__legend-name {
+        font-family: var(--font-sans-en);
+        font-size: 12px;
+        letter-spacing: var(--letter-spacing-wider);
+        color: var(--color-accent-gold);
+        margin-bottom: 2px;
+      }
+      .techcard__legend-jp {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--color-white);
+      }
+      .techcard__quote {
+        margin-top: var(--space-12);
+        text-align: center;
+        font-size: 18px;
+        color: var(--color-accent-gold);
+        font-weight: 500;
+      }
+
+      /* ===== Use Cases ===== */
+      .usecase-card {
+        background: var(--color-white);
+        border: 1px solid var(--color-neutral-30-border);
+        border-radius: var(--radius-lg);
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: transform var(--duration-base) var(--ease-out),
+          box-shadow var(--duration-base) var(--ease-out);
+      }
+      .usecase-card__photo {
+        border-radius: 0 !important;
+        border-left: 0 !important;
+        border-right: 0 !important;
+        border-top: 0 !important;
+      }
+      .usecase-card__body-wrap {
+        padding: var(--space-8);
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+      .usecase-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+      }
+      .usecase-card__label {
+        font-family: var(--font-sans-en);
+        font-size: 12px;
+        letter-spacing: var(--letter-spacing-wider);
+        color: var(--color-deep-green);
+        opacity: 0.6;
+        margin-bottom: var(--space-2);
+      }
+      .usecase-card__title {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--color-deep-green);
+        margin-bottom: var(--space-3);
+      }
+      .usecase-card__industry {
+        display: inline-block;
+        font-size: 12px;
+        background: var(--color-accent-gold);
+        color: var(--color-deep-green);
+        padding: 2px 12px;
+        border-radius: var(--radius-pill);
+        margin-bottom: var(--space-6);
+        font-weight: 700;
+      }
+      .usecase-card__body {
+        font-size: 15px;
+        color: var(--color-neutral-80-txt);
+        line-height: 1.8;
+        margin-bottom: var(--space-6);
+      }
+      .usecase-card__quote {
+        margin-top: auto;
+        padding: var(--space-4);
+        background: var(--color-neutral-10-bg);
+        border-left: 3px solid var(--color-accent-gold);
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--color-deep-green);
+        font-style: italic;
+      }
+      .usecase-card__quote-author {
+        display: block;
+        margin-top: var(--space-2);
+        font-size: 12px;
+        color: var(--color-neutral-80-txt);
+        font-style: normal;
+      }
+
+      /* ===== Voices ===== */
+      .voices {
+        background: var(--color-neutral-10-bg);
+      }
+      .voices__hero {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: var(--space-12);
+        align-items: center;
+        margin-bottom: var(--space-12);
+      }
+      @media (max-width: 720px) {
+        .voices__hero {
+          grid-template-columns: 1fr;
+          gap: var(--space-6);
+        }
+      }
+      .voices__big-number {
+        font-family: var(--font-sans-en);
+        font-size: 144px;
+        font-weight: 700;
+        line-height: 0.9;
+        color: var(--color-deep-green);
+        letter-spacing: -0.03em;
+      }
+      .voices__big-number sup {
+        font-size: 0.4em;
+        vertical-align: top;
+        margin-left: 4px;
+      }
+      .voices__big-meta {
+        font-size: 17px;
+        color: var(--color-neutral-80-txt);
+        line-height: 1.7;
+      }
+      .voices__big-meta strong {
+        display: block;
+        font-size: 22px;
+        color: var(--color-deep-green);
+        margin-bottom: var(--space-2);
+      }
+      .voices__list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-4);
+      }
+      @media (max-width: 880px) {
+        .voices__list {
+          grid-template-columns: 1fr;
+        }
+      }
+      .voice {
+        background: var(--color-white);
+        padding: var(--space-6);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--color-neutral-30-border);
+      }
+      .voice__quote {
+        font-size: 14px;
+        line-height: 1.8;
+        color: var(--color-neutral-100-txt);
+        margin-bottom: var(--space-4);
+      }
+      .voice__author-row {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+      .voice__author {
+        font-size: 12px;
+        color: var(--color-neutral-80-txt);
+        line-height: 1.5;
+      }
+
+      /* ===== Session Timeline (horizontal) ===== */
+      .session-timeline {
+        position: relative;
+        max-width: 1080px;
+        margin: 0 auto;
+      }
+      .session-timeline__track {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: var(--space-3);
+        position: relative;
+      }
+      .session-timeline__track::before {
+        content: "";
+        position: absolute;
+        top: 24px;
+        left: 5%;
+        right: 5%;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          var(--color-accent-gold) 0%,
+          var(--color-accent-gold) 100%
+        );
+      }
+      .session-step {
+        position: relative;
+        text-align: center;
+      }
+      .session-step__dot {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto var(--space-4);
+        border-radius: 50%;
+        background: var(--color-white);
+        border: 3px solid var(--color-deep-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-sans-en);
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--color-deep-green);
+        position: relative;
+        z-index: 1;
+      }
+      .session-step__time {
+        font-family: var(--font-sans-en);
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--color-deep-green);
+        margin-bottom: var(--space-1);
+      }
+      .session-step__title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--color-deep-green);
+        margin-bottom: var(--space-2);
+        line-height: 1.4;
+      }
+      .session-step__desc {
+        font-size: 12px;
+        color: var(--color-neutral-80-txt);
+        line-height: 1.6;
+      }
+      @media (max-width: 720px) {
+        .session-timeline__track {
+          grid-template-columns: 1fr;
+          gap: var(--space-6);
+        }
+        .session-timeline__track::before {
+          left: 24px;
+          right: auto;
+          top: 24px;
+          bottom: 24px;
+          width: 2px;
+          height: auto;
+        }
+        .session-step {
+          display: grid;
+          grid-template-columns: 48px 1fr;
+          gap: var(--space-4);
+          align-items: flex-start;
+          text-align: left;
+        }
+        .session-step__dot {
+          margin: 0;
+        }
+      }
+      .session-timeline__note {
+        margin-top: var(--space-12);
+        text-align: center;
+        font-size: 14px;
+        color: var(--color-neutral-80-txt);
+      }
+
+      /* ===== Plans ===== */
+      .plans {
+        background: linear-gradient(
+          180deg,
+          var(--color-neutral-10-bg) 0%,
+          var(--color-white) 100%
+        );
+      }
+      .plan-card {
+        position: relative;
+        background: var(--color-white);
+        border: 1px solid var(--color-neutral-30-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-8);
+        display: flex;
+        flex-direction: column;
+        transition: transform var(--duration-base) var(--ease-out),
+          box-shadow var(--duration-base) var(--ease-out);
+      }
+      .plan-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+      }
+      .plan-card--featured {
+        border: 2px solid var(--color-deep-green);
+        box-shadow: var(--shadow-lg);
+        background:
+          linear-gradient(180deg, rgba(13, 38, 35, 0.04) 0%, transparent 80px),
+          var(--color-white);
+        padding-top: calc(var(--space-8) + 12px);
+      }
+      .plan-card--featured::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -2px;
+        right: -2px;
+        height: 8px;
+        background: var(--color-deep-green);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      }
+      .plan-card__badge {
+        position: absolute;
+        top: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 4px 16px;
+        background: var(--color-deep-green);
+        color: var(--color-white);
+        font-family: var(--font-sans-en);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: var(--letter-spacing-wider);
+        border-radius: var(--radius-pill);
+      }
+      .plan-card__name-en {
+        font-family: var(--font-sans-en);
+        font-size: 13px;
+        letter-spacing: var(--letter-spacing-wider);
+        color: var(--color-deep-green);
+        opacity: 0.6;
+        margin-bottom: var(--space-2);
+      }
+      .plan-card__name {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--color-deep-green);
+        margin-bottom: var(--space-6);
+      }
+      .plan-card__price {
+        font-family: var(--font-sans-en);
+        font-size: 40px;
+        font-weight: 700;
+        color: var(--color-deep-green);
+        line-height: 1;
+        margin-bottom: var(--space-2);
+      }
+      .plan-card__price-unit {
+        font-size: 14px;
+        font-weight: 400;
+        color: var(--color-neutral-80-txt);
+      }
+      .plan-card__note {
+        font-size: 12px;
+        color: var(--color-neutral-80-txt);
+        margin-bottom: var(--space-6);
+      }
+      .plan-card__features {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+        margin-bottom: var(--space-8);
+      }
+      .plan-card__feature {
+        display: grid;
+        grid-template-columns: 16px 1fr;
+        gap: var(--space-3);
+        font-size: 14px;
+        color: var(--color-neutral-80-txt);
+        line-height: 1.6;
+      }
+      .plan-card__feature svg {
+        width: 16px;
+        height: 16px;
+        color: var(--color-deep-green);
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .plan-card .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      /* ===== CTA Block（consulting/training 統一仕様）=====
+         大きめクリッカブルカード × 2、背景画像 + ホバーで浮く。
+         HubSpotリンクは cynthialy 標準（資料請求 + 無料相談）。 */
+      .cta-block {
+        background:
+          radial-gradient(
+            ellipse at top right,
+            rgba(232, 222, 159, 0.12) 0%,
+            transparent 60%
+          ),
+          var(--color-deep-green);
+        color: var(--color-white);
+      }
+      .cta-block .section__eyebrow {
+        color: var(--color-accent-gold);
+        border-bottom-color: var(--color-accent-gold);
+      }
+      .cta-block .section__title {
+        color: var(--color-white);
+      }
+      .cta-block .section__lead {
+        color: rgba(255, 255, 255, 0.85);
+      }
+      .cta-block__h2-pair {
+        display: inline-block;
+      }
+      .cta-block__grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-6);
+        margin-top: var(--space-12);
+        list-style: none;
+        padding: 0;
+      }
+      @media (max-width: 720px) {
+        .cta-block__grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .cta-card {
+        position: relative;
+        display: block;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
+        background: var(--color-white);
+        box-shadow: var(--shadow-md);
+        transition: transform var(--duration-base) var(--ease-out),
+          box-shadow var(--duration-base) var(--ease-out);
+        min-height: 220px;
+      }
+      .cta-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+      }
+      .cta-card__media {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        z-index: 0;
+      }
+      .cta-card__media::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(13, 38, 35, 0.85) 0%,
+          rgba(13, 38, 35, 0.55) 70%,
+          rgba(13, 38, 35, 0.35) 100%
+        );
+      }
+      .cta-card__body {
+        position: relative;
+        z-index: 1;
+        padding: var(--space-10);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        min-height: 220px;
+      }
+      .cta-card__title {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--color-white);
+        line-height: 1.4;
+        letter-spacing: var(--letter-spacing-tight);
+      }
+      .cta-card__title small {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.75);
+        margin-bottom: var(--space-2);
+      }
+      .cta-card__pill {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: 10px 20px;
+        background: var(--color-accent-gold);
+        color: var(--color-deep-green);
+        border-radius: var(--radius-pill);
+        font-weight: 700;
+        font-size: 14px;
+        align-self: flex-start;
+        margin-top: var(--space-6);
+        transition: background var(--duration-base) var(--ease-out),
+          gap var(--duration-base) var(--ease-out);
+      }
+      .cta-card:hover .cta-card__pill {
+        background: var(--color-white);
+        gap: var(--space-3);
+      }
+      .cta-card__pill svg {
+        width: 14px;
+        height: 14px;
+        stroke: currentColor;
+        stroke-width: 2;
+        fill: none;
+      }
+
+      /* ===== Footer ===== */
+      .site-footer {
+        background: #061513;
+        color: rgba(255, 255, 255, 0.6);
+        padding: var(--space-12) var(--space-6);
+        font-size: 13px;
+      }
+      .site-footer__inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+      }
+      .site-footer a:hover {
+        color: var(--color-accent-gold);
+      }
+
+      /* ===== Photo placeholder + 実画像差し替え対応 =====
+         画像ファイル（npm run generate:images で生成）が存在すれば img.photo__src が画像を覆い、
+         無ければプレースホルダ（ストライプ + 被写体メモ）が透けて見える。 */
+      .photo {
+        position: relative;
+        background:
+          linear-gradient(
+            135deg,
+            var(--color-deep-green-08) 0%,
+            rgba(232, 222, 159, 0.12) 100%
+          ),
+          repeating-linear-gradient(
+            45deg,
+            transparent 0 14px,
+            rgba(13, 38, 35, 0.04) 14px 15px
+          );
+        border: 1px dashed rgba(13, 38, 35, 0.2);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-deep-green);
+      }
+      .photo__src {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 1;
+      }
+      /* 画像が読み込めた時は枠と内部マークを隠す。
+         404 のとき onerror="this.remove()" で <img> 自体を消す → 自動的にプレースホルダ復活。 */
+      .photo:has(.photo__src) {
+        border-color: transparent;
+        background: var(--color-neutral-10-bg);
+      }
+      .photo:has(.photo__src) .photo__camera,
+      .photo:has(.photo__src) .photo__label {
+        display: none;
+      }
+      .photo--16x10 { aspect-ratio: 16 / 10; }
+      .photo--3x2 { aspect-ratio: 3 / 2; }
+      .photo--1x1 { aspect-ratio: 1 / 1; }
+      .photo--full { width: 100%; }
+      .photo__camera {
+        width: 36px;
+        height: 36px;
+        opacity: 0.35;
+        position: absolute;
+        top: var(--space-4);
+        right: var(--space-4);
+      }
+      .photo__label {
+        position: absolute;
+        bottom: var(--space-3);
+        left: var(--space-3);
+        right: var(--space-3);
+        background: rgba(13, 38, 35, 0.92);
+        color: var(--color-white);
+        font-size: 11px;
+        line-height: 1.5;
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        font-weight: 500;
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-2);
+      }
+      .photo__label::before {
+        content: "PHOTO";
+        font-family: var(--font-sans-en);
+        font-weight: 700;
+        font-size: 10px;
+        letter-spacing: var(--letter-spacing-wider);
+        color: var(--color-accent-gold);
+        flex-shrink: 0;
+      }
+
+      /* ===== Avatar placeholder（声・人物用） ===== */
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--color-deep-green) 0%,
+          var(--color-deep-green-12) 100%
+        );
+        color: var(--color-accent-gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        position: relative;
+        overflow: hidden;
+      }
+      .avatar svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      /* ===== TRUSTED BY 帯（Hero 直下） ===== */
+      .trusted {
+        background: var(--color-deep-green);
+        color: var(--color-white);
+        padding: var(--space-8) var(--space-6);
+      }
+      .trusted__inner {
+        max-width: 1180px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: var(--space-12);
+        align-items: center;
+      }
+      @media (max-width: 720px) {
+        .trusted__inner {
+          grid-template-columns: 1fr;
+          gap: var(--space-4);
+        }
+      }
+      .trusted__label {
+        font-family: var(--font-sans-en);
+        font-size: 12px;
+        letter-spacing: var(--letter-spacing-wider);
+        font-weight: 700;
+        color: var(--color-accent-gold);
+      }
+      .trusted__industries {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-3) var(--space-6);
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.85);
+      }
+      .trusted__industries span {
+        position: relative;
+      }
+      .trusted__industries span:not(:last-child)::after {
+        content: "/";
+        position: absolute;
+        right: -16px;
+        color: var(--color-accent-gold);
+        opacity: 0.4;
+      }
+
+      /* ===== Hidden SVG sprite ===== */
+      .icon-sprite {
+        position: absolute;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ============================================================
+         SVG icon sprite (referenced via <use>)
+         育/標/智 + 話/順/判/例/根 + ユーティリティ
+         ============================================================ -->
+    <svg class="icon-sprite" aria-hidden="true">
+      <defs>
+        <!-- 1. Cultivate (育) — sprout -->
+        <symbol id="i-cultivate" viewBox="0 0 48 48">
+          <path
+            d="M24 42 V24 M24 24 C 16 24 12 18 12 12 C 18 12 24 16 24 24 Z M24 24 C 32 24 36 18 36 12 C 30 12 24 16 24 24 Z M14 42 H34"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </symbol>
+
+        <!-- 2. Standardize (標) — checklist -->
+        <symbol id="i-standardize" viewBox="0 0 48 48">
+          <rect
+            x="8"
+            y="8"
+            width="32"
+            height="32"
+            rx="4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"></rect>
+          <path
+            d="M14 18 L18 22 L24 14 M28 18 H36 M14 30 L18 34 L24 26 M28 30 H36"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </symbol>
+
+        <!-- 3. AI agent (智) — brain/circuit hybrid -->
+        <symbol id="i-ai" viewBox="0 0 48 48">
+          <path
+            d="M24 8 C 17 8 12 13 12 20 C 12 23 13 26 15 28 L15 36 H21 V40 H27 V36 H33 L33 28 C 35 26 36 23 36 20 C 36 13 31 8 24 8 Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linejoin="round"></path>
+          <circle cx="20" cy="20" r="2" fill="currentColor"></circle>
+          <circle cx="28" cy="20" r="2" fill="currentColor"></circle>
+          <path
+            d="M20 20 L28 20 M24 20 V28"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"></path>
+        </symbol>
+
+        <!-- 4. Episode (話) — speech bubble -->
+        <symbol id="i-episode" viewBox="0 0 32 32">
+          <path
+            d="M6 6 H26 A2 2 0 0 1 28 8 V20 A2 2 0 0 1 26 22 H14 L8 28 V22 H6 A2 2 0 0 1 4 20 V8 A2 2 0 0 1 6 6 Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linejoin="round"></path>
+          <circle cx="11" cy="14" r="1.5" fill="currentColor"></circle>
+          <circle cx="16" cy="14" r="1.5" fill="currentColor"></circle>
+          <circle cx="21" cy="14" r="1.5" fill="currentColor"></circle>
+        </symbol>
+
+        <!-- 5. Steps (順) — numbered list -->
+        <symbol id="i-steps" viewBox="0 0 32 32">
+          <text
+            x="4"
+            y="11"
+            font-family="Inter, sans-serif"
+            font-size="7"
+            font-weight="700"
+            fill="currentColor">1.</text>
+          <line
+            x1="14"
+            y1="9"
+            x2="28"
+            y2="9"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"></line>
+          <text
+            x="4"
+            y="19"
+            font-family="Inter, sans-serif"
+            font-size="7"
+            font-weight="700"
+            fill="currentColor">2.</text>
+          <line
+            x1="14"
+            y1="17"
+            x2="28"
+            y2="17"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"></line>
+          <text
+            x="4"
+            y="27"
+            font-family="Inter, sans-serif"
+            font-size="7"
+            font-weight="700"
+            fill="currentColor">3.</text>
+          <line
+            x1="14"
+            y1="25"
+            x2="28"
+            y2="25"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"></line>
+        </symbol>
+
+        <!-- 6. Criteria (判) — balance scale -->
+        <symbol id="i-criteria" viewBox="0 0 32 32">
+          <line
+            x1="16"
+            y1="6"
+            x2="16"
+            y2="26"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"></line>
+          <line
+            x1="6"
+            y1="10"
+            x2="26"
+            y2="10"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"></line>
+          <path
+            d="M6 10 L3 18 A4 4 0 0 0 9 18 Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linejoin="round"></path>
+          <path
+            d="M26 10 L23 18 A4 4 0 0 0 29 18 Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linejoin="round"></path>
+          <line
+            x1="12"
+            y1="26"
+            x2="20"
+            y2="26"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"></line>
+        </symbol>
+
+        <!-- 7. Exception (例) — alert diamond -->
+        <symbol id="i-exception" viewBox="0 0 32 32">
+          <path
+            d="M16 4 L28 16 L16 28 L4 16 Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linejoin="round"></path>
+          <line
+            x1="16"
+            y1="11"
+            x2="16"
+            y2="18"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"></line>
+          <circle cx="16" cy="22" r="1.5" fill="currentColor"></circle>
+        </symbol>
+
+        <!-- 8. Grounds (根) — roots -->
+        <symbol id="i-grounds" viewBox="0 0 32 32">
+          <path
+            d="M16 4 V14"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"></path>
+          <line
+            x1="6"
+            y1="14"
+            x2="26"
+            y2="14"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"></line>
+          <path
+            d="M16 14 V20 M16 20 C 13 22 11 25 10 28 M16 20 C 19 22 21 25 22 28 M11 14 V18 C 9 20 7 22 6 26 M21 14 V18 C 23 20 25 22 26 26"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"></path>
+        </symbol>
+
+        <!-- Utility: arrow right -->
+        <symbol id="i-arrow" viewBox="0 0 16 16">
+          <path
+            d="M3 8 H13 M9 4 L13 8 L9 12"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </symbol>
+
+        <!-- Utility: check -->
+        <symbol id="i-check" viewBox="0 0 16 16">
+          <path
+            d="M3 8 L7 12 L13 4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </symbol>
+
+        <!-- Utility: camera (写真ダミー枠) -->
+        <symbol id="i-camera" viewBox="0 0 36 36">
+          <path
+            d="M5 12 H10 L13 8 H23 L26 12 H31 V28 H5 Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linejoin="round"></path>
+          <circle
+            cx="18"
+            cy="20"
+            r="5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"></circle>
+        </symbol>
+
+        <!-- Utility: person silhouette (testimonial avatar) -->
+        <symbol id="i-person" viewBox="0 0 24 24">
+          <circle cx="12" cy="8" r="4" fill="currentColor"></circle>
+          <path
+            d="M3 22 C 3 16 7 13 12 13 C 17 13 21 16 21 22"
+            fill="currentColor"></path>
+        </symbol>
+      </defs>
+    </svg>
+
+    <!-- ============================================================
+         HEADER
+         ============================================================ -->
+    <header class="site-header">
+      <div class="site-header__inner">
+        <div class="site-header__brand">
+          <span class="site-header__brand-name">CYNTHIALY</span>
+          <span class="site-header__brand-divider"></span>
+          <span class="site-header__brand-product">わざツグ</span>
+        </div>
+        <nav class="site-header__nav" aria-label="主要ナビゲーション">
+          <a href="#problem">課題</a>
+          <a href="#purposes">3つの目的</a>
+          <a href="#approach">アプローチ</a>
+          <a href="#plans">料金</a>
+        </nav>
+        <a href="#cta" class="site-header__cta">資料請求</a>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============================================================
+           1. HERO
+           ============================================================ -->
+      <section class="hero">
+        <div class="hero__inner">
+          <div class="hero__copy">
+            <span class="hero__title-en">WAZATSUGU — TACIT KNOWLEDGE INHERITANCE</span>
+            <h1 class="hero__title">
+              わざツグ。<br />技を、<em>つなぐ</em>。
+            </h1>
+            <p class="hero__lead">
+              ベテランの「なんとなく」を、生成AIとの対話で解きほぐす。
+              再利用可能な「技カード」として結晶化し、組織の資産に変える暗黙知継承サービスです。
+            </p>
+
+            <div class="hero__stats" role="group" aria-label="主要指標">
+              <div class="stat-badge">
+                <span class="stat-badge__value">91<sup style="font-size:0.5em;">%</sup></span>
+                <span class="stat-badge__label">利用者満足度<br />（5段階で4以上）</span>
+              </div>
+              <div class="stat-badge">
+                <span class="stat-badge__value">80<sup style="font-size:0.5em;">%</sup></span>
+                <span class="stat-badge__label">業務に占める<br />暗黙知の比率</span>
+              </div>
+              <div class="stat-badge">
+                <span class="stat-badge__value">30〜45<span style="font-size:0.5em;">分</span></span>
+                <span class="stat-badge__label">1セッション<br />所要時間</span>
+              </div>
+            </div>
+
+            <div class="hero__ctas">
+              <a href="#plans" class="btn btn--primary">
+                無料で試す
+                <svg class="btn__arrow" aria-hidden="true"><use href="#i-arrow"></use></svg>
+              </a>
+              <a href="#cta" class="btn btn--secondary">資料請求</a>
+            </div>
+          </div>
+
+          <div class="hero__visual" aria-hidden="true">
+            <!-- 背景：実際の現場写真（npm run generate:images で /img/wazatsugu/ に生成） -->
+            <div class="photo photo--full" style="position:absolute; inset:var(--space-6); z-index:0; aspect-ratio:auto;">
+              <img
+                class="photo__src"
+                src="/img/wazatsugu/hero-backdrop.png"
+                alt="ベテラン技術者のインタビュー風景"
+                onerror="this.remove()"
+                loading="lazy"
+              />
+              <svg class="photo__camera"><use href="#i-camera"></use></svg>
+              <span class="photo__label">
+                ベテラン技術者がインタビューを受けている／工場や現場で対話している様子（横向き・1200×900px）
+              </span>
+            </div>
+            <!-- 前面：技カードのモック -->
+            <div class="hero__visual-card" style="position:relative; z-index:1;">
+              <div class="hero__visual-card-no">技カード No.014</div>
+              <div class="hero__visual-card-title">異音から兆候を察知する</div>
+              <div class="hero__visual-card-row">
+                <svg><use href="#i-episode"></use></svg>
+                <span>1998年、停止寸前の機体で「あの音」を…</span>
+              </div>
+              <div class="hero__visual-card-row">
+                <svg><use href="#i-steps"></use></svg>
+                <span>稼働中の機械の低周波音に耳を澄ませ…</span>
+              </div>
+              <div class="hero__visual-card-row">
+                <svg><use href="#i-criteria"></use></svg>
+                <span>正常=連続的な基音／注意=0.5秒…</span>
+              </div>
+              <div class="hero__visual-card-row">
+                <svg><use href="#i-exception"></use></svg>
+                <span>起動直後30秒は判断しない／…</span>
+              </div>
+              <div class="hero__visual-card-row">
+                <svg><use href="#i-grounds"></use></svg>
+                <span>停止寸前まで稼働させた経験から…</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           1.5. TRUSTED BY（業界訴求帯・深緑バンド）
+           ============================================================ -->
+      <section class="trusted">
+        <div class="trusted__inner">
+          <span class="trusted__label">TRUSTED BY INDUSTRIES</span>
+          <div class="trusted__industries">
+            <span>製造</span>
+            <span>建設</span>
+            <span>物流</span>
+            <span>医療</span>
+            <span>介護</span>
+            <span>飲食</span>
+            <span>小売</span>
+            <span>化学</span>
+            <span>自動車</span>
+            <span>金融</span>
+            <span>教育</span>
+            <span>IT</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           2. THE PROBLEM
+           ============================================================ -->
+      <section class="section problem" id="problem">
+        <div class="section__inner">
+          <span class="section__eyebrow">ISSUE</span>
+          <h2 class="section__title">現場で、いま起きていること。</h2>
+          <p class="section__lead">
+            マニュアルに書けない、動画では伝わらない、本人も言語化できない。
+            技術継承を阻む暗黙知の壁は、3つの形で現場に現れます。
+          </p>
+
+          <div class="cards-grid cards-grid--3">
+            <article class="issue-card">
+              <div class="issue-card__no">01</div>
+              <span class="issue-card__tag">技術承継</span>
+              <h3 class="issue-card__title">ベテラン退職で、<br />技術が消失しそう</h3>
+              <p class="issue-card__body">
+                数十年かけて積み上げた現場の判断ノウハウが、退職とともに失われる。後継者育成にかける時間は限られています。
+              </p>
+            </article>
+            <article class="issue-card">
+              <div class="issue-card__no">02</div>
+              <span class="issue-card__tag">標準化</span>
+              <h3 class="issue-card__title">現場で本当に必要な<br />判断基準がマニュアルにない</h3>
+              <p class="issue-card__body">
+                既存マニュアルは「手順」止まり。判断のグレーゾーン、例外条件、なぜそうするかは書かれていません。
+              </p>
+            </article>
+            <article class="issue-card">
+              <div class="issue-card__no">03</div>
+              <span class="issue-card__tag">育成</span>
+              <h3 class="issue-card__title">「見て覚えろ」では<br />若手が育たない</h3>
+              <p class="issue-card__body">
+                経験で身につくものを言葉にしないまま放置すると、再現性のある育成プロセスは作れません。
+              </p>
+            </article>
+          </div>
+
+          <p class="problem__quote">
+            「なんとなく分かる」「音で気づく」「手の感覚で分かる」——本人も言語化できない暗黙知が、業務の80%を占めると言われています。
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           3. THREE PURPOSES (育・標・智 → SVG icons)
+           ============================================================ -->
+      <section class="section purposes" id="purposes">
+        <div class="section__inner">
+          <span class="section__eyebrow">PURPOSES</span>
+          <h2 class="section__title">わざツグが実現する3つの目的</h2>
+          <p class="section__lead">
+            抽出した暗黙知は、目的に応じて3種類の成果物に変換できます。
+            人材育成・業務標準化・AI実装、いずれの起点としても活用可能です。
+          </p>
+
+          <div class="cards-grid cards-grid--3">
+            <article class="purpose-card">
+              <div class="purpose-card__icon" aria-hidden="true">
+                <svg><use href="#i-cultivate"></use></svg>
+              </div>
+              <div class="purpose-card__label-en">CULTIVATE TALENT</div>
+              <h3 class="purpose-card__title">人材育成</h3>
+              <p class="purpose-card__body">
+                新人・若手にベテランの判断と所作を継承。段階的な習熟道筋を、技カードを難易度順に並べて設計します。
+              </p>
+              <div class="purpose-card__deliverable">
+                <strong>DELIVERABLES</strong>
+                段階別研修プログラム／OJTチェックリスト
+              </div>
+            </article>
+
+            <article class="purpose-card">
+              <div class="purpose-card__icon" aria-hidden="true">
+                <svg><use href="#i-standardize"></use></svg>
+              </div>
+              <div class="purpose-card__label-en">STANDARDIZE PRACTICE</div>
+              <h3 class="purpose-card__title">業務標準化</h3>
+              <p class="purpose-card__body">
+                属人化を解消し、誰がやっても同じ品質に。判断基準と例外を明文化したSOP（標準作業手順書）を出力します。
+              </p>
+              <div class="purpose-card__deliverable">
+                <strong>DELIVERABLES</strong>
+                判断基準付きマニュアル／標準作業手順書
+              </div>
+            </article>
+
+            <article class="purpose-card">
+              <div class="purpose-card__icon" aria-hidden="true">
+                <svg><use href="#i-ai"></use></svg>
+              </div>
+              <div class="purpose-card__label-en">EMBODY IN AI</div>
+              <h3 class="purpose-card__title">AIエージェント化</h3>
+              <p class="purpose-card__body">
+                ベテランの判断をAIに写す。人間と機械の役割を切り分け、実装にそのまま渡せる設計書を納品します。
+              </p>
+              <div class="purpose-card__deliverable">
+                <strong>DELIVERABLES</strong>
+                AI設計書／システムプロンプト
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           4. APPROACH (5 step timeline)
+           ============================================================ -->
+      <section class="section approach" id="approach">
+        <div class="section__inner">
+          <span class="section__eyebrow">APPROACH</span>
+          <h2 class="section__title">5つのステップで、暗黙知を組織の資産へ</h2>
+          <p class="section__lead">
+            目的の明確化から成果物への変換まで、わざツグは決まった5ステップで暗黙知を形式知に変えます。
+          </p>
+
+          <div class="approach__layout">
+            <!-- 右カラム：実際のセッション風景 -->
+            <aside class="approach__photo">
+              <div class="photo photo--3x2">
+                <img
+                  class="photo__src"
+                  src="/img/wazatsugu/approach-session.png"
+                  alt="ベテランと若手がPCを囲んでセッションする様子"
+                  onerror="this.remove()"
+                  loading="lazy"
+                />
+                <svg class="photo__camera"><use href="#i-camera"></use></svg>
+                <span class="photo__label">
+                  ベテランと若手＋ファシリテーターが PCを囲んでセッションをしている様子／横向き 1200×800px
+                </span>
+              </div>
+            </aside>
+
+            <div class="approach__timeline">
+            <div class="approach__step">
+              <div class="approach__step-marker">01</div>
+              <div class="approach__step-label">STEP 01</div>
+              <h3 class="approach__step-title">目的を明確にし、特定業務にフォーカス</h3>
+              <p class="approach__step-body">
+                形式知化の目的を1つ定め、対象業務を1つに絞り込みます。業務の始まり（トリガー）と終わり（完了条件）を明確化。
+              </p>
+            </div>
+            <div class="approach__step">
+              <div class="approach__step-marker">02</div>
+              <div class="approach__step-label">STEP 02</div>
+              <h3 class="approach__step-title">As-Is業務フローを可視化</h3>
+              <p class="approach__step-body">
+                生成AIとの対話で、頭の中の業務流れを地図化。各ステップの作業・判断・使用ツールを業務フロー図に整理します。
+              </p>
+            </div>
+            <div class="approach__step">
+              <div class="approach__step-marker">03</div>
+              <div class="approach__step-label">STEP 03</div>
+              <h3 class="approach__step-title">暗黙知が潜む場所を特定</h3>
+              <p class="approach__step-body">
+                新人がつまずきやすいポイント、「経験が必要」と言われる部分、人によってやり方が違う部分を炙り出します。
+              </p>
+            </div>
+            <div class="approach__step approach__step--featured">
+              <div class="approach__step-marker">04</div>
+              <div class="approach__step-label">STEP 04</div>
+              <h3 class="approach__step-title">
+                技カードに形式知化
+                <span class="approach__step-pill">CORE</span>
+              </h3>
+              <p class="approach__step-body">
+                エピソード・手順・判断基準・例外・経験の根拠の5観点で、暗黙知を1枚のカードに結晶化します。
+              </p>
+            </div>
+            <div class="approach__step">
+              <div class="approach__step-marker">05</div>
+              <div class="approach__step-label">STEP 05</div>
+              <h3 class="approach__step-title">目的に応じた成果物に変換</h3>
+              <p class="approach__step-body">
+                育成版（段階別研修）／標準化版（SOP）／AIエージェント版（設計書＋プロンプト）の3形式で出力します。
+              </p>
+            </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           5. TECH CARD SHOWCASE (5観点 → SVG icons)
+           ============================================================ -->
+      <section class="section techcard">
+        <div class="section__inner">
+          <span class="section__eyebrow">TECH CARD</span>
+          <h2 class="section__title">技カードを構成する、<br />5つの観点。</h2>
+          <p class="section__lead">
+            暗黙知をたった一枚のカードに収めるための、わざツグ独自の構造。
+            この5つが揃えば、新人でも辿れる地図になります。
+          </p>
+
+          <div class="techcard__layout">
+            <article class="techcard__sample">
+              <div class="techcard__sample-no">技カード No.014</div>
+              <h3 class="techcard__sample-title">異音から兆候を察知する</h3>
+
+              <div class="techcard__sample-row">
+                <div class="techcard__sample-row-icon">
+                  <svg><use href="#i-episode"></use></svg>
+                </div>
+                <div class="techcard__sample-row-content">
+                  <strong>EPISODE</strong>
+                  1998年、停止寸前の機体で「あの音」を聞いて異常を察知した経験がある。
+                </div>
+              </div>
+              <div class="techcard__sample-row">
+                <div class="techcard__sample-row-icon">
+                  <svg><use href="#i-steps"></use></svg>
+                </div>
+                <div class="techcard__sample-row-content">
+                  <strong>STEPS</strong>
+                  稼働中の機械の低周波音に耳を澄ませ、リズムの均一性を確認する。
+                </div>
+              </div>
+              <div class="techcard__sample-row">
+                <div class="techcard__sample-row-icon">
+                  <svg><use href="#i-criteria"></use></svg>
+                </div>
+                <div class="techcard__sample-row-content">
+                  <strong>CRITERIA</strong>
+                  正常=連続的な基音／注意=0.5秒以上の途切れ／停止=高音混入。
+                </div>
+              </div>
+              <div class="techcard__sample-row">
+                <div class="techcard__sample-row-icon">
+                  <svg><use href="#i-exception"></use></svg>
+                </div>
+                <div class="techcard__sample-row-content">
+                  <strong>EXCEPT</strong>
+                  起動直後30秒は判断しない。外気温5℃以下は別基準を適用。
+                </div>
+              </div>
+              <div class="techcard__sample-row">
+                <div class="techcard__sample-row-icon">
+                  <svg><use href="#i-grounds"></use></svg>
+                </div>
+                <div class="techcard__sample-row-content">
+                  <strong>GROUNDS</strong>
+                  停止寸前まで稼働させた過去の経験から、「あの音」を体で覚えた。
+                </div>
+              </div>
+            </article>
+
+            <ul class="techcard__legend">
+              <li class="techcard__legend-item">
+                <div class="techcard__legend-icon">
+                  <svg><use href="#i-episode"></use></svg>
+                </div>
+                <div>
+                  <div class="techcard__legend-name">EPISODE</div>
+                  <div class="techcard__legend-jp">エピソード</div>
+                </div>
+              </li>
+              <li class="techcard__legend-item">
+                <div class="techcard__legend-icon">
+                  <svg><use href="#i-steps"></use></svg>
+                </div>
+                <div>
+                  <div class="techcard__legend-name">STEPS</div>
+                  <div class="techcard__legend-jp">手順</div>
+                </div>
+              </li>
+              <li class="techcard__legend-item">
+                <div class="techcard__legend-icon">
+                  <svg><use href="#i-criteria"></use></svg>
+                </div>
+                <div>
+                  <div class="techcard__legend-name">CRITERIA</div>
+                  <div class="techcard__legend-jp">判断基準</div>
+                </div>
+              </li>
+              <li class="techcard__legend-item">
+                <div class="techcard__legend-icon">
+                  <svg><use href="#i-exception"></use></svg>
+                </div>
+                <div>
+                  <div class="techcard__legend-name">EXCEPT</div>
+                  <div class="techcard__legend-jp">例外</div>
+                </div>
+              </li>
+              <li class="techcard__legend-item">
+                <div class="techcard__legend-icon">
+                  <svg><use href="#i-grounds"></use></svg>
+                </div>
+                <div>
+                  <div class="techcard__legend-name">GROUNDS</div>
+                  <div class="techcard__legend-jp">経験の根拠</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <p class="techcard__quote">
+            ＞ 5観点が揃うと、ベテランの「なんとなく」が、誰でも辿れる一枚の地図になる。
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           6. USE CASES
+           ============================================================ -->
+      <section class="section usecases">
+        <div class="section__inner">
+          <span class="section__eyebrow">USE CASES</span>
+          <h2 class="section__title">現場で活用される、2つのシーン。</h2>
+
+          <div class="cards-grid cards-grid--2">
+            <article class="usecase-card">
+              <div class="photo photo--16x10 usecase-card__photo">
+                <img
+                  class="photo__src"
+                  src="/img/wazatsugu/usecase-factory.png"
+                  alt="製造業の検査ライン"
+                  onerror="this.remove()"
+                  loading="lazy"
+                />
+                <svg class="photo__camera"><use href="#i-camera"></use></svg>
+                <span class="photo__label">
+                  製造業の検査ライン／作業員が機械の前で計測機器を扱う様子（横向き 800×500px）
+                </span>
+              </div>
+              <div class="usecase-card__body-wrap">
+                <div class="usecase-card__label">SCENE A</div>
+                <h3 class="usecase-card__title">現場の技術継承</h3>
+                <span class="usecase-card__industry">製造業 ／ トラブル対応</span>
+                <p class="usecase-card__body">
+                  大手自動車部品メーカーの外観検査トラブル対応業務に適用。属人化していた判断ロジックを技カードとして抽出し、新人でも対応可能なフローへ変換。チーム全員で対応できる体制に移行しました。
+                </p>
+                <blockquote class="usecase-card__quote">
+                  「会話しながら自動でフローを作ってくれるのが、すごい時間短縮になる。」
+                  <span class="usecase-card__quote-author">— 大手自動車部品メーカー ソリューション担当</span>
+                </blockquote>
+              </div>
+            </article>
+
+            <article class="usecase-card">
+              <div class="photo photo--16x10 usecase-card__photo">
+                <img
+                  class="photo__src"
+                  src="/img/wazatsugu/usecase-office.png"
+                  alt="DX推進ミーティング"
+                  onerror="this.remove()"
+                  loading="lazy"
+                />
+                <svg class="photo__camera"><use href="#i-camera"></use></svg>
+                <span class="photo__label">
+                  DX推進ミーティング／会議室でホワイトボードに業務フローを書き出している様子（横向き 800×500px）
+                </span>
+              </div>
+              <div class="usecase-card__body-wrap">
+                <div class="usecase-card__label">SCENE B</div>
+                <h3 class="usecase-card__title">AI推進の前さばき</h3>
+                <span class="usecase-card__industry">DX推進 ／ 業務分解</span>
+                <p class="usecase-card__body">
+                  DX・AI推進部門で活用。同じ業務テーマでも担当者によりフローと暗黙知ポイントが異なる事実を可視化し、横断的なAI戦略の出発点に。AI導入の優先順位づけが効率化されました。
+                </p>
+                <blockquote class="usecase-card__quote">
+                  「同じ業務テーマで4人がそれぞれ作ったら、フローも暗黙知のポイントも全然違った。この違いが可視化できること自体が価値。」
+                  <span class="usecase-card__quote-author">— 大手自動車部品メーカー 調達チーム</span>
+                </blockquote>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           7. VOICES
+           ============================================================ -->
+      <section class="section voices">
+        <div class="section__inner">
+          <span class="section__eyebrow">VOICES</span>
+          <h2 class="section__title">8社22名の利用者の、満足度。</h2>
+
+          <div class="voices__hero">
+            <div class="voices__big-number">91<sup>%</sup></div>
+            <div class="voices__big-meta">
+              <strong>5段階評価で4以上の割合</strong>
+              2026年時点 / 8社・22名にて調査。<br />
+              対象：大手自動車部品メーカー、自動車完成車メーカー、技術サービス、電子機器、SIer、建設、化学メーカー等。
+            </div>
+          </div>
+
+          <div class="voices__list">
+            <blockquote class="voice">
+              <p class="voice__quote">
+                「自分にとっては分かりきったことでも、暗黙知ポイントとして表示されると『確かに初心者にはこれ暗黙知だな』と気づける。」
+              </p>
+              <div class="voice__author-row">
+                <span class="avatar" aria-hidden="true"><svg><use href="#i-person"></use></svg></span>
+                <p class="voice__author">大手自動車部品メーカー<br />ソリューション担当</p>
+              </div>
+            </blockquote>
+            <blockquote class="voice">
+              <p class="voice__quote">
+                「深掘りしてもらうことで、暗黙知だと思ってたら実は明確になるものだったなどの気づきがありました。」
+              </p>
+              <div class="voice__author-row">
+                <span class="avatar" aria-hidden="true"><svg><use href="#i-person"></use></svg></span>
+                <p class="voice__author">大手自動車完成車メーカー<br />開発担当</p>
+              </div>
+            </blockquote>
+            <blockquote class="voice">
+              <p class="voice__quote">
+                「同じ業務テーマで4人がそれぞれ作ったら、フローも暗黙知のポイントも全然違った。この違いが可視化できること自体が価値。」
+              </p>
+              <div class="voice__author-row">
+                <span class="avatar" aria-hidden="true"><svg><use href="#i-person"></use></svg></span>
+                <p class="voice__author">大手自動車部品メーカー<br />調達チーム</p>
+              </div>
+            </blockquote>
+            <blockquote class="voice">
+              <p class="voice__quote">
+                「暗黙知を引き出し、改善を促すUXとして完成度が高く感じた。」
+              </p>
+              <div class="voice__author-row">
+                <span class="avatar" aria-hidden="true"><svg><use href="#i-person"></use></svg></span>
+                <p class="voice__author">大手自動車部品メーカー<br />課長</p>
+              </div>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           8. SESSION TIMELINE
+           ============================================================ -->
+      <section class="section">
+        <div class="section__inner">
+          <span class="section__eyebrow">SESSION</span>
+          <h2 class="section__title">1セッション、30〜45分の流れ。</h2>
+          <p class="section__lead">
+            ブラウザだけで完結。完了後はJSONで書き出して次回に引き継げます。
+          </p>
+
+          <div class="session-timeline">
+            <div class="session-timeline__track">
+              <div class="session-step">
+                <div class="session-step__dot">01</div>
+                <div class="session-step__time">3分</div>
+                <h3 class="session-step__title">目的設定</h3>
+                <p class="session-step__desc">対象業務を絞り、ゴールを定める</p>
+              </div>
+              <div class="session-step">
+                <div class="session-step__dot">02</div>
+                <div class="session-step__time">10〜15分</div>
+                <h3 class="session-step__title">AIとの対話</h3>
+                <p class="session-step__desc">頭の中を地図化していく</p>
+              </div>
+              <div class="session-step">
+                <div class="session-step__dot">03</div>
+                <div class="session-step__time">5分</div>
+                <h3 class="session-step__title">フロー確認</h3>
+                <p class="session-step__desc">As-Is業務フローを目視</p>
+              </div>
+              <div class="session-step">
+                <div class="session-step__dot">04</div>
+                <div class="session-step__time">15〜20分</div>
+                <h3 class="session-step__title">技カード作成</h3>
+                <p class="session-step__desc">5観点で結晶化</p>
+              </div>
+              <div class="session-step">
+                <div class="session-step__dot">05</div>
+                <div class="session-step__time">5分</div>
+                <h3 class="session-step__title">結果確認</h3>
+                <p class="session-step__desc">JSONで書き出し</p>
+              </div>
+            </div>
+            <p class="session-timeline__note">
+              ブラウザだけで完結。次回セッションへも引き継ぎ可能です。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           9. PLANS
+           ============================================================ -->
+      <section class="section plans" id="plans">
+        <div class="section__inner">
+          <span class="section__eyebrow">PLANS</span>
+          <h2 class="section__title">料金プラン</h2>
+          <p class="section__lead">
+            1業務をプロが伴走する「点」、複数業務を統合的に進める「面」、まずは試したい方への無料トライアル。3つのプランから選べます。
+          </p>
+
+          <div class="cards-grid cards-grid--3">
+            <article class="plan-card">
+              <div class="plan-card__name-en">PLAN 01 — TRIAL</div>
+              <h3 class="plan-card__name">トライアル</h3>
+              <div class="plan-card__price">
+                ¥0
+                <span class="plan-card__price-unit">／無料</span>
+              </div>
+              <p class="plan-card__note">まず1業務から試したい方へ</p>
+              <ul class="plan-card__features">
+                <li class="plan-card__feature">
+                  <svg><use href="#i-check"></use></svg>
+                  <span>ブラウザのみで完結</span>
+                </li>
+                <li class="plan-card__feature">
+                  <svg><use href="#i-check"></use></svg>
+                  <span>インストール不要</span>
+                </li>
+                <li class="plan-card__feature">
+                  <svg><use href="#i-check"></use></svg>
+                  <span>AIとの対話で技カード作成</span>
+                </li>
+              </ul>
+              <a href="#cta" class="btn btn--secondary">
+                試してみる
+                <svg class="btn__arrow"><use href="#i-arrow"></use></svg>
+              </a>
+            </article>
+
+            <article class="plan-card plan-card--featured">
+              <span class="plan-card__badge">POPULAR</span>
+              <div class="plan-card__name-en">PLAN 02 — POINT</div>
+              <h3 class="plan-card__name">伴走支援｜点</h3>
+              <div class="plan-card__price">
+                ¥30万〜
+                <span class="plan-card__price-unit">／月（税抜）</span>
+              </div>
+              <p class="plan-card__note">1業務をプロが伴走</p>
+              <ul class="plan-card__features">
+                <li class="plan-card__feature">
+                  <svg><use href="#i-check"></use></svg>
+                  <span>対象業務の選定〜目的設計</span>
+                </li>
+                <li class="plan-card__feature">
+                  <svg><use href="#i-check"></use></svg>
+                  <span>ベテラン同席のインタビュー設計</span>
+                </li>
+                <li class="plan-card__feature">
+                  <svg><use href="#i-check"></use></svg>
+                  <span>技カード × To-Be設計書の納品</span>
+                </li>
+                <li class="plan-card__feature">
+                  <svg><use href="#i-check"></use></svg>
+                  <span>暗黙知抽出から成果物まで一貫サポート</span>
+                </li>
+              </ul>
+              <a href="#cta" class="btn btn--primary">
+                相談する
+                <svg class="btn__arrow"><use href="#i-arrow"></use></svg>
+              </a>
+            </article>
+
+            <article class="plan-card">
+              <div class="plan-card__name-en">PLAN 03 — SURFACE</div>
+              <h3 class="plan-card__name">伴走支援｜面</h3>
+              <div class="plan-card__price">
+                ¥150万〜
+                <span class="plan-card__price-unit">／月（税抜）</span>
+              </div>
+              <p class="plan-card__note">複数業務を戦略から実行まで</p>
+              <ul class="plan-card__features">
+                <li class="plan-card__feature">
+                  <svg><use href="#i-check"></use></svg>
+                  <span>複数業務の横断マップ作成</span>
+                </li>
+                <li class="plan-card__feature">
+                  <svg><use href="#i-check"></use></svg>
+                  <span>育成・標準化・AI化の統合設計</span>
+                </li>
+                <li class="plan-card__feature">
+                  <svg><use href="#i-check"></use></svg>
+                  <span>運用定着まで継続伴走</span>
+                </li>
+                <li class="plan-card__feature">
+                  <svg><use href="#i-check"></use></svg>
+                  <span>研修・AIエージェント開発まで対応</span>
+                </li>
+              </ul>
+              <a href="#cta" class="btn btn--secondary">
+                相談する
+                <svg class="btn__arrow"><use href="#i-arrow"></use></svg>
+              </a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           10. CTA BLOCK（cynthialy 標準・consulting/training と統一）
+           HubSpot リンク：
+             資料請求 → https://share-na2.hsforms.com/1PvsmVs3nQKKkGyMSTxaqzQdk2zo
+             無料相談 → https://meetings-na2.hubspot.com/yoshiki-watanabe2?...
+           ============================================================ -->
+      <section class="section cta-block" id="cta">
+        <div class="section__inner">
+          <span class="section__eyebrow">CONTACT</span>
+          <h2 class="section__title">資料請求・お問い合わせ</h2>
+          <p class="section__lead">
+            ベテランの暗黙知を、組織の資産に。<br />
+            わざツグでの形式知化を始めるための資料請求・無料相談を受け付けています。
+          </p>
+
+          <ul class="cta-block__grid" role="list">
+            <li>
+              <a
+                class="cta-card"
+                href="https://share-na2.hsforms.com/1PvsmVs3nQKKkGyMSTxaqzQdk2zo"
+                rel="noopener"
+                target="_blank"
+              >
+                <div
+                  class="cta-card__media"
+                  style="background-image:url('/storage.googleapis.com/studio-design-asset-files/projects/7kadNX28O3/s-539x303_webp_2d9ee3aa-b765-4561-97e5-467a588d402f.webp');"
+                  aria-hidden="true"></div>
+                <div class="cta-card__body">
+                  <h3 class="cta-card__title">
+                    <small>サービス概要や事例集の</small>
+                    資料がほしい
+                  </h3>
+                  <span class="cta-card__pill">
+                    資料請求
+                    <svg><use href="#i-arrow"></use></svg>
+                  </span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a
+                class="cta-card"
+                href="https://meetings-na2.hubspot.com/yoshiki-watanabe2?uuid=663ae103-d9fe-4e1c-8dda-c659aaef5ec5"
+                rel="noopener"
+                target="_blank"
+              >
+                <div
+                  class="cta-card__media"
+                  style="background-image:url('/storage.googleapis.com/studio-design-asset-files/projects/7kadNX28O3/s-539x303_webp_de385e76-f27c-44da-8e3c-be424fda3b66.webp');"
+                  aria-hidden="true"></div>
+                <div class="cta-card__body">
+                  <h3 class="cta-card__title">
+                    <small>暗黙知の継承に関して</small>
+                    まずは相談したい
+                  </h3>
+                  <span class="cta-card__pill">
+                    無料相談
+                    <svg><use href="#i-arrow"></use></svg>
+                  </span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <div>© 2026 cynthialy.co.jp All rights reserved.</div>
+        <nav aria-label="フッターナビ">
+          <a href="/">ホーム</a>　／
+          <a href="/services/">サービス</a>　／
+          <a href="/services/wazatsugu/">わざツグ</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>

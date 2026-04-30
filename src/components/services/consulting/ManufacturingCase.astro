@@ -1,0 +1,245 @@
+---
+/**
+ * ManufacturingCase.astro
+ * /services/consulting への追加セクション ⑤
+ * 製造業ケース：大手自動車部品メーカー外観検査トラブル対応（わざツグTOP SCENE A 流用）。
+ *
+ * ※ 図解は別途素材作成中。現状は枠＋テキストプレースホルダ。
+ *   素材が来たら src/assets/manufacturing-case-diagram.{png|svg} を `<img>` で差し込む。
+ */
+const before = [
+  "属人化したベテランの判断ロジックが言語化されていない",
+  "外観検査のトラブル対応に毎回エースが呼ばれる",
+  "判断基準が共有されず、新人配属のたびに育成コスト",
+];
+const after = [
+  "技カード化された判断ロジックを誰でも参照可能に",
+  "新人がフローを辿れば対応できる体制に移行",
+  "チーム全員で対応できるシフトが組めるように",
+];
+---
+
+<section class="cmc">
+  <div class="cmc__inner">
+    <div class="cmc__head">
+      <p class="cmc__eyebrow">CASE STUDY ／ MANUFACTURING</p>
+      <h2 class="cmc__title">
+        外観検査トラブル対応の<br />
+        <span class="cmc__title-accent">属人化を、技カードで解消</span>
+      </h2>
+      <p class="cmc__lead">
+        大手自動車部品メーカーの外観検査ライン。
+        ベテランが「目で見て・耳で聞いて・手で触って」判断していたトラブル対応を、
+        わざツグで技カード化。属人化していた判断ロジックを抽出し、
+        新人でも対応可能なフローへ変換しました。
+      </p>
+    </div>
+
+    <div class="cmc__body">
+      <figure class="cmc__diagram" aria-label="ベテラン判断 → 技カード → AIワークフロー の流れ">
+        <div class="cmc__diagram-placeholder">
+          <p class="cmc__diagram-label">DIAGRAM</p>
+          <p class="cmc__diagram-note">
+            ベテラン判断ロジック → 技カード抽出 → AIワークフロー化<br />
+            （図解差し込み予定）
+          </p>
+        </div>
+      </figure>
+
+      <div class="cmc__metrics">
+        <div class="cmc__col cmc__col--before">
+          <p class="cmc__col-label">BEFORE</p>
+          <ul>
+            {before.map((b) => <li>{b}</li>)}
+          </ul>
+        </div>
+        <div class="cmc__arrow" aria-hidden="true">→</div>
+        <div class="cmc__col cmc__col--after">
+          <p class="cmc__col-label">AFTER</p>
+          <ul>
+            {after.map((a) => <li>{a}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      <blockquote class="cmc__voice">
+        「会話しながら自動でフローを作ってくれるのが、すごい時間短縮になる。」
+        <cite>— 大手自動車部品メーカー ソリューション担当</cite>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cmc {
+    padding: 96px 24px 96px;
+    background: var(--color-neutral-10-bg, #f1f1f1);
+    color: var(--color-neutral-100-txt, #030807);
+  }
+  .cmc__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+  }
+  .cmc__head {
+    max-width: 880px;
+    margin: 0 auto 48px;
+    text-align: center;
+  }
+  .cmc__eyebrow {
+    margin: 0 0 16px;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-xs, 12px);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--color-accent-gold-dark, #b88c00);
+  }
+  .cmc__title {
+    margin: 0 0 20px;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    line-height: 1.45;
+    color: var(--color-deep-green, #0d2623);
+    letter-spacing: 0.02em;
+  }
+  .cmc__title-accent {
+    background: linear-gradient(transparent 60%, var(--color-accent-gold, #e8de9f) 60%);
+    padding: 0 4px;
+  }
+  .cmc__lead {
+    margin: 0;
+    font-size: var(--font-size-base, 16px);
+    line-height: 2;
+    color: var(--color-neutral-80-txt, #384946);
+  }
+
+  .cmc__body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .cmc__diagram {
+    margin: 0;
+  }
+  .cmc__diagram-placeholder {
+    background: #fff;
+    border: 2px dashed var(--color-accent-gold, #e8de9f);
+    border-radius: 12px;
+    padding: 48px 32px;
+    aspect-ratio: 16 / 7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .cmc__diagram-label {
+    margin: 0 0 12px;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-base, 16px);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--color-accent-gold-dark, #b88c00);
+  }
+  .cmc__diagram-note {
+    margin: 0;
+    font-size: var(--font-size-sm, 14px);
+    line-height: 1.85;
+    color: var(--color-neutral-80-txt, #384946);
+  }
+
+  .cmc__metrics {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    align-items: stretch;
+  }
+  @media (min-width: 720px) {
+    .cmc__metrics {
+      grid-template-columns: 1fr auto 1fr;
+      gap: 16px;
+    }
+  }
+  .cmc__col {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px 24px 22px;
+  }
+  .cmc__col--before {
+    border: 1px solid var(--color-neutral-30-border, #dbdbdb);
+    color: var(--color-neutral-80-txt, #384946);
+  }
+  .cmc__col--after {
+    border: 1px solid var(--color-accent-gold-dark, #b88c00);
+    background: linear-gradient(180deg, #fff, #faf9eb);
+  }
+  .cmc__col-label {
+    margin: 0 0 12px;
+    padding: 4px 14px;
+    display: inline-block;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-2xs, 11px);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    border-radius: 999px;
+    background: var(--color-deep-green, #0d2623);
+    color: #fff;
+  }
+  .cmc__col--after .cmc__col-label {
+    background: var(--color-accent-gold-dark, #b88c00);
+  }
+  .cmc__col ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cmc__col li {
+    position: relative;
+    padding: 8px 0 8px 22px;
+    font-size: var(--font-size-sm, 14px);
+    line-height: 1.85;
+    color: var(--color-neutral-80-txt, #384946);
+  }
+  .cmc__col li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 14px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-accent-gold-dark, #b88c00);
+    opacity: 0.6;
+  }
+  .cmc__arrow {
+    align-self: center;
+    text-align: center;
+    font-size: 32px;
+    color: var(--color-accent-gold-dark, #b88c00);
+    font-weight: 700;
+  }
+  @media (max-width: 719px) {
+    .cmc__arrow {
+      transform: rotate(90deg);
+    }
+  }
+
+  .cmc__voice {
+    margin: 0;
+    padding: 24px 28px;
+    background: #fff;
+    border-left: 4px solid var(--color-accent-gold, #e8de9f);
+    border-radius: 4px;
+    font-size: var(--font-size-base, 16px);
+    line-height: 1.85;
+    color: var(--color-deep-green, #0d2623);
+    font-style: italic;
+  }
+  .cmc__voice cite {
+    display: block;
+    margin-top: 12px;
+    font-size: var(--font-size-sm, 14px);
+    color: var(--color-neutral-80-txt, #384946);
+    font-style: normal;
+  }
+</style>

@@ -1,0 +1,156 @@
+---
+/**
+ * WazatsuguFirst.astro
+ * ---------------------------------------------------------------
+ * /services/consulting への追加セクション ①
+ * 「業務設計は、暗黙知の形式知化から始まる」訴求。
+ * Design.md の Two-Col Text + Image / Grid-Cards (3) アーキタイプを混合。
+ * tokens.css の CSS 変数のみ参照する（ハードコード禁止）。
+ */
+const walls = [
+  {
+    label: "WALL 01",
+    title: "ベテラン退職で、技術が消失しそう",
+    body: "数十年かけて積み上げた現場の判断ノウハウが、退職とともに失われる。後継者育成に割ける時間は限られています。",
+  },
+  {
+    label: "WALL 02",
+    title: "現場で本当に必要な判断基準がマニュアルにない",
+    body: "既存マニュアルは「手順」止まり。判断のグレーゾーン、例外条件、なぜそうするかは書かれていません。",
+  },
+  {
+    label: "WALL 03",
+    title: "「見て覚えろ」では若手が育たない",
+    body: "経験で身につくものを言葉にしないまま放置すると、再現性のある育成プロセスは作れません。",
+  },
+];
+---
+
+<section class="cwf">
+  <div class="cwf__inner">
+    <p class="cwf__eyebrow">WAZATSUGU FIRST</p>
+    <h2 class="cwf__title">
+      業務設計は、<br />
+      <span class="cwf__title-accent">暗黙知の形式知化</span>から始まる
+    </h2>
+    <p class="cwf__lead">
+      業務の <strong>80%</strong> を占めると言われる暗黙知。
+      マニュアルに書けない判断、動画では伝わらないコツ、本人も言語化できない感覚——
+      それを残せないまま、組織は技術と判断の継承を失い続けています。
+      <br /><br />
+      シンシアリーが業務変革に着手するとき、最初に取り組むのが
+      <strong>独自メソッド「わざツグ」による暗黙知の形式知化</strong>。
+      業務に潜む“なんとなく”を解きほぐすところから、
+      AI を組み込んだ業務設計はようやく動き始めます。
+    </p>
+
+    <ul class="cwf__walls">
+      {
+        walls.map((w) => (
+          <li class="cwf__wall">
+            <p class="cwf__wall-label">{w.label}</p>
+            <p class="cwf__wall-title">{w.title}</p>
+            <p class="cwf__wall-body">{w.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .cwf {
+    padding: 96px 24px 88px;
+    background: var(--color-neutral-10-bg, #f1f1f1);
+    color: var(--color-neutral-100-txt, #030807);
+    position: relative;
+  }
+  .cwf__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+  }
+  .cwf__eyebrow {
+    margin: 0 0 16px;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-xs, 12px);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--color-accent-gold-dark, #b88c00);
+  }
+  .cwf__title {
+    margin: 0 0 24px;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    line-height: 1.45;
+    color: var(--color-deep-green, #0d2623);
+    letter-spacing: 0.02em;
+  }
+  .cwf__title-accent {
+    background: linear-gradient(transparent 60%, var(--color-accent-gold, #e8de9f) 60%);
+    padding: 0 4px;
+  }
+  .cwf__lead {
+    margin: 0 0 56px;
+    max-width: 720px;
+    font-size: var(--font-size-base, 16px);
+    line-height: 2;
+    color: var(--color-neutral-80-txt, #384946);
+  }
+  .cwf__lead strong {
+    color: var(--color-deep-green, #0d2623);
+    font-weight: 700;
+  }
+
+  .cwf__walls {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 820px) {
+    .cwf__walls {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+  }
+  .cwf__wall {
+    background: #fff;
+    border: 1px solid var(--color-neutral-30-border, #dbdbdb);
+    border-radius: 12px;
+    padding: 28px 24px 24px;
+    position: relative;
+  }
+  .cwf__wall::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 24px;
+    right: 24px;
+    height: 3px;
+    background: var(--color-accent-gold, #e8de9f);
+    border-radius: 0 0 3px 3px;
+  }
+  .cwf__wall-label {
+    margin: 0 0 12px;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-2xs, 11px);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--color-accent-gold-dark, #b88c00);
+  }
+  .cwf__wall-title {
+    margin: 0 0 12px;
+    font-size: var(--font-size-lg, 18px);
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--color-deep-green, #0d2623);
+  }
+  .cwf__wall-body {
+    margin: 0;
+    font-size: var(--font-size-sm, 14px);
+    line-height: 1.85;
+    color: var(--color-neutral-80-txt, #384946);
+  }
+</style>

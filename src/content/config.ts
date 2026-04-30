@@ -39,10 +39,6 @@ const works = defineCollection({
     // SEO
     ogImage: z.string().url().optional(),
     noindex: z.boolean().default(false),
-    // レンダリングモード
-    //   "case"   : ミラー (cynthialy.co.jp/case/*) 準拠のピクセル一致テンプレートで描画
-    //   undefined: Astro CaseLayout + MDX で描画 (CMS 投入の新規記事はこちら)
-    mirrorTemplate: z.enum(["case"]).optional(),
   }),
 });
 

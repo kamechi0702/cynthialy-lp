@@ -1,0 +1,223 @@
+---
+/**
+ * TechCard.astro
+ * /services/consulting への追加セクション ②
+ * わざツグの 5 観点（EPISODE / PROCESS / CRITERIA / EXCEPT / GROUNDS）。
+ * カード意匠は /services/wazatsugu/ TOP の "技カード No.014 異音から兆候を察知する" を縮約再利用。
+ */
+const aspects = [
+  {
+    en: "EPISODE",
+    jp: "起点となる経験",
+    body: "いつ、どんな状況で、何が引き金だったか。",
+    sample: "1998年、停止寸前の機体で「あの音」を察知した経験がある。",
+  },
+  {
+    en: "PROCESS",
+    jp: "観察と判断の手順",
+    body: "ベテランがその瞬間に行っている動作と思考の連なり。",
+    sample: "稼働中の機械の低周波音に耳を澄ませ、リズムの均一性を確認する。",
+  },
+  {
+    en: "CRITERIA",
+    jp: "判断基準",
+    body: "どこからが正常で、どこからが異常か。閾値の言語化。",
+    sample: "正常=連続的な基音／注意=0.5秒以上の途切れ／停止=高音混入。",
+  },
+  {
+    en: "EXCEPT",
+    jp: "例外条件",
+    body: "通常ルールが適用されない、グレーゾーンの整理。",
+    sample: "起動直後30秒は判断しない。外気温5℃以下は別基準を適用。",
+  },
+  {
+    en: "GROUNDS",
+    jp: "経験的根拠",
+    body: "なぜその基準なのか、過去のどの体験が支えているか。",
+    sample: "停止寸前まで稼働させた経験から、「あの音」を体で覚えた。",
+  },
+];
+---
+
+<section class="ctc">
+  <div class="ctc__inner">
+    <p class="ctc__eyebrow">TECH CARD</p>
+    <h2 class="ctc__title">
+      ベテランの「なんとなく」を、<br />
+      <span class="ctc__title-accent">5観点で1枚に結晶化</span>
+    </h2>
+    <p class="ctc__lead">
+      暗黙知をたった一枚のカードに収めるための、わざツグ独自の構造。<br />
+      この 5 つが揃えば、新人でも辿れる「業務の地図」になります。
+    </p>
+
+    <ul class="ctc__list">
+      {
+        aspects.map((a, i) => (
+          <li class="ctc__item">
+            <div class="ctc__item-head">
+              <span class="ctc__item-num">{String(i + 1).padStart(2, "0")}</span>
+              <div>
+                <p class="ctc__item-en">{a.en}</p>
+                <p class="ctc__item-jp">{a.jp}</p>
+              </div>
+            </div>
+            <p class="ctc__item-body">{a.body}</p>
+            <p class="ctc__item-sample">
+              <span class="ctc__sample-label">例</span>
+              {a.sample}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="ctc__note">
+      ＞ 5観点が揃うと、ベテランの「なんとなく」が、誰でも辿れる一枚の地図になる
+    </p>
+  </div>
+</section>
+
+<style>
+  .ctc {
+    padding: 96px 24px 96px;
+    background: var(--color-deep-green, #0d2623);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .ctc::before {
+    content: "";
+    position: absolute;
+    right: -160px;
+    top: -160px;
+    width: 480px;
+    height: 480px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(232, 222, 159, 0.16),
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+  .ctc__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    position: relative;
+  }
+  .ctc__eyebrow {
+    margin: 0 0 16px;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-xs, 12px);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--color-accent-gold, #e8de9f);
+  }
+  .ctc__title {
+    margin: 0 0 24px;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    line-height: 1.45;
+    letter-spacing: 0.02em;
+  }
+  .ctc__title-accent {
+    color: var(--color-accent-gold, #e8de9f);
+  }
+  .ctc__lead {
+    margin: 0 0 56px;
+    max-width: 720px;
+    font-size: var(--font-size-base, 16px);
+    line-height: 2;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .ctc__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 720px) {
+    .ctc__list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1080px) {
+    .ctc__list {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+  }
+
+  .ctc__item {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 24px 20px 22px;
+  }
+  .ctc__item-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .ctc__item-num {
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-xl, 20px);
+    font-weight: 700;
+    color: var(--color-accent-gold, #e8de9f);
+    line-height: 1;
+    padding-top: 2px;
+  }
+  .ctc__item-en {
+    margin: 0;
+    font-family: var(--font-sans-en);
+    font-size: var(--font-size-sm, 14px);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--color-accent-gold, #e8de9f);
+  }
+  .ctc__item-jp {
+    margin: 4px 0 0;
+    font-size: var(--font-size-base, 16px);
+    font-weight: 700;
+    color: #fff;
+  }
+  .ctc__item-body {
+    margin: 0 0 14px;
+    font-size: var(--font-size-sm, 14px);
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .ctc__item-sample {
+    margin: 0;
+    padding-top: 12px;
+    font-size: var(--font-size-2xs, 11px);
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.7);
+    border-top: 1px dashed rgba(255, 255, 255, 0.15);
+  }
+  .ctc__sample-label {
+    display: inline-block;
+    margin-right: 8px;
+    padding: 1px 6px;
+    background: var(--color-accent-gold, #e8de9f);
+    color: var(--color-deep-green, #0d2623);
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 2px;
+    vertical-align: 1px;
+  }
+
+  .ctc__note {
+    margin: 56px 0 0;
+    font-size: var(--font-size-sm, 14px);
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    font-style: italic;
+  }
+</style>

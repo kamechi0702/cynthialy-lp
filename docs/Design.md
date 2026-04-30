@@ -367,9 +367,55 @@
 
 ### 8.4 アセット運用
 
-- 画像：`public/storage.googleapis.com/...` 配下に Studio CDN ローカルコピーを配置（既存 200+ファイル、再取得手間なので削除厳禁）
+- **既存ページの画像（Studio由来）**：`public/storage.googleapis.com/...` 配下に Studio CDN ローカルコピーを配置（既存 200+ファイル、再取得手間なので削除厳禁）
+- **新規生成画像（AI生成）**：`public/img/{page-slug}/` 配下。`scripts/generate-images.mjs` で OpenAI gpt-image-1 から自動生成（§8.5 参照）
 - 動画：`public/_astro/` 配下、mp4。将来は git-lfs 化検討
 - フォント：Google Fonts（CDN）。Fontplus（Tsukushi Mincho 等）は契約必要なので使わない
+
+### 8.5 AI 画像生成（gpt-image-1）
+
+**いつ使う**：cynthialy.co.jp に存在しない新規ページの写真素材を、ブランドトーンで揃えて自動生成したいとき。
+
+**仕組み**：
+- 設定：`config/images.config.mjs` にページ別画像カタログを定義
+- 実行：`npm run generate:images` で OpenAI API 呼び出し → `public/img/{page}/{name}.png` に保存
+- 表示：Astro ページ側で `<img src="/img/{page}/{name}.png" onerror="this.remove()">` を `.photo` プレースホルダ内に配置（404 時はプレースホルダにフォールバック）
+
+**コマンド**：
+```bash
+# 初回セットアップ
+cp .env.example .env
+# .env を編集して OPENAI_API_KEY=sk-... をセット
+
+# 不足分のみ生成（既存はスキップ）
+npm run generate:images
+
+# 特定ページだけ
+npm run generate:images -- --page wazatsugu
+
+# 全部再生成（コスト注意）
+npm run generate:images -- --force
+
+# 計画だけ表示（API 呼ばない）
+npm run generate:images -- --dry-run
+```
+
+**コスト目安**（gpt-image-1, 2026-04時点）：
+- low: ~$0.011 / 枚
+- medium: ~$0.042 / 枚（既定）
+- high: ~$0.167 / 枚
+
+**プロンプト作法**：
+- 主題（誰が、何を、どこで）を英語で具体的に
+- ブランドスタイル指示（neutral palette、photorealistic 等）は `defaultSuffix` に集約して全画像で揃える
+- テキスト・ロゴは禁止（`no visible text or logos`）
+- サイズは `1024x1024` `1024x1536` `1536x1024` のいずれか
+
+**新ページ追加手順**：
+1. `config/images.config.mjs` の `pages` に新エントリ追加
+2. 各画像の `filename`, `prompt`, `size` を記述
+3. `npm run generate:images -- --page <slug>` で生成
+4. 該当 Astro ページに `<img src="/img/<slug>/<filename>" />` を `.photo` プレースホルダ内に配置
 
 ---
 

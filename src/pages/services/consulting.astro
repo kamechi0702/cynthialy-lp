@@ -1,25 +1,79 @@
 ---
 /**
- * /services/consulting — コンサルティングサービス紹介ページ
+ * /services/consulting — コンサルティングサービス紹介ページ (v3)
  * ---------------------------------------------------------------
- * 本家 cynthialy.co.jp/services/consulting の完全 SSR HTML を Astro に取り込み、
- * ピクセル一致でレンダリングする。
+ * ハイブリッド構成:
+ * - 既存 Studio ミラー HTML（Hero / Trust / WHY / Riken+Tamadik Case /
+ *   AIワークフロー / 営業AI Case / 導入の流れ）はそのまま注入
+ * - その直後（CONTACT セクションの直前）に、わざツグ起点の業務設計訴求
+ *   セクション群（6つ）を Astro コンポーネントとして挿入
  *
- * 取り込み内訳:
- * - public/_nuxt/entry.C0E92ihM.css                   … Studio/Nuxt CSS バンドル
- * - src/assets/services-consulting-head-styles.html   … head 内のクリティカル <style>
- * - src/assets/services-consulting-body.html          … body 全体（リンク/URL書換済み）
+ * テキスト改修:
+ * - Hero: "業務変革 / AI × Infrastructure DX" → "業務を設計する / 暗黙知 × AI で業務を編み直す"
+ * - WHY ③: "文化醸成も実現 / 現場が進んで使い…" → 候補A「手順だけでなく判断基準・例外まで設計」
  *
- * bg-movie の右側突き抜け対策として、body 取り込み時に該当 <div> は削除済み。
- * 商材を新規追加する場合は本ファイルを参考に services/{slug}.astro を量産する。
+ * Stage 詳細:
+ * - Stage A (本コミット): テキスト差替 + 6 新規セクションを CONTACT 直前にまとめて挿入
+ * - Stage B (次): 6 セクションを wireframe v2 通りの位置に分割再配置（要セクション境界の精密 split）
  */
-import bodyHtml from "../../assets/services-consulting-body.html?raw";
+import bodyHtmlRaw from "../../assets/services-consulting-body.html?raw";
 import headStyles from "../../assets/services-consulting-head-styles.html?raw";
 
+import WazatsuguFirst from "../../components/services/consulting/WazatsuguFirst.astro";
+import TechCard from "../../components/services/consulting/TechCard.astro";
+import ThreePurposes from "../../components/services/consulting/ThreePurposes.astro";
+import WazatsuguAiBridge from "../../components/services/consulting/WazatsuguAiBridge.astro";
+import ManufacturingCase from "../../components/services/consulting/ManufacturingCase.astro";
+import RelatedWazatsugu from "../../components/services/consulting/RelatedWazatsugu.astro";
+
+// ---------- Stage A.1: テキスト改修（ミラー本文に対する非破壊置換） ----------
+let body = bodyHtmlRaw;
+
+// Hero label "業務変革" → "業務を設計する"
+body = body.replace(
+  /(<p\s+[^>]*class="text sd appear"[^>]*>)業務変革(<\/p>)/,
+  "$1業務を設計する$2",
+);
+
+// Hero h1 "AI × Infrastructure DX" → "暗黙知 × AI で業務を編み直す"
+body = body.replace(
+  /(<h1\s+[^>]*class="text sd appear"[^>]*>)AI × Infrastructure DX(<\/h1>)/,
+  "$1暗黙知 × AI で業務を編み直す$2",
+);
+
+// Hero サブコピー
+body = body.replace(
+  "業務プロセスを根本から見直し、AIを主軸に再設計<br>現場が進んでAI活用する、<br>業務設計と実装を伴走支援します",
+  "ベテランの「なんとなく」を技カードに、業務フローに、AI実装に。<br>1業務単位で確実に設計し直し、現場で使われ続ける業務に編み直します。",
+);
+
+// WHY ③: 「文化醸成も実現」→「判断基準と例外まで設計」
+body = body.replace(
+  /(<p\s+[^>]*class="text sd appear"[^>]*>)文化醸成も実現(<\/p>)/,
+  "$1判断基準と例外まで設計$2",
+);
+body = body.replace(
+  /(<p\s+[^>]*class="text sd appear"[^>]*>)現場が進んで使い自発的に広がる仕組みづくり(<\/p>)/,
+  "$1手順だけでなく、グレーゾーンを技カードで明文化$2",
+);
+// WHY ③ 本文（複数行 <br> 含む長文を丸ごと差替）
+body = body.replace(
+  "せっかく生成AIの導入を行っても、現場が「面倒」や「不安」を感じていると、定着や継続は難しくなります。<br><br>シンシアリーは、独自の行動分析で、現場が進んで使いたくなるワークフローを設計するため、導入で止まらず、定着し、組織に勝手に広がっていくAIの仕組みを残すことができます。",
+  "マニュアルには書けない判断のグレーゾーン、例外条件、なぜそうするか — その全てを技カードで明文化します。<br><br>暗黙知を構造化することで、誰がやっても同じ品質に到達できる業務フローを設計します。",
+);
+
+// ---------- Stage A.2: CONTACT セクション直前で 1 split ----------
+// CONTACT の section 開始 <div data-s-02f5668c-9c71-40dc-b787-dac55341b388> 直前を境に分割
+const CONTACT_SPLIT = '<div data-s-02f5668c-9c71-40dc-b787-dac55341b388';
+const splitIdx = body.indexOf(CONTACT_SPLIT);
+
+const bodyBefore = splitIdx > 0 ? body.slice(0, splitIdx) : body;
+const bodyAfter = splitIdx > 0 ? body.slice(splitIdx) : "";
+
 const pageTitle =
-  "コンサルティングサービス｜業務変革｜AI×Infrastructure改革 | シンシアリー株式会社";
+  "コンサルティングサービス｜業務を設計する | シンシアリー株式会社";
 const pageDescription =
-  "業務プロセスをAIベースで再設計し、現場で使われ続ける生成AI活用を実現するコンサルティングサービス。デュアル・AIグロース方式に基づく業務変革を伴走支援します。";
+  "暗黙知 × AI で業務を編み直す、シンシアリーのコンサルティングサービス。独自メソッド「わざツグ」で技カード化した暗黙知を、人材育成・業務標準化・AIエージェント化の3つの出口に変換。1業務単位で確実に設計し直します。";
 const canonical = "https://cynthialy.co.jp/services/consulting/";
 ---
 
@@ -50,7 +104,19 @@ const canonical = "https://cynthialy.co.jp/services/consulting/";
   </head>
 
   <body>
-    <Fragment set:html={bodyHtml} />
+    {/* 既存ミラー本文（Hero〜導入の流れ） */}
+    <Fragment set:html={bodyBefore} />
+
+    {/* ★ わざツグ起点の業務設計訴求セクション群 (Stage A: CONTACT直前にまとめて挿入) */}
+    <WazatsuguFirst />
+    <TechCard />
+    <ThreePurposes />
+    <WazatsuguAiBridge />
+    <ManufacturingCase />
+    <RelatedWazatsugu />
+
+    {/* 既存ミラー本文（CONTACT〜Footer） */}
+    <Fragment set:html={bodyAfter} />
 
     <!-- cynthialy ランタイム（loop-box / video / appear） -->
     <script is:inline src="/_astro/cynthialy-runtime.js"></script>

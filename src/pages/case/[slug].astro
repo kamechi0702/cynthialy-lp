@@ -1,29 +1,20 @@
 ---
 /**
- * /case/[slug] 動的ルート
+ * /case/[slug] 動的ルート（mirror-first）
  * ---------------------------------------------------------------
- * 2 系統のレンダリングを切り替える:
+ * 全事例記事を本家 cynthialy.co.jp/case/* 準拠のミラー HTML テンプレートで描画する。
  *
- * 1. **ミラー準拠 HTML テンプレート** (pixel-match、本番 cynthialy.co.jp/case/* と同一デザイン)
- *    - 対象: frontmatter の mirrorTemplate が "case" のエントリ
- *    - 仕組: ミラーの完全 SSR HTML を読み込み、{{COMPANY}} 等のトークンを
- *            frontmatter から substitute してレンダリング
- *    - メリット: CSS ハッシュ・フォント・アニメ含めて本番と見分けつかない
- *
- * 2. **Astro CaseLayout + MDX** (テンプレート未採用のエントリ向け)
- *    - 対象: mirrorTemplate が未設定のエントリ
- *    - 仕組: CaseLayout に <Content /> (MDX 本文) をスロット
- *    - メリット: 記事本文を Markdown で書ける、CMS 連携が容易
- *
- * 新規の CMS 記事を追加するときは、ひな形に沿った frontmatter と
- * MDX 本文を `src/content/works/{slug}.mdx` に追加するだけで OK。
+ * - frontmatter のメタ情報は `case-template-body.html` のトークン
+ *   ({{COMPANY}} {{DATE}} {{TOC_1..5}} {{BEFORE_1..3}} {{AFTER_1..3}} {{SUMMARY_1..3}}) に流し込む
+ * - MDX 本文はミラーテンプレを {{BODY_HTML}} で前後に分割し、その間に Astro <Content /> を挟む
+ * - 結果として新規記事も本家と同じ Hero / 目次 / 関連事例 / 関連サービス / フッター を維持しつつ、
+ *   本文だけ MDX で量産できる
  */
 import { getCollection, type CollectionEntry } from "astro:content";
-import CaseLayout from "../../layouts/CaseLayout.astro";
 
-// Vite の `?raw` インポートでビルド時に HTML テンプレ／CSS を文字列展開
 import caseTemplateBody from "../../assets/case-template-body.html?raw";
 import caseTemplateHeadStyles from "../../assets/case-template-head-styles.html?raw";
+import Footer from "../../components/Footer.astro";
 
 export async function getStaticPaths() {
   const entries = await getCollection("works");
@@ -38,105 +29,236 @@ interface Props {
 }
 
 const { entry } = Astro.props;
+const d = entry.data;
 
-/** ミラー準拠テンプレートで描画するか判定 */
-const useMirrorTemplate =
-  (entry.data as any).mirrorTemplate === "case" ||
-  // デフォルト挙動: 本家から移設済みの既存エントリはテンプレ描画
-  entry.slug === "X8Q6V52T";
+// MDX 本文（Astro が自動で MDX→HTML 変換、<Content /> として埋め込み可能）
+const { Content } = await entry.render();
 
-function renderMirrorHtml(
-  tpl: string,
-  e: CollectionEntry<"works">,
-): string {
-  const d = e.data;
-  const fmt = (dt: Date) => `${dt.getFullYear()}/${dt.getMonth() + 1}/${dt.getDate()}`;
-  const iso = (dt: Date) => dt.toISOString().slice(0, 10);
+// frontmatter → トークン置換（BODY_HTML 以外）
+const fmt = (dt: Date) =>
+  `${dt.getFullYear()}/${dt.getMonth() + 1}/${dt.getDate()}`;
+const iso = (dt: Date) => dt.toISOString().slice(0, 10);
 
-  const map: Record<string, string> = {
-    COMPANY: d.company ?? "",
-    DATE: d.publishedAt ? fmt(d.publishedAt) : "",
-    DATE_ISO: d.publishedAt ? iso(d.publishedAt) : "",
-    BEFORE_1: d.before?.[0] ?? "",
-    BEFORE_2: d.before?.[1] ?? "",
-    BEFORE_3: d.before?.[2] ?? "",
-    AFTER_1: d.after?.[0] ?? "",
-    AFTER_2: d.after?.[1] ?? "",
-    AFTER_3: d.after?.[2] ?? "",
-    SUMMARY_1: d.summary ?? "",
-    SUMMARY_2: "",
-    SUMMARY_3: "",
-    TOC_1: d.toc?.[0] ?? "",
-    TOC_2: d.toc?.[1] ?? "",
-    TOC_3: d.toc?.[2] ?? "",
-    TOC_4: d.toc?.[3] ?? "",
-    TOC_5: d.toc?.[4] ?? "",
-  };
+const tokenMap: Record<string, string> = {
+  COMPANY: d.company ?? "",
+  DATE: d.publishedAt ? fmt(d.publishedAt) : "",
+  DATE_ISO: d.publishedAt ? iso(d.publishedAt) : "",
+  BEFORE_1: d.before?.[0] ?? "",
+  BEFORE_2: d.before?.[1] ?? "",
+  BEFORE_3: d.before?.[2] ?? "",
+  AFTER_1: d.after?.[0] ?? "",
+  AFTER_2: d.after?.[1] ?? "",
+  AFTER_3: d.after?.[2] ?? "",
+  SUMMARY_1: d.summary ?? "",
+  SUMMARY_2: "",
+  SUMMARY_3: "",
+  TOC_1: d.toc?.[0] ?? "",
+  TOC_2: d.toc?.[1] ?? "",
+  TOC_3: d.toc?.[2] ?? "",
+  TOC_4: d.toc?.[3] ?? "",
+  TOC_5: d.toc?.[4] ?? "",
+};
 
-  let out = tpl;
-  for (const [k, v] of Object.entries(map)) {
-    const re = new RegExp(`\\{\\{${k}\\}\\}`, "g");
-    out = out.replace(re, String(v));
-  }
-  return out;
+let mirrorTpl = caseTemplateBody;
+for (const [k, v] of Object.entries(tokenMap)) {
+  mirrorTpl = mirrorTpl.replace(new RegExp(`\\{\\{${k}\\}\\}`, "g"), () =>
+    String(v),
+  );
 }
 
-// ---- レンダリング分岐 ----
-let mirrorHtml: string | null = null;
-let mdxContent: any = null;
+// {{BODY_HTML}} で前後に分割。間に <Content /> を挟んで MDX 本文を埋める。
+const [tplBefore, tplAfterRaw] = mirrorTpl.split("{{BODY_HTML}}");
 
-if (useMirrorTemplate) {
-  mirrorHtml = renderMirrorHtml(caseTemplateBody, entry);
-} else {
-  const { Content } = await entry.render();
-  mdxContent = Content;
-}
+// case-template-body.html には CTA Block を欠いた簡易フッター（sitemap+copyright のみ）が
+// 末尾に含まれている。これを runtime で切り落とし、共通の site-footer.html に差し替える。
+// マーカー：簡易フッターを wrap する unique な data-s id（case-template でしか使われない）
+const SIMPLE_FOOTER_MARKER =
+  '<div data-s-60d7c746-04c9-4f65-9681-afec669a18aa="';
+const cutIdx = tplAfterRaw.indexOf(SIMPLE_FOOTER_MARKER);
+const tplAfter =
+  cutIdx >= 0 ? tplAfterRaw.slice(0, cutIdx) : tplAfterRaw;
 
 const canonical = `https://cynthialy.co.jp/case/${entry.slug}`;
-const pageTitle = `${entry.data.title} | 導入事例 | シンシアリー株式会社`;
-const pageDescription = entry.data.summary.slice(0, 120);
+const pageTitle = `${d.title} | 導入事例 | シンシアリー株式会社`;
+const pageDescription = d.summary.slice(0, 120);
+const ogImage = d.ogImage ?? d.heroImage;
 ---
 
-{
-  useMirrorTemplate ? (
-    <html lang="ja">
-      <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>{pageTitle}</title>
-        <meta name="description" content={pageDescription} />
-        <link rel="canonical" href={canonical} />
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonical} />
+    {d.noindex && <meta name="robots" content="noindex,nofollow" />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
 
-        {/* Studio/Nuxt CSS バンドル */}
-        <link rel="stylesheet" href="/_nuxt/entry.C0E92ihM.css" crossorigin="" />
-        {/* Google Fonts */}
-        <link
-          href="https://fonts.googleapis.com/css?display=swap&family=Poppins:wght@400"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css?display=swap&family=Lato:wght@700"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css?display=swap&family=Inter:wght@500"
-          rel="stylesheet"
-        />
+    {/* Studio/Nuxt CSS バンドル（Hero/目次/関連事例/関連サービス/フッターのレイアウトを支配） */}
+    <link rel="stylesheet" href="/_nuxt/entry.C0E92ihM.css" crossorigin="" />
+    {/* Google Fonts */}
+    <link
+      href="https://fonts.googleapis.com/css?display=swap&family=Poppins:wght@400"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?display=swap&family=Lato:wght@700"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?display=swap&family=Inter:wght@500"
+      rel="stylesheet"
+    />
 
-        {/* head 内のクリティカル <style> */}
-        <Fragment set:html={caseTemplateHeadStyles} />
-      </head>
+    {/* head 内のクリティカル <style> */}
+    <Fragment set:html={caseTemplateHeadStyles} />
+  </head>
 
-      <body>
-        <Fragment set:html={mirrorHtml} />
+  <body>
+    <Fragment set:html={tplBefore} />
+    <div class="case-mdx-body">
+      <Content />
+    </div>
+    <Fragment set:html={tplAfter} />
 
-        {/* cynthialy ランタイム (loop-box/video/appear) */}
-        <script is:inline src="/_astro/cynthialy-runtime.js" />
-      </body>
-    </html>
-  ) : (
-    <CaseLayout slug={entry.slug} frontmatter={entry.data}>
-      <mdxContent />
-    </CaseLayout>
-  )
-}
+    {/* case-template-body.html + MDX <Content/> までで NET +11 の <div> が
+        開きっぱなしになる（うち 3 つは __nuxt/wrapper/.container、残り 8 は
+        Studio コンポーネントとMDX wrapping）。共通 Footer を body 直下フル幅で
+        描画するため、11 個まとめてクローズしてからレンダーする。 */}
+    <Fragment set:html={"</div>".repeat(11)} />
+
+    {/* 共通フッター（コンポーネント実装、design tokens ベース） */}
+    <Footer />
+
+    {/* cynthialy ランタイム (loop-box/video/appear) */}
+    <script is:inline src="/_astro/cynthialy-runtime.js" />
+
+    <style is:global>
+      /* =================================================================
+       * MDX で書かれた本文の見た目を、本家ミラー（X8Q6V52T）と揃えるための CSS
+       * ミラーテンプレ内の {{BODY_HTML}} 位置に <div class="case-mdx-body"> として
+       * 挿入される MDX 出力に当たる。Studio CSS の data-uid セレクタは効かないため、
+       * ここで明示的に再現する。
+       * ================================================================= */
+      .case-mdx-body {
+        max-width: 800px;
+        margin-inline: auto;
+        padding: 0 24px 16px;
+        color: #1a1a1a;
+        font-size: 16px;
+        line-height: 1.95;
+      }
+      .case-mdx-body > * + * {
+        margin-top: 1.4em;
+      }
+      .case-mdx-body p {
+        margin: 0;
+      }
+      .case-mdx-body p + p {
+        margin-top: 1.4em;
+      }
+      .case-mdx-body strong {
+        color: #0d2623;
+        font-weight: 700;
+      }
+      .case-mdx-body a {
+        color: #0d2623;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+
+      /* 本文 H2：本家ミラー準拠（緑背景・秀英角ゴシック銀風） */
+      .case-mdx-body h2 {
+        margin-top: 80px;
+        margin-bottom: 32px;
+        padding: 16px 20px;
+        font-family:
+          "秀英角ゴシック銀 L JIS2004",
+          "Noto Sans JP",
+          sans-serif;
+        font-size: 28px;
+        font-weight: 500;
+        line-height: 1.5;
+        color: #1d4524;
+        background: rgba(29, 69, 36, 0.1);
+        letter-spacing: 0.02em;
+      }
+      @media (max-width: 540px) {
+        .case-mdx-body h2 {
+          font-size: 20px;
+          padding: 14px 16px;
+          margin-top: 56px;
+          margin-bottom: 24px;
+        }
+      }
+
+      .case-mdx-body h3 {
+        margin-top: 48px;
+        margin-bottom: 16px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #0d2623;
+        border-left: 4px solid #e8de9f;
+        padding-left: 12px;
+      }
+
+      /* リスト */
+      .case-mdx-body ol,
+      .case-mdx-body ul {
+        padding-left: 1.5em;
+      }
+      .case-mdx-body ol li,
+      .case-mdx-body ul li {
+        margin: 0.4em 0;
+      }
+
+      /* 通常の figure（画像入り） */
+      .case-mdx-body .case-figure {
+        margin: 40px 0;
+        padding: 0;
+      }
+      .case-mdx-body .case-figure img {
+        width: 100%;
+        height: auto;
+        max-width: 800px;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        border-radius: 8px;
+        margin: 0;
+        display: block;
+      }
+      .case-mdx-body .case-figure figcaption {
+        margin-top: 12px;
+        font-size: 13px;
+        color: #6b6b6b;
+        text-align: center;
+        line-height: 1.7;
+      }
+
+      /* プレースホルダ figure（画像差し込み前） */
+      .case-mdx-body .case-figure[data-todo] {
+        background: repeating-linear-gradient(
+          45deg,
+          #f5f5f5 0 10px,
+          #ececec 10px 20px
+        );
+        aspect-ratio: 16 / 9;
+        width: 100%;
+        max-width: 800px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6b6b6b;
+        font-size: 13px;
+        text-align: center;
+        margin: 40px auto;
+      }
+      .case-mdx-body .case-figure[data-todo] .case-figure__todo::before {
+        content: "[画像] ";
+        font-weight: 700;
+        color: #0d2623;
+      }
+    </style>
+  </body>
+</html>

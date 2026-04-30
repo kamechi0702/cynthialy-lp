@@ -123,9 +123,35 @@
     });
   }
 
+  /* ===================== Cynthialy ロゴ差し込み =====================
+   * Studio の SSR が吐く 215x48 の空 SVG プレースホルダ（フッター・ヘッダー
+   * のロゴ位置）を、テキストロゴ "Cynthialy" に置換する。
+   * 本家サイトでは Nuxt hydration が動的に実 SVG を流し込むが、ローカルでは
+   * Nuxt を起動しないためここで補完する。
+   */
+  function injectCynthialyLogos() {
+    document.querySelectorAll('img').forEach((img) => {
+      if (img.dataset.cyHidden) return;
+      const s = img.getAttribute('src') || '';
+      if (
+        s.startsWith('data:image/svg+xml') &&
+        /width=(?:'|%27)?215(?:'|%27)?/.test(s) &&
+        /height=(?:'|%27)?48(?:'|%27)?/.test(s)
+      ) {
+        const span = document.createElement('span');
+        span.textContent = 'Cynthialy';
+        span.setAttribute('data-cy-logo', '1');
+        span.style.cssText =
+          'display:inline-block;font-family:"Lato","Inter",sans-serif;font-weight:700;font-size:28px;color:#e8de9f;letter-spacing:0.04em;line-height:1;';
+        img.replaceWith(span);
+      }
+    });
+  }
+
   /* ===================== boot ===================== */
   function boot() {
     hidePlaceholderImgs();
+    injectCynthialyLogos();
     bootAppear();
     kickVideos();
     // 視認できるようになったらもう一度だけ動画を叩く（iOS 対策）
