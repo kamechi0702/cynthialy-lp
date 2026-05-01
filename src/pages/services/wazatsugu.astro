@@ -1435,47 +1435,29 @@ const canonical = "https://cynthialy.co.jp/services/wazatsugu/";
         color: var(--color-accent-gold);
       }
 
-      /* ===== Photo placeholder + 実画像差し替え対応 =====
-         画像ファイル（npm run generate:images で生成）が存在すれば img.photo__src が画像を覆い、
-         無ければプレースホルダ（ストライプ + 被写体メモ）が透けて見える。 */
+      /* ===== Photo placeholder（ニュートラルグレー・ダミー） =====
+         実写真は別途用意して差し込む前提のダミー枠。
+         AI 生成画像（gpt-image-1）は本番では使用せず、ここはグレーのまま据え置く。 */
       .photo {
         position: relative;
         background:
           linear-gradient(
             135deg,
-            var(--color-deep-green-08) 0%,
-            rgba(232, 222, 159, 0.12) 100%
+            rgba(0, 0, 0, 0.04) 0%,
+            rgba(0, 0, 0, 0.08) 100%
           ),
           repeating-linear-gradient(
             45deg,
             transparent 0 14px,
-            rgba(13, 38, 35, 0.04) 14px 15px
+            rgba(0, 0, 0, 0.04) 14px 15px
           );
-        border: 1px dashed rgba(13, 38, 35, 0.2);
+        border: 1px dashed rgba(0, 0, 0, 0.18);
         border-radius: var(--radius-lg);
         overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--color-deep-green);
-      }
-      .photo__src {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        z-index: 1;
-      }
-      /* 画像が読み込めた時は枠と内部マークを隠す。
-         404 のとき onerror="this.remove()" で <img> 自体を消す → 自動的にプレースホルダ復活。 */
-      .photo:has(.photo__src) {
-        border-color: transparent;
-        background: var(--color-neutral-10-bg);
-      }
-      .photo:has(.photo__src) .photo__camera,
-      .photo:has(.photo__src) .photo__label {
-        display: none;
+        color: rgba(0, 0, 0, 0.55);
       }
       .photo--16x10 { aspect-ratio: 16 / 10; }
       .photo--3x2 { aspect-ratio: 3 / 2; }
@@ -1903,15 +1885,8 @@ const canonical = "https://cynthialy.co.jp/services/wazatsugu/";
           </div>
 
           <div class="hero__visual" aria-hidden="true">
-            <!-- 背景：実際の現場写真（npm run generate:images で /img/wazatsugu/ に生成） -->
+            <!-- 背景：写真ダミー枠（実写真は別途用意） -->
             <div class="photo photo--full" style="position:absolute; inset:var(--space-6); z-index:0; aspect-ratio:auto;">
-              <img
-                class="photo__src"
-                src="/img/wazatsugu/hero-backdrop.png"
-                alt="ベテラン技術者のインタビュー風景"
-                onerror="this.remove()"
-                loading="lazy"
-              />
               <svg class="photo__camera"><use href="#i-camera"></use></svg>
               <span class="photo__label">
                 ベテラン技術者がインタビューを受けている／工場や現場で対話している様子（横向き・1200×900px）
@@ -2090,13 +2065,6 @@ const canonical = "https://cynthialy.co.jp/services/wazatsugu/";
             <!-- 右カラム：実際のセッション風景 -->
             <aside class="approach__photo">
               <div class="photo photo--3x2">
-                <img
-                  class="photo__src"
-                  src="/img/wazatsugu/approach-session.png"
-                  alt="ベテランと若手がPCを囲んでセッションする様子"
-                  onerror="this.remove()"
-                  loading="lazy"
-                />
                 <svg class="photo__camera"><use href="#i-camera"></use></svg>
                 <span class="photo__label">
                   ベテランと若手＋ファシリテーターが PCを囲んでセッションをしている様子／横向き 1200×800px
@@ -2283,13 +2251,6 @@ const canonical = "https://cynthialy.co.jp/services/wazatsugu/";
           <div class="cards-grid cards-grid--2">
             <article class="usecase-card">
               <div class="photo photo--16x10 usecase-card__photo">
-                <img
-                  class="photo__src"
-                  src="/img/wazatsugu/usecase-factory.png"
-                  alt="製造業の検査ライン"
-                  onerror="this.remove()"
-                  loading="lazy"
-                />
                 <svg class="photo__camera"><use href="#i-camera"></use></svg>
                 <span class="photo__label">
                   製造業の検査ライン／作業員が機械の前で計測機器を扱う様子（横向き 800×500px）
@@ -2311,13 +2272,6 @@ const canonical = "https://cynthialy.co.jp/services/wazatsugu/";
 
             <article class="usecase-card">
               <div class="photo photo--16x10 usecase-card__photo">
-                <img
-                  class="photo__src"
-                  src="/img/wazatsugu/usecase-office.png"
-                  alt="DX推進ミーティング"
-                  onerror="this.remove()"
-                  loading="lazy"
-                />
                 <svg class="photo__camera"><use href="#i-camera"></use></svg>
                 <span class="photo__label">
                   DX推進ミーティング／会議室でホワイトボードに業務フローを書き出している様子（横向き 800×500px）
